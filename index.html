@@ -38,6 +38,21 @@
   <nav id="navbar" class="navbar">
     <div class="nav-inner">
       <a href="/" class="logo" id="logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 160 160">
+          <defs>
+            <clipPath id="clip">
+              <rect x="0" y="0" width="160" height="160" rx="36"/>
+            </clipPath>
+          </defs>
+          <g clip-path="url(#clip)">
+            <rect x="0" y="0" width="160" height="160" fill="#07080f"/>
+            <rect x="27" y="28" width="13" height="104" rx="3.5" fill="white"/>
+            <line x1="40" y1="80" x2="126" y2="31" stroke="white" stroke-width="13" stroke-linecap="round"/>
+            <line x1="40" y1="80" x2="126" y2="129" stroke="white" stroke-width="13" stroke-linecap="round"/>
+            <circle cx="129" cy="28" r="15" fill="#4A8FFF"/>
+            <circle cx="129" cy="28" r="6" fill="white" fill-opacity="0.3"/>
+          </g>
+        </svg>
         <span class="logo-text">klarr</span>
       </a>
     </div>
@@ -68,7 +83,7 @@ and lets you find anything in seconds, just by describing it.
 No cloud. No subscriptions. Your files never leave your device.
         </p>
 
-        <form class="email-form" id="email-form" onsubmit="return false;">
+        <form class="email-form" id="email-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
           <div class="input-wrapper">
             <input
               type="email"

@@ -147,7 +147,7 @@
   successMsg.innerHTML = '✓ You\'re on the list. We\'ll be in touch!';
   inputWrapper.appendChild(successMsg);
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const emailInput = document.getElementById('email-input');
     const email = emailInput.value.trim();
@@ -159,7 +159,40 @@
       return;
     }
 
-    form.classList.add('success');
+    if (form.action.includes('YOUR_FORM_ID')) {
+      alert("Almost there! Replace 'YOUR_FORM_ID' in index.html with your actual Formspree ID to start collecting emails.");
+      form.classList.add('success');
+      return;
+    }
+
+    const ctaButton = document.getElementById('cta-button');
+    const originalText = ctaButton.innerHTML;
+    ctaButton.innerHTML = 'Sending...';
+    ctaButton.style.opacity = '0.7';
+    ctaButton.style.pointerEvents = 'none';
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
+      });
+      
+      if (response.ok) {
+        form.classList.add('success');
+      } else {
+        alert("Oops! There was a problem saving your email.");
+      }
+    } catch (error) {
+      alert("Oops! There was a network problem. Please try again.");
+    } finally {
+      ctaButton.innerHTML = originalText;
+      ctaButton.style.opacity = '1';
+      ctaButton.style.pointerEvents = 'auto';
+    }
   });
 
   // ─── Navbar scroll ──────────────────────────
