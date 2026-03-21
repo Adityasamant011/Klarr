@@ -159,12 +159,6 @@
       return;
     }
 
-    if (form.action.includes('YOUR_FORM_ID')) {
-      alert("Almost there! Replace 'YOUR_FORM_ID' in index.html with your actual Formspree ID to start collecting emails.");
-      form.classList.add('success');
-      return;
-    }
-
     const ctaButton = document.getElementById('cta-button');
     const originalText = ctaButton.innerHTML;
     ctaButton.innerHTML = 'Sending...';
@@ -172,20 +166,19 @@
     ctaButton.style.pointerEvents = 'none';
 
     try {
-      const response = await fetch(form.action, {
+      const formData = new FormData(form);
+      const urlEncodedData = new URLSearchParams(formData).toString();
+
+      await fetch(form.action, {
         method: form.method,
+        mode: 'no-cors',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({ email: email })
+        body: urlEncodedData
       });
       
-      if (response.ok) {
-        form.classList.add('success');
-      } else {
-        alert("Oops! There was a problem saving your email.");
-      }
+      form.classList.add('success');
     } catch (error) {
       alert("Oops! There was a network problem. Please try again.");
     } finally {
