@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Klarr — Your files organize themselves</title>
+  <meta name="description" content="Klarr is a local AI that silently organizes your files and lets you search everything with natural language. 100% on-device. No cloud. No subscriptions." />
+  <meta name="theme-color" content="#ffffff" />
+  <meta property="og:title" content="Klarr — Your files organize themselves" />
+  <meta property="og:description" content="Find anything on your computer in seconds. Local AI file organizer. No cloud. No subscriptions." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://klarr.net" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Bubble canvas -->
+  <canvas id="bubble-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="logo" id="logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 160 160">
+          <defs>
+            <clipPath id="clip">
+              <rect x="0" y="0" width="160" height="160" rx="36"/>
+            </clipPath>
+          </defs>
+          <g clip-path="url(#clip)">
+            <rect x="0" y="0" width="160" height="160" fill="#07080f"/>
+            <rect x="27" y="28" width="13" height="104" rx="3.5" fill="white"/>
+            <line x1="40" y1="80" x2="126" y2="31" stroke="white" stroke-width="13" stroke-linecap="round"/>
+            <line x1="40" y1="80" x2="126" y2="129" stroke="white" stroke-width="13" stroke-linecap="round"/>
+            <circle cx="129" cy="28" r="15" fill="#4A8FFF"/>
+            <circle cx="129" cy="28" r="6" fill="white" fill-opacity="0.3"/>
+          </g>
+        </svg>
+        <span class="logo-text">klarr</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main>
+    <section id="hero" class="hero">
+      <div class="hero-content">
+
+        <div class="pill" id="pill-badge">
+          <span class="pill-dot"></span>
+          Now accepting early access
+        </div>
+
+        <h1 class="hero-headline" id="hero-headline">
+          Your files organize <br />themselves.
+        </h1>
+
+        <p class="hero-subheadline" id="hero-subheadline">
+          Find anything on your computer in seconds.
+        </p>
+
+        <p class="hero-description" id="hero-description">
+          Klarr quietly organizes your files while you work — 
+and lets you find anything in seconds, just by describing it.
+
+No cloud. No subscriptions. Your files never leave your device.
+        </p>
+
+        <form class="email-form" id="email-form" onsubmit="return false;">
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="email-input"
+              class="email-input"
+              placeholder="Enter your email address"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="cta-button" id="cta-button">
+              Get FREE Early Access →
+            </button>
+          </div>
+        </form>
+
+        <p class="micro-text" id="micro-text">
+          FREE for early users. No spam. Unsubscribe anytime.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- Feature Cards -->
+    <section id="features" class="features">
+      <div class="cards-row">
+
+        <div class="feature-card" id="card-local">
+          <span class="card-icon">🔒</span>
+          <h3 class="card-title">100% Local</h3>
+          <p class="card-text">Your files never leave your device. Ever.</p>
+        </div>
+
+        <div class="feature-card" id="card-search">
+          <span class="card-icon">⚡</span>
+          <h3 class="card-title">Find Anything</h3>
+          <p class="card-text">Natural language search across all your files.</p>
+        </div>
+
+        <div class="feature-card" id="card-autopilot">
+          <span class="card-icon">✦</span>
+          <h3 class="card-title">Silent Autopilot</h3>
+          <p class="card-text">Organizes your folders automatically in the background.</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="footer">
+    <p>© 2025 Klarr — Built for people who value their privacy.</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
