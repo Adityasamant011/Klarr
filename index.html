@@ -6,62 +6,107 @@
   <title>Klarr – AI‑Powered Bookkeeping for Shopify Stores</title>
   <meta name="description" content="Automated, privacy‑first bookkeeping for Shopify merchants. $49 / month beta, same‑day delivery, no cloud, no hidden fees.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="hero">
-    <h1>Bookkeeping that works for you</h1>
-    <p class="tagline">AI‑only, on‑device, 100 % private. $49 / month beta.</p>
-    <a href="#sign-up" class="cta-button">Get Early Access →</a>
-  </header>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Bookkeeping that works for you</h1>
+      <p class="subtitle">AI‑only, on‑device, 100 % private. Finish a full month in 4 hours.</p>
+      <a href="#signup" class="btn-primary">Get Early Access →</a>
+    </div>
+  </section>
 
+  <!-- Features -->
   <section class="features">
-    <h2>Why Shopify merchants love Klarr</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Zero manual work</h3>
-        <p>All receipts, payouts and fees are parsed automatically and reconciled daily.</p>
-      </div>
-      <div class="card">
-        <h3>Same‑day delivery</h3>
-        <p>We finish a full month of bookkeeping in <strong>4 hours</strong>, not weeks.</p>
-      </div>
-      <div class="card">
-        <h3>Privacy‑first</h3>
-        <p>Everything runs locally on your Google Sheet; no cloud, no data leaks.</p>
-      </div>
-      <div class="card">
-        <h3>Transparent pricing</h3>
-        <p>$49 / month during beta (first 10 merchants get a 3‑month free audit).</p>
+    <div class="container">
+      <h2>Why Shopify merchants love Klarr</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>Zero manual work</h3>
+          <p>All receipts, payouts and fees are parsed automatically and reconciled daily.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🕒</div>
+          <h3>Same‑day delivery</h3>
+          <p>We finish a full month of bookkeeping in <strong>4 hours</strong>, not weeks.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🔒</div>
+          <h3>Privacy‑first</h3>
+          <p>Everything runs locally on your Google Sheet; no cloud, no data leaks.</p>
+        </div>
+        <div class="card">
+          <div class="icon">💰</div>
+          <h3>Transparent pricing</h3>
+          <p>$49 / month during beta (first 10 merchants get a 3‑month free audit).</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="pricing" id="pricing">
-    <h2>Simple, flat pricing</h2>
-    <div class="price-card">
-      <div class="price">$49<span>/mo</span></div>
-      <ul>
-        <li>Full‑month bookkeeping</li>
-        <li>Google‑Sheets dashboard (editable, audit‑ready)</li>
-        <li>Same‑day (4 h) delivery</li>
-        <li>Free 3‑month audit for beta sign‑ups</li>
-      </ul>
-      <a href="#sign-up" class="cta-button small">Start beta</a>
+  <!-- How it works -->
+  <section class="how">
+    <div class="container">
+      <h2>How Klarr works</h2>
+      <ol class="steps">
+        <li>
+          <h3>Upload your Shopify export</h3>
+          <p>Download orders, payouts, and fees CSV from Shopify and drag them into the Klarr sheet.</p>
+        </li>
+        <li>
+          <h3>AI does the heavy lifting</h3>
+          <p>Our on‑device AI parses the data, matches payouts, calculates taxes, and flags discrepancies.</p>
+        </li>
+        <li>
+          <h3>Get your ready‑to‑file sheet</h3>
+          <p>Within 4 hours you receive a Google Sheet with clean books, audit trail, and one‑click export.</p>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <section class="signup" id="sign-up">
-    <h2>Join the beta</h2>
-    <p>We’re only taking a handful of merchants. Fill the form – we’ll be in touch within 24 h.</p>
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLScmI19tEC-vzQGP65u4cqe1pY0h--UBhg84lOItEkyKX-Sy-Q/formResponse" method="POST" target="_blank">
-      <input type="email" name="entry.365140078" placeholder="Your email address" required>
-      <button type="submit" class="cta-button small">Reserve my spot →</button>
-    </form>
+  <!-- Pricing -->
+  <section class="pricing">
+    <div class="container">
+      <h2>Simple, flat pricing</h2>
+      <div class="price-card">
+        <div class="price">$49<span>/mo</span></div>
+        <ul>
+          <li>Full‑month bookkeeping</li>
+          <li>Google‑Sheets dashboard (editable, audit‑ready)</li>
+          <li>Same‑day (4 h) delivery</li>
+          <li>Free 3‑month audit for beta sign‑ups</li>
+        </ul>
+        <a href="#signup" class="btn-primary">Start beta</a>
+      </div>
+      <p class="note">First 10 merchants lock in the $49 rate for life.</p>
+    </div>
   </section>
 
+  <!-- Signup -->
+  <section class="signup" id="signup">
+    <div class="container">
+      <h2>Join the beta</h2>
+      <p>We’re only taking a handful of merchants. Fill the form – we’ll be in touch within 24 h.</p>
+      <form action="https://docs.google.com/forms/d/e/1FAIpQLScmI19tEC-vzQGP65u4cqe1pY0h--UBhg84lOItEkyKX-Sy-Q/formResponse" method="POST" target="_blank">
+        <input type="email" name="entry.365140078" placeholder="Your email address" required>
+        <button type="submit" class="btn-primary">Reserve my spot →</button>
+      </form>
+      <p class="tiny">FREE for early users. No spam. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    <p>© 2026 Klarr – All rights reserved.</p>
+    <div class="container">
+      <p>© 2026 Klarr – All rights reserved.</p>
+    </div>
   </footer>
 </body>
 </html>
