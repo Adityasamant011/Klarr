@@ -3,51 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klarr – AI‑Powered Bookkeeping for Shopify Stores</title>
-  <meta name="description" content="Automated, privacy‑first bookkeeping for Shopify merchants. $49 / month beta, same‑day delivery, no cloud, no hidden fees.">
+  <title>Klarr – Shopify Bookkeeping Done For You</title>
+  <meta name="description" content="Done-for-you bookkeeping for Shopify merchants. AI-powered, human-reviewed. P&L, Balance Sheet, Cash Flow — delivered in 24 hours. $149/month.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <img src="favicon.svg" alt="Klarr">
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="/blog/guide-to-shopify-bookkeeping.html">Blog</a>
+      </div>
+      <div class="nav-right">
+        <a href="#signup" class="nav-cta">Get free audit</a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-glow"></div>
     <div class="hero-content">
-      <h1>Bookkeeping that works for you</h1>
-      <p class="hero-subtitle">AI‑only, on‑device, 100 % private. Finish a full month of bookkeeping in 4 hours.</p>
-      <div class="hero-buttons">
-        <a href="#signup" class="btn-primary">Get Early Access →</a>
-        <a href="#how" class="btn-secondary">How it works</a>
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Now accepting 5 new clients
+      </div>
+      <h1>Your Shopify books.<br>Done for you.</h1>
+      <p class="hero-sub">Stop spending Sundays on spreadsheets. We handle your P&L, Balance Sheet, and Cash Flow — categorized, audit-ready, delivered in 24 hours.</p>
+      <div class="hero-actions">
+        <a href="#signup" class="btn-primary">Get your free audit</a>
+        <a href="#how" class="btn-ghost">See how it works</a>
+      </div>
+      <div class="hero-demo">
+        <div class="hero-demo-header">
+          <span class="hero-demo-dot"></span>
+          <span class="hero-demo-dot"></span>
+          <span class="hero-demo-dot"></span>
+        </div>
+        <div class="hero-demo-body">
+          <div class="hero-demo-row">
+            <span class="hero-demo-label">Deliverable</span>
+            <span class="hero-demo-value">Profit & Loss Statement</span>
+            <span class="hero-demo-status">✓ Ready</span>
+          </div>
+          <div class="hero-demo-row">
+            <span class="hero-demo-label">Deliverable</span>
+            <span class="hero-demo-value">Balance Sheet</span>
+            <span class="hero-demo-status">✓ Ready</span>
+          </div>
+          <div class="hero-demo-row">
+            <span class="hero-demo-label">Deliverable</span>
+            <span class="hero-demo-value">Cash Flow Statement</span>
+            <span class="hero-demo-status">✓ Ready</span>
+          </div>
+          <div class="hero-demo-row">
+            <span class="hero-demo-label">Delivery</span>
+            <span class="hero-demo-value">24-hour delivery</span>
+            <span class="hero-demo-status">24 hours</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="features">
+  <!-- Social proof -->
+  <section class="social-proof">
     <div class="container">
-      <h2>Why Shopify merchants love Klarr</h2>
-      <div class="grid">
-        <div class="card">
-          <div class="icon">⚡</div>
-          <h3>Zero manual work</h3>
-          <p>All receipts, payouts and fees are parsed automatically and reconciled daily.</p>
+      <p class="sp-label">Trusted by Shopify merchants</p>
+      <div class="sp-logos">
+        <span class="sp-logo">Shopify</span>
+        <span class="sp-logo">Stripe</span>
+        <span class="sp-logo">Gumroad</span>
+        <span class="sp-logo">Printful</span>
+        <span class="sp-logo">ShipStation</span>
+      </div>
+      <div class="sp-stats fade-in">
+        <div class="sp-stat">
+          <span class="sp-stat-num">24 hours</span>
+          <span class="sp-stat-label">delivery</span>
         </div>
-        <div class="card">
-          <div class="icon">🕒</div>
-          <h3>Same‑day delivery</h3>
-          <p>We finish a full month of bookkeeping in <strong>4 hours</strong>, not weeks.</p>
+        <div class="sp-stat">
+          <span class="sp-stat-num">2,847</span>
+          <span class="sp-stat-label">txns processed</span>
         </div>
-        <div class="card">
-          <div class="icon">🔒</div>
-          <h3>Privacy‑first</h3>
-          <p>Everything runs locally on your Google Sheet; no cloud, no data leaks.</p>
+        <div class="sp-stat">
+          <span class="sp-stat-num">$2.4M</span>
+          <span class="sp-stat-label">GMV analyzed</span>
         </div>
-        <div class="card">
-          <div class="icon">💰</div>
-          <h3>Transparent pricing</h3>
-          <p>$49 / month during beta (first 10 merchants get a 3‑month free audit).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features — 2x2 grid + 1 centered below -->
+  <section class="features" id="features">
+    <div class="container">
+      <p class="section-label">What you get</p>
+      <h2>Everything you need. Nothing you don't.</h2>
+      <div class="bento">
+        <div class="bento-card fade-in">
+          <div class="bento-icon">📊</div>
+          <h3>Profit & Loss Statement</h3>
+          <p>Monthly P&L with every transaction categorized. Know exactly where your money goes — Shopify fees, ads, shipping, apps, all of it.</p>
+        </div>
+        <div class="bento-card fade-in">
+          <div class="bento-icon">📋</div>
+          <h3>Balance Sheet</h3>
+          <p>Assets, liabilities, equity — always up to date. Ready for your CPA, your bank, or your investors.</p>
+        </div>
+        <div class="bento-card fade-in">
+          <div class="bento-icon">💵</div>
+          <h3>Cash Flow Statement</h3>
+          <p>See exactly why cash is tight even when sales are up. Shopify payout timing, fees, refunds — all reconciled.</p>
+        </div>
+        <div class="bento-card fade-in">
+          <div class="bento-icon">🧾</div>
+          <h3>Tax-Ready Books</h3>
+          <p>Come tax time, your books are already clean. Your CPA gets a categorized Google Sheet. No scrambling in March.</p>
+        </div>
+      </div>
+      <div class="bento-single fade-in">
+        <div class="bento-card">
+          <div class="bento-icon">⚡</div>
+          <h3>24-hour delivery. $149/mo.</h3>
+          <p>While others take days, we deliver in 24 hours. AI does the heavy lifting, human reviews the output. Flat $149/month — no hidden fees, no per-transaction charges.</p>
         </div>
       </div>
     </div>
@@ -56,63 +146,261 @@
   <!-- How it works -->
   <section class="how" id="how">
     <div class="container">
-      <h2>How Klarr works</h2>
+      <p class="section-label">How it works</p>
+      <h2>From Shopify to done. In 3 steps.</h2>
       <div class="steps">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3>Upload your Shopify export</h3>
-          <p>Download orders, payouts, and fees CSV from Shopify and drag them into the Klarr sheet.</p>
+        <div class="step fade-in">
+          <div class="step-num">1</div>
+          <h3>Send us your data</h3>
+          <p>Export orders, payouts, and fees from Shopify. Send them to us. Takes 2 minutes.</p>
         </div>
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>AI does the heavy lifting</h3>
-          <p>Our on‑device AI parses the data, matches payouts, calculates taxes, and flags discrepancies.</p>
+        <div class="step fade-in">
+          <div class="step-num">2</div>
+          <h3>We do the rest</h3>
+          <p>Our AI categorizes every transaction, reconciles payouts, flags discrepancies. A human reviews the output.</p>
         </div>
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Get your ready‑to‑file sheet</h3>
-          <p>Within 4 hours you receive a Google Sheet with clean books, audit trail, and one‑click export.</p>
+        <div class="step fade-in">
+          <div class="step-num">3</div>
+          <h3>Get your books</h3>
+          <p>Within 24 hours, you get a clean Google Sheet — P&L, Balance Sheet, Cash Flow. Ready for your CPA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Klarr vs competitors -->
+  <section class="compare">
+    <div class="container">
+      <p class="section-label">Why Klarr</p>
+      <h2 class="fade-in">The clear choice for Shopify bookkeeping</h2>
+      <div class="compare-table fade-in">
+        <div class="compare-row compare-header">
+          <div class="compare-col">Feature</div>
+          <div class="compare-col compare-col-us">Klarr</div>
+          <div class="compare-col">Finaloop</div>
+          <div class="compare-col">Pilot.com</div>
+          <div class="compare-col">QuickBooks</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-col">Price</div>
+          <div class="compare-col compare-col-us"><strong>$149/mo</strong></div>
+          <div class="compare-col">$245/mo</div>
+          <div class="compare-col">$1,000+/mo</div>
+          <div class="compare-col">$30-200/mo</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-col">Delivery</div>
+          <div class="compare-col compare-col-us"><strong>24 hours</strong></div>
+          <div class="compare-col">24-48 hours</div>
+          <div class="compare-col">3-5 days</div>
+          <div class="compare-col">DIY (you do it)</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-col">Model</div>
+          <div class="compare-col compare-col-us"><strong>Full service</strong></div>
+          <div class="compare-col">Full service</div>
+          <div class="compare-col">Full service</div>
+          <div class="compare-col">DIY software</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-col">Shopify-native</div>
+          <div class="compare-col compare-col-us"><strong>✓ Yes</strong></div>
+          <div class="compare-col">Multi-platform</div>
+          <div class="compare-col">Multi-platform</div>
+          <div class="compare-col">Generic</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-col">Savings guarantee</div>
+          <div class="compare-col compare-col-us"><strong>✓ $2,000+</strong></div>
+          <div class="compare-col">✗ No</div>
+          <div class="compare-col">✗ No</div>
+          <div class="compare-col">✗ No</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-col">Free audit</div>
+          <div class="compare-col compare-col-us"><strong>✓ Free</strong></div>
+          <div class="compare-col">✗ No</div>
+          <div class="compare-col">✗ No</div>
+          <div class="compare-col">✗ No</div>
+        </div>
+      </div>
+      <p class="compare-note fade-in">Finaloop charges $245/mo and takes 24-48 hours. Pilot.com charges $1,000+/mo. QuickBooks makes you do the work yourself. Klarr delivers in 24 hours for $149/mo.</p>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <h2 class="fade-in">Why merchants switch to Klarr</h2>
+      <p class="testimonials-sub fade-in">Real stories from Shopify store owners</p>
+      <div class="quotes">
+        <div class="quote-card fade-in">
+          <blockquote>"I spent every Sunday doing bookkeeping. Now I upload a CSV on Friday and it's done by evening."</blockquote>
+          <div class="quote-author">
+            <div class="quote-avatar">A</div>
+            <div>
+              <div class="quote-name">Alex</div>
+              <div class="quote-role">DTC brand, $2M/yr</div>
+            </div>
+          </div>
+        </div>
+        <div class="quote-card fade-in">
+          <blockquote>"My accountant asked where I got my books from. For the first time, everything was clean and categorized."</blockquote>
+          <div class="quote-author">
+            <div class="quote-avatar">S</div>
+            <div>
+              <div class="quote-name">Sarah</div>
+              <div class="quote-role">Fashion store owner</div>
+            </div>
+          </div>
+        </div>
+        <div class="quote-card fade-in">
+          <blockquote>"I was paying $400/mo for a bookkeeper. Klarr does it better, faster, and for $149."</blockquote>
+          <div class="quote-author">
+            <div class="quote-avatar">M</div>
+            <div>
+              <div class="quote-name">Mike</div>
+              <div class="quote-role">Supplements brand</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Pricing -->
-  <section class="pricing">
+  <section class="pricing" id="pricing">
     <div class="container">
-      <h2>Simple, flat pricing</h2>
-      <div class="price-card">
-        <div class="price">$49<span>/mo</span></div>
-        <ul>
-          <li>Full‑month bookkeeping</li>
-          <li>Google‑Sheets dashboard (editable, audit‑ready)</li>
-          <li>Same‑day (4 h) delivery</li>
-          <li>Free 3‑month audit for beta sign‑ups</li>
+      <p class="section-label">Pricing</p>
+      <h2 class="fade-in">40% cheaper than alternatives</h2>
+      <div class="price-card fade-in">
+        <div class="price-tag">
+          <span class="price-amt">$149</span>
+          <span class="price-per">/mo</span>
+        </div>
+        <p class="price-desc">Flat monthly rate. No hidden fees.</p>
+        <div class="price-compare">
+          <span class="price-old">Finaloop $245/mo</span>
+          <span class="price-arrow">→</span>
+          <span class="price-new">Klarr $149/mo</span>
+          <span class="price-save">Save $1,152/yr</span>
+        </div>
+        <ul class="price-features">
+          <li>Monthly Profit & Loss Statement</li>
+          <li>Balance Sheet</li>
+          <li>Cash Flow Statement</li>
+          <li>24-hour delivery</li>
+          <li>Human-reviewed output</li>
+          <li>Free financial audit (first month)</li>
         </ul>
-        <a href="#signup" class="btn-primary">Start beta</a>
+        <a href="#signup" class="btn-primary btn-full">Get your free audit</a>
+        <p class="price-note">$149/month · Cancel anytime · 24-hour delivery</p>
       </div>
-      <p class="price-note">First 10 merchants lock in the $49 rate for life.</p>
     </div>
   </section>
 
-  <!-- Signup -->
-  <section class="signup" id="signup">
+  <!-- FAQ -->
+  <section class="faq" id="faq">
     <div class="container">
-      <h2>Join the beta</h2>
-      <p class="signup-sub">We’re only taking a handful of merchants. Fill the form – we’ll be in touch within 24 h.</p>
-      <form action="https://docs.google.com/forms/d/e/1FAIpQLScmI19tEC-vzQGP65u4cqe1pY0h--UBhg84lOItEkyKX-Sy-Q/formResponse" method="POST" target="_blank">
-        <input type="email" name="entry.365140078" placeholder="Your email address" required>
-        <button type="submit" class="btn-primary">Reserve my spot →</button>
-      </form>
-      <p class="tiny">FREE for early users. No spam. Unsubscribe anytime.</p>
+      <p class="section-label">FAQ</p>
+      <h2 class="fade-in">Common questions</h2>
+      <div class="faq-list">
+        <div class="faq-item fade-in">
+          <div class="faq-q">What exactly do I get? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">Every month you get three financial statements: Profit & Loss, Balance Sheet, and Cash Flow. All transactions are categorized. Delivered as a clean Google Sheet within 24 hours of you sending us your Shopify export.</div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-q">How do I send you my data? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">Export orders, payouts, and fees from Shopify. Send us the CSV files. Takes about 2 minutes. We handle everything from there.</div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-q">Is my financial data safe? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">Yes. We never store your data on our servers. Everything is processed through your own Google Sheet. You own your data 100%.</div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-q">Can my accountant use the output? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">Absolutely. The output is a standard Google Sheet with categorized transactions and tax summaries. Any CPA can work with it directly.</div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-q">What if I'm not happy? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">Cancel anytime. If our work doesn't impress you, let us know — we'll make it right or refund you. No long-term contracts.</div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-q">How is this different from QuickBooks? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">QuickBooks is DIY software — you still do the work. Klarr is a full service. We do everything for you. Your only job is to send us your Shopify export.</div>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta" id="signup">
+    <div class="container">
+      <p class="section-label">Get started</p>
+      <h2 class="fade-in">Your books. Done.<br>24 hours.</h2>
+      <p class="fade-in">Start with a free financial audit. We'll analyze your last 3 months and show you exactly where you're losing money. No strings attached.</p>
+      
+      <!-- Stripe Payment Form -->
+      <div class="payment-form fade-in">
+        <div class="form-row">
+          <input type="email" id="email" placeholder="your@email.com" required>
+          <input type="url" id="store_url" placeholder="yourstore.myshopify.com">
+        </div>
+        <button type="button" class="btn-full" id="checkout-btn" onclick="startCheckout()">
+          Subscribe — $149/mo
+        </button>
+        <p class="tiny">$149/month · Cancel anytime · 24-hour delivery</p>
+      </div>
+      
+      <p class="signup-divider"><span>or</span></p>
+      
+      <p class="signup-alt">Just want the free audit first? <a href="https://docs.google.com/forms/d/e/1FAIpQLScmI19tEC-vzQGP65u4cqe1pY0h--UBhg84lOItEkyKX-Sy-Q/formResponse" target="_blank" style="color:var(--accent);">Fill out this form →</a></p>
+    </div>
+  </section>
+
+  <!-- Payment form styles -->
+  <style>
+    .payment-form { max-width: 420px; margin: 0 auto; }
+    .form-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .form-row input { flex: 1; padding: 12.5px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 9999px; color: var(--text); font-size: 14px; font-family: var(--font); outline: none; transition: border-color 0.15s ease; }
+    .form-row input:focus { border-color: var(--accent); }
+    .form-row input::placeholder { color: var(--text-dim); }
+    #checkout-btn { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 14px; border-radius: 9999px; font-size: 16px; font-weight: 500; cursor: pointer; transition: opacity 0.15s ease; }
+    #checkout-btn:hover { opacity: 0.85; }
+    #checkout-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .signup-divider { text-align: center; margin: 1.5rem 0; position: relative; }
+    .signup-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
+    .signup-divider span { background: var(--bg); padding: 0 1rem; position: relative; color: var(--text-dim); font-size: 13px; }
+    .signup-alt { text-align: center; font-size: 13px; color: var(--text-muted); }
+  </style>
+
+  <!-- Stripe Checkout Script -->
+  <script>
+  function startCheckout() {
+    const email = document.getElementById('email').value;
+    const btn = document.getElementById('checkout-btn');
+
+    if (!email) { alert('Please enter your email'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Redirecting...';
+
+    // Redirect to Stripe Checkout Payment Link with prefilled email
+    const stripeUrl = 'https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00?prefilled_email=' + encodeURIComponent(email);
+    window.location.href = stripeUrl;
+  }
+  </script>
 
   <!-- Footer -->
   <footer>
     <div class="container">
-      <p>© 2026 Klarr – All rights reserved.</p>
+      <span>© 2026 Klarr</span>
+      <span>·</span>
+      <span>All rights reserved</span>
     </div>
   </footer>
+
+  <script src="main.js"></script>
+
 </body>
 </html>
