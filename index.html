@@ -344,7 +344,7 @@
       <div class="payment-form fade-in">
         <div class="form-row">
           <input type="email" id="email" placeholder="your@email.com" required>
-          <input type="url" id="store_url" placeholder="yourstore.myshopify.com">
+          <input type="url" id="store_url" placeholder="yourstore.myshopify.com" required>
         </div>
         <button type="button" class="btn-full" id="checkout-btn" onclick="startCheckout()">
           Subscribe — $149/mo
@@ -377,13 +377,35 @@
   <!-- Stripe Checkout Script -->
   <script>
   function startCheckout() {
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
+    const storeUrl = document.getElementById('store_url').value.trim();
     const btn = document.getElementById('checkout-btn');
 
     if (!email) { alert('Please enter your email'); return; }
+    if (!storeUrl) { alert('Please enter your Shopify store URL'); return; }
+
+    // Basic URL validation
+    if (!storeUrl.includes('.myshopify.com') && !storeUrl.includes('http')) {
+      alert('Please enter a valid Shopify store URL (e.g., yourstore.myshopify.com)');
+      return;
+    }
 
     btn.disabled = true;
     btn.textContent = 'Redirecting...';
+
+    // Save customer data to our backend, then redirect to Stripe
+    const customerData = {
+      email: email,
+      store_url: storeUrl,
+      timestamp: new Date().toISOString()
+    };
+
+    // Save to backend (fire and forget — Stripe payment is the source of truth)
+    fetch('https://klarr.space/api/customer', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(customerData)
+    }).catch(() => {}); // Ignore errors — Stripe webhook will catch it anyway
 
     // Redirect to Stripe Checkout Payment Link with prefilled email
     const stripeUrl = 'https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00?prefilled_email=' + encodeURIComponent(email);
