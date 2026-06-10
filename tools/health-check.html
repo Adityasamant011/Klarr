@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Shopify Financial Health Check | Klarr</title>
+  <meta name="description" content="Find out how much money your Shopify store is losing to hidden fees, bad bookkeeping, and miscalculated margins. Free 2-minute assessment.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; }
+    .container { max-width: 680px; margin: 0 auto; padding: 60px 24px 120px; }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 48px; }
+    .header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: #fff; letter-spacing: -0.02em; }
+    .header p { font-size: 1.15rem; color: #888; max-width: 520px; margin: 0 auto 8px; line-height: 1.6; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(76,175,80,0.1); border: 1px solid rgba(76,175,80,0.3); border-radius: 100px; padding: 6px 16px; font-size: 0.85rem; color: #4CAF50; margin-bottom: 24px; }
+
+    /* Steps indicator */
+    .steps { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: all 0.3s; }
+    .step-dot.active { background: #4CAF50; width: 24px; border-radius: 4px; }
+
+    /* Cards */
+    .card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 40px; margin-bottom: 24px; }
+    .card h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; color: #fff; }
+    .card .subtitle { color: #888; margin-bottom: 32px; font-size: 0.95rem; }
+
+    /* Form elements */
+    .field { margin-bottom: 24px; }
+    .field label { display: block; font-size: 0.85rem; font-weight: 500; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .field input, .field select { width: 100%; padding: 14px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 10px; color: #fff; font-size: 1rem; font-family: inherit; transition: border-color 0.2s; }
+    .field input:focus, .field select:focus { outline: none; border-color: #4CAF50; }
+    .field input::placeholder { color: #555; }
+    .field select option { background: #1a1a1a; }
+
+    /* Range slider */
+    .range-wrap { padding: 8px 0; }
+    .range-wrap input[type="range"] { width: 100%; -webkit-appearance: none; height: 6px; background: #333; border-radius: 3px; outline: none; }
+    .range-wrap input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #4CAF50; border-radius: 50%; cursor: pointer; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-top: 8px; }
+    .range-value { text-align: center; font-size: 1.5rem; font-weight: 700; color: #4CAF50; margin-bottom: 4px; }
+
+    /* Options grid */
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .option { padding: 16px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .option:hover { border-color: #555; }
+    .option.selected { border-color: #4CAF50; background: rgba(76,175,80,0.08); }
+    .option .emoji { font-size: 1.5rem; margin-bottom: 8px; }
+    .option .label { font-size: 0.9rem; font-weight: 500; color: #ddd; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px 32px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #4CAF50; color: #000; }
+    .btn-primary:hover { background: #5cbf60; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: #888; border: 1px solid #333; }
+    .btn-secondary:hover { border-color: #555; color: #ddd; }
+    .btn-row { display: flex; gap: 12px; margin-top: 32px; }
+    .btn-row .btn { flex: 1; }
+
+    /* Results */
+    .score-circle { width: 160px; height: 160px; border-radius: 50%; border: 8px solid #333; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; position: relative; }
+    .score-circle .number { font-size: 3rem; font-weight: 700; color: #fff; }
+    .score-circle .label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+    .score-circle.good { border-color: #4CAF50; }
+    .score-circle.warn { border-color: #ff9800; }
+    .score-circle.bad { border-color: #e74c3c; }
+
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    .result-item { background: #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; }
+    .result-item .value { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+    .result-item .label { font-size: 0.8rem; color: #888; }
+    .result-item .value.bad { color: #e74c3c; }
+    .result-item .value.warn { color: #ff9800; }
+    .result-item .value.good { color: #4CAF50; }
+
+    .insight { background: #1a1a1a; border-left: 4px solid #4CAF50; border-radius: 0 12px 12px 0; padding: 20px; margin: 16px 0; }
+    .insight h3 { font-size: 1rem; font-weight: 600; color: #4CAF50; margin-bottom: 8px; }
+    .insight p { color: #aaa; line-height: 1.7; font-size: 0.95rem; }
+    .insight.warning { border-left-color: #ff9800; }
+    .insight.warning h3 { color: #ff9800; }
+    .insight.danger { border-left-color: #e74c3c; }
+    .insight.danger h3 { color: #e74c3c; }
+
+    /* CTA box */
+    .cta-box { background: linear-gradient(135deg, #0a1a0a 0%, #0a0a0a 100%); border: 2px solid #4CAF50; border-radius: 16px; padding: 40px; text-align: center; margin-top: 32px; }
+    .cta-box h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .cta-box p { color: #999; margin-bottom: 24px; line-height: 1.6; }
+    .cta-box .price { font-size: 2rem; font-weight: 700; color: #4CAF50; margin-bottom: 4px; }
+    .cta-box .price-label { font-size: 0.85rem; color: #888; margin-bottom: 24px; }
+
+    /* Hidden */
+    .hidden { display: none; }
+
+    /* Nav */
+    .nav { padding: 20px 0; margin-bottom: 40px; }
+    .nav a { display: inline-flex; align-items: center; gap: 8px; color: #888; text-decoration: none; font-size: 0.9rem; }
+    .nav a:hover { color: #4CAF50; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .options { grid-template-columns: 1fr; }
+      .result-grid { grid-template-columns: 1fr; }
+      .card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- STEP 1: Landing -->
+  <div id="step1">
+    <div class="header">
+      <div class="badge">🔍 Free — No Signup Required</div>
+      <h1>Shopify Financial Health Check</h1>
+      <p>Find out how much money your store is losing to hidden fees, bad bookkeeping, and miscalculated margins.</p>
+      <p style="color: #666; font-size: 0.9rem;">Takes 2 minutes. Get your free report instantly.</p>
+    </div>
+
+    <div class="card">
+      <h2>Let's check your store</h2>
+      <p class="subtitle">Answer 6 quick questions about your Shopify business.</p>
+
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="q_name" placeholder="First name">
+      </div>
+      <div class="field">
+        <label>Your email</label>
+        <input type="email" id="q_email" placeholder="you@yourstore.com">
+        <p style="font-size: 0.8rem; color: #666; margin-top: 6px;">We'll send your full report here. No spam, ever.</p>
+      </div>
+      <div class="field">
+        <label>Shopify store URL</label>
+        <input type="text" id="q_store" placeholder="yourstore.com">
+      </div>
+
+      <button class="btn btn-primary" onclick="goStep(2)">Start the check →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Revenue -->
+  <div id="step2" class="hidden">
+    <div class="steps">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <div class="card">
+      <h2>What's your monthly revenue?</h2>
+      <p class="subtitle">Your total sales before any fees or refunds.</p>
+
+      <div class="range-wrap">
+        <div class="range-value" id="revValue">$25,000</div>
+        <input type="range" id="q_revenue" min="5000" max="500000" step="5000" value="25000" oninput="updateRange('revValue', this.value, '$')">
+        <div class="range-labels">
+          <span>$5K</span>
+          <span>$500K</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goStep(3)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Product category -->
+  <div id="step3" class="hidden">
+    <div class="steps">
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <div class="card">
+      <h2>What do you sell?</h2>
+      <p class="subtitle">This helps us calculate your realistic margins.</p>
+
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 'q_category', 'skincare')">
+          <div class="emoji">🧴</div>
+          <div class="label">Skincare / Beauty</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_category', 'supplements')">
+          <div class="emoji">💊</div>
+          <div class="label">Supplements</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_category', 'apparel')">
+          <div class="emoji">👕</div>
+          <div class="label">Apparel / Fashion</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_category', 'food')">
+          <div class="emoji">🍫</div>
+          <div class="label">Food & Beverage</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_category', 'home')">
+          <div class="emoji">🏠</div>
+          <div class="label">Home Goods</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_category', 'other')">
+          <div class="emoji">📦</div>
+          <div class="label">Other</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goStep(4)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Product cost -->
+  <div id="step4" class="hidden">
+    <div class="steps">
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <div class="card">
+      <h2>What's your product cost?</h2>
+      <p class="subtitle">How much does it cost to make/buy one unit (before shipping & packaging).</p>
+
+      <div class="field">
+        <label>Average selling price per unit</label>
+        <input type="number" id="q_price" placeholder="e.g. 45" min="1">
+      </div>
+      <div class="field">
+        <label>Average product cost per unit</label>
+        <input type="number" id="q_cogs" placeholder="e.g. 12" min="1">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(3)">← Back</button>
+        <button class="btn btn-primary" onclick="goStep(5)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Ad spend -->
+  <div id="step5" class="hidden">
+    <div class="steps">
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <div class="card">
+      <h2>What's your monthly ad spend?</h2>
+      <p class="subtitle">Meta, Google, TikTok, influencers — all of it.</p>
+
+      <div class="range-wrap">
+        <div class="range-value" id="adValue">$5,000</div>
+        <input type="range" id="q_adspend" min="0" max="100000" step="1000" value="5000" oninput="updateRange('adValue', this.value, '$')">
+        <div class="range-labels">
+          <span>$0</span>
+          <span>$100K</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(4)">← Back</button>
+        <button class="btn btn-primary" onclick="goStep(6)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Bookkeeping -->
+  <div id="step6" class="hidden">
+    <div class="steps">
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <div class="card">
+      <h2>How do you handle bookkeeping?</h2>
+      <p class="subtitle">Be honest — most founders are behind on this.</p>
+
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 'q_bookkeeping', 'diy')">
+          <div class="emoji">📊</div>
+          <div class="label">I do it myself (spreadsheet)</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_bookkeeping', 'software')">
+          <div class="emoji">💻</div>
+          <div class="label">QuickBooks / Xero</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_bookkeeping', 'accountant')">
+          <div class="emoji">👨‍💼</div>
+          <div class="label">I have an accountant</div>
+        </div>
+        <div class="option" onclick="selectOption(this, 'q_bookkeeping', 'nothing')">
+          <div class="emoji">😅</div>
+          <div class="label">Honestly? Nothing</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(5)">← Back</button>
+        <button class="btn btn-primary" onclick="calculate()">Get my results →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="hidden">
+    <div class="steps">
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+    </div>
+
+    <div class="card" style="text-align: center;">
+      <h2>Your Financial Health Score</h2>
+      <p class="subtitle" id="resultName">Here's how <span id="resName"></span> is doing</p>
+
+      <div class="score-circle" id="scoreCircle">
+        <div class="number" id="healthScore">--</div>
+        <div class="label">out of 100</div>
+      </div>
+
+      <p id="scoreSummary" style="color: #aaa; margin-bottom: 24px; line-height: 1.6;"></p>
+    </div>
+
+    <div class="card">
+      <h2>Your Numbers</h2>
+      <p class="subtitle">Here's what we found based on your answers</p>
+
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="value" id="resGrossMargin">--</div>
+          <div class="label">Gross Margin</div>
+        </div>
+        <div class="result-item">
+          <div class="value" id="resNetMargin">--</div>
+          <div class="label">Est. Net Margin</div>
+        </div>
+        <div class="result-item">
+          <div class="value bad" id="resHiddenFees">--</div>
+          <div class="label">Hidden Fees / Mo</div>
+        </div>
+        <div class="result-item">
+          <div class="value" id="resAnnualLoss">--</div>
+          <div class="label">Est. Annual Leak</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="insights"></div>
+
+    <div class="cta-box">
+      <h2>Want us to fix this for you?</h2>
+      <p>We'll do a full financial audit of your Shopify store — P&L, fee analysis, margin breakdown — and deliver it in 24 hours. Free. No obligation.</p>
+      <div class="price">$0</div>
+      <div class="price-label">Free financial audit · No credit card · No sales call</div>
+      <a href="/#cta" class="btn btn-primary" style="text-decoration: none; max-width: 320px;">Claim My Free Audit →</a>
+      <p style="font-size: 0.8rem; color: #666; margin-top: 16px;">If you love the audit, ongoing bookkeeping is $149/mo. Cancel anytime.</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 32px;">
+      <button class="btn btn-secondary" onclick="resetForm()">← Start over</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let answers = {};
+
+function goStep(n) {
+  document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById('results').classList.add('hidden');
+  if (n <= 6) document.getElementById('step' + n).classList.remove('hidden');
+}
+
+function updateRange(id, val, prefix) {
+  const v = parseInt(val).toLocaleString();
+  document.getElementById(id).textContent = prefix + v;
+}
+
+function selectOption(el, key, val) {
+  el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[key] = val;
+}
+
+function calculate() {
+  // Gather all answers
+  const name = document.getElementById('q_name').value || 'there';
+  const email = document.getElementById('q_email').value || '';
+  const store = document.getElementById('q_store').value || 'your store';
+  const revenue = parseInt(document.getElementById('q_revenue').value) || 25000;
+  const category = answers.q_category || 'other';
+  const price = parseFloat(document.getElementById('q_price').value) || 45;
+  const cogs = parseFloat(document.getElementById('q_cogs').value) || 12;
+  const adSpend = parseInt(document.getElementById('q_adspend').value) || 5000;
+  const bookkeeping = answers.q_bookkeeping || 'diy';
+
+  // Category-specific assumptions
+  const categoryData = {
+    skincare:    { returnRate: 0.04, processingRate: 0.032, appFees: 350, fulfillmentCost: 4.5, shippingCost: 5.5, packagingCost: 1.5 },
+    supplements: { returnRate: 0.03, processingRate: 0.032, appFees: 300, fulfillmentCost: 4.0, shippingCost: 5.0, packagingCost: 1.2 },
+    apparel:     { returnRate: 0.22, processingRate: 0.032, appFees: 400, fulfillmentCost: 4.5, shippingCost: 6.0, packagingCost: 1.5 },
+    food:        { returnRate: 0.03, processingRate: 0.035, appFees: 300, fulfillmentCost: 5.0, shippingCost: 7.0, packagingCost: 2.0 },
+    home:        { returnRate: 0.07, processingRate: 0.032, appFees: 350, fulfillmentCost: 5.0, shippingCost: 6.5, packagingCost: 1.8 },
+    other:       { returnRate: 0.05, processingRate: 0.032, appFees: 350, fulfillmentCost: 4.5, shippingCost: 5.5, packagingCost: 1.5 }
+  };
+
+  const cat = categoryData[category] || categoryData.other;
+  const monthlyOrders = Math.round(revenue / price);
+
+  // Calculations
+  const grossProfit = (price - cogs) * monthlyOrders;
+  const grossMargin = ((price - cogs) / price * 100).toFixed(1);
+
+  const processingFees = revenue * cat.processingRate;
+  const appFees = cat.appFees;
+  const fulfillmentCost = monthlyOrders * cat.fulfillmentCost;
+  const shippingCost = monthlyOrders * cat.shippingCost;
+  const packagingCost = monthlyOrders * cat.packagingCost;
+  const returnCost = revenue * cat.returnRate * 0.5; // 50% of returned value is lost
+  const chargebackFees = monthlyOrders * 0.005 * 20; // 0.5% chargeback rate, $20 avg fee
+  const fxCost = revenue * 0.15 * 0.015; // 15% international, 1.5% FX spread
+
+  const totalHiddenFees = processingFees + appFees + returnCost + chargebackFees + fxCost;
+  const totalCOGS = (cogs * monthlyOrders) + fulfillmentCost + shippingCost + packagingCost;
+  const netProfit = revenue - totalCOGS - totalHiddenFees - adSpend - 39; // $39 Shopify plan
+  const netMargin = (netProfit / revenue * 100).toFixed(1);
+  const annualLeak = totalHiddenFees * 12;
+
+  // Health score (0-100)
+  let score = 50;
+  if (parseFloat(netMargin) > 20) score += 20;
+  else if (parseFloat(netMargin) > 10) score += 10;
+  else if (parseFloat(netMargin) > 0) score += 0;
+  else score -= 20;
+
+  if (bookkeeping === 'accountant') score += 15;
+  else if (bookkeeping === 'software') score += 10;
+  else if (bookkeeping === 'diy') score += 0;
+  else score -= 10;
+
+  if (totalHiddenFees < revenue * 0.05) score += 10;
+  else if (totalHiddenFees < revenue * 0.08) score += 5;
+  else score -= 5;
+
+  if (adSpend / revenue < 0.25) score += 10;
+  else if (adSpend / revenue < 0.35) score += 5;
+  else score -= 5;
+
+  score = Math.max(0, Math.min(100, score));
+
+  // Display results
+  document.getElementById('resName').textContent = name.split(' ')[0];
+  document.getElementById('healthScore').textContent = score;
+  document.getElementById('resGrossMargin').textContent = grossMargin + '%';
+  document.getElementById('resNetMargin').textContent = (netMargin > 0 ? netMargin : '0') + '%';
+  document.getElementById('resHiddenFees').textContent = '$' + Math.round(totalHiddenFees).toLocaleString() + '/mo';
+  document.getElementById('resAnnualLoss').textContent = '$' + Math.round(annualLeak).toLocaleString();
+
+  // Score color
+  const circle = document.getElementById('scoreCircle');
+  circle.className = 'score-circle ' + (score >= 70 ? 'good' : score >= 40 ? 'warn' : 'bad');
+
+  // Score summary
+  let summary = '';
+  if (score >= 70) summary = 'Your finances are in decent shape, but there are still hidden costs eating into your margins. The biggest opportunity: reducing hidden fees and tightening up your bookkeeping process.';
+  else if (score >= 40) summary = 'There are significant leaks in your financials. You\'re likely losing $' + Math.round(totalHiddenFees).toLocaleString()+'/month to fees and costs you\'re not tracking. Your real margin is probably ' + (parseFloat(grossMargin) - parseFloat(netMargin)).toFixed(1) + ' points lower than you think.';
+  else summary = 'Your store has serious financial leaks. Between hidden fees, untracked costs, and bookkeeping gaps, you could be losing $' + Math.round(annualLeak).toLocaleString()+'/year. The good news: all of this is fixable.';
+  document.getElementById('scoreSummary').textContent = summary;
+
+  // Insights
+  let insights = '';
+
+  if (parseFloat(netMargin) < parseFloat(grossMargin) - 15) {
+    insights += `<div class="insight danger"><h3>⚠️ Your real margin is much lower than you think</h3><p>Your gross margin is ${grossMargin}%, but after all hidden fees, your net margin is ${(netMargin > 0 ? netMargin : '0')}%. That's a ${(parseFloat(grossMargin) - parseFloat(netMargin)).toFixed(1)}-point gap. Most founders only track product cost and miss everything else.</p></div>`;
+  }
+
+  if (totalHiddenFees > revenue * 0.06) {
+    insights += `<div class="insight warning"><h3>💸 You're losing $'+Math.round(totalHiddenFees).toLocaleString()+'/month to hidden fees</h3><p>Payment processing ($${Math.round(processingFees).toLocaleString()}), app fees ($${Math.round(appFees).toLocaleString()}), returns ($${Math.round(returnCost).toLocaleString()}), chargebacks ($${Math.round(chargebackFees).toLocaleString()}), and currency conversion ($${Math.round(fxCost).toLocaleString()}). These are real costs that need to be tracked.</p></div>`;
+  }
+
+  if (bookkeeping === 'nothing' || bookkeeping === 'diy') {
+    insights += `<div class="insight"><h3>📊 Your bookkeeping needs attention</h3><p>${bookkeeping === 'nothing' ? 'You\'re not tracking your finances at all. That means you don\'t know your real margin, your tax bill might be wrong, and you\'re probably leaving money on the table.' : 'DIY bookkeeping works at small scale, but as you grow, the complexity multiplies. Payment processors, app fees, returns, multi-currency — it gets messy fast.'} A proper bookkeeping system would pay for itself in tax savings alone.</p></div>`;
+  }
+
+  if (adSpend / revenue > 0.3) {
+    insights += `<div class="insight warning"><h3>📢 Your ad spend is eating your margins</h3><p>You're spending ${(adSpend/revenue*100).toFixed(0)}% of revenue on ads. That's ${adSpend/revenue > 0.35 ? 'very high' : 'on the higher side'}. Make sure you're tracking true ROAS (including processing fees and returns) not just platform-reported ROAS.</p></div>`;
+  }
+
+  if (category === 'apparel' && cat.returnRate > 0.15) {
+    insights += `<div class="insight"><h3>👕 Returns are your biggest hidden cost</h3><p>Apparel brands lose 20-30% of orders to returns. Each return costs $10-15 in shipping + restocking. That's $${Math.round(returnCost).toLocaleString()}/month you need to account for. Make sure your books reflect this.</p></div>`;
+  }
+
+  document.getElementById('insights').innerHTML = insights;
+
+  // Save lead data (send to a simple endpoint or store locally)
+  const leadData = { name, email, store, revenue, category, netMargin, healthScore: score, createdAt: new Date().toISOString() };
+  console.log('Lead captured:', leadData);
+  
+  // Store in localStorage as backup
+  try {
+    const leads = JSON.parse(localStorage.getItem('klarr_leads') || '[]');
+    leads.push(leadData);
+    localStorage.setItem('klarr_leads', JSON.stringify(leads));
+  } catch(e) {}
+
+  // Show results
+  document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById('results').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  answers = {};
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('input').forEach(i => i.value = '');
+  document.getElementById('q_revenue').value = 25000;
+  document.getElementById('q_adspend').value = 5000;
+  document.getElementById('revValue').textContent = '$25,000';
+  document.getElementById('adValue').textContent = '$5,000';
+  goStep(1);
+}
+</script>
+
+</body>
+</html>
