@@ -1,224 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Most Shopify Founders Don't Know Their Real Profit Margin. Here's Why. | Klarr Blog</title>
-  <meta name="description" content="Your Shopify dashboard says you made $50K. Your bank says $47K. Your accountant says your margin is 40%. The real number is probably 25%. Here's why — and how to fix it.">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=8">
-  <style>
-    .blog-post { max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
-    .blog-post h1 { font-size: 2.2rem; font-weight: 600; line-height: 1.2; margin-bottom: 12px; color: #fff; }
-    .blog-post .meta { color: #666; font-size: 0.9rem; margin-bottom: 40px; }
-    .blog-post h2 { font-size: 1.4rem; font-weight: 600; margin-top: 48px; margin-bottom: 16px; color: #fff; }
-    .blog-post h3 { font-size: 1.15rem; font-weight: 600; margin-top: 32px; margin-bottom: 12px; color: #ddd; }
-    .blog-post p { color: #aaa; line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; }
-    .blog-post ul, .blog-post ol { color: #aaa; line-height: 1.8; margin-bottom: 20px; padding-left: 24px; }
-    .blog-post li { margin-bottom: 8px; }
-    .blog-post strong { color: #ddd; }
-    .blog-post .highlight { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px 24px; margin: 32px 0; }
-    .blog-post .highlight p { margin-bottom: 0; }
-    .blog-post .cta-box { background: #0a0a0a; border: 1px solid #4CAF50; border-radius: 12px; padding: 32px; margin: 48px 0; text-align: center; }
-    .blog-post .cta-box h3 { color: #4CAF50; font-size: 1.3rem; margin-bottom: 12px; }
-    .blog-post .cta-box p { color: #999; margin-bottom: 20px; }
-    .blog-post .cta-box .cta-btn { display: inline-block; background: #4CAF50; color: #000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 1rem; }
-    .blog-back { display: inline-block; color: #666; text-decoration: none; margin-bottom: 32px; font-size: 0.9rem; }
-    .blog-back:hover { color: #4CAF50; }
-    .blog-toc { background: #111; border: 1px solid #222; border-radius: 8px; padding: 20px 24px; margin-bottom: 40px; }
-    .blog-toc h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 12px; }
-    .blog-toc ol { margin-bottom: 0; padding-left: 20px; }
-    .blog-toc a { color: #888; text-decoration: none; font-size: 0.95rem; }
-    .blog-toc a:hover { color: #4CAF50; }
-    .blog-toc li { margin-bottom: 6px; }
-    .margin-calc { background: #111; border: 1px solid #333; border-radius: 8px; padding: 24px; margin: 24px 0; }
-    .margin-calc .line { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #222; }
-    .margin-calc .line:last-child { border-bottom: none; }
-    .margin-calc .label { color: #888; }
-    .margin-calc .value { color: #ddd; font-weight: 500; }
-    .margin-calc .total { color: #4CAF50; font-weight: 600; }
-    .margin-calc .bad { color: #e74c3c; }
-  </style>
-</head>
-<body>
+---
+title: "Shopify Profit Margin Calculator: How to Calculate Your Real Margin | Klarr"
+description: "Learn how to calculate your real profit margin on Shopify. Most founders overestimate by 15+ points. Free calculator included."
+keywords: "Shopify profit margin, Shopify margin calculator, DTC profit margin, Shopify financial metrics"
+---
 
-  <nav>
-    <div class="nav-inner">
-      <a href="/" class="logo">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#4CAF50"/><text x="5" y="20" font-family="Inter" font-weight="600" font-size="16" fill="#000">K</text></svg>
-        <span>Klarr</span>
-      </a>
-      <div class="nav-links">
-        <a href="/#how">How it works</a>
-        <a href="/#pricing">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="/#cta" class="cta-nav">Get started</a>
-      </div>
-    </div>
-  </nav>
+# Shopify Profit Margin Calculator: How to Calculate Your Real Profit Margin
 
-  <div class="blog-post">
-    <a href="/blog/" class="blog-back">← Back to blog</a>
-    <h1>Most Shopify Founders Don't Know Their Real Profit Margin. Here's Why.</h1>
-    <div class="meta">June 10, 2026 · 10 min read · Finance</div>
+*Last updated: June 2026*
 
-    <div class="blog-toc">
-      <h3>In this article</h3>
-      <ol>
-        <li><a href="#the-problem">The $50K problem</a></li>
-        <li><a href="#what-shopify-shows">What Shopify shows you (and why it's misleading)</a></li>
-        <li><a href="#real-margin">How to calculate your real profit margin</a></li>
-        <li><a href="#hidden-costs">7 hidden costs that destroy DTC margins</a></li>
-        <li><a href="#benchmarks">DTC margin benchmarks by category</a></li>
-        <li><a href="#fix-it">How to fix your margin calculation</a></li>
-      </ol>
-    </div>
+Most Shopify founders think they know their profit margin. They look at their Shopify dashboard, see $50,000 in revenue, subtract COGS, and think they have a 60% margin.
 
-    <h2 id="the-problem">The $50K Problem</h2>
+They're wrong. By a lot.
 
-    <p>Let me tell you about a conversation I keep having with Shopify founders.</p>
+## The Problem: Shopify Shows You the Wrong Numbers
 
-    <p>They tell me: "We did $50,000 in revenue last month. Our margins are great — around 40%."</p>
+Your Shopify dashboard shows net payouts, not revenue. The gap between these two numbers is where most founders lose track of their real profitability.
 
-    <p>I ask: "What's in that 40%?"</p>
+Here's what a typical month looks like:
 
-    <p>They say: "Revenue minus product cost. We buy the product for $12, sell for $45. That's 73% gross margin. After ad spend, we're at 40% net."</p>
+| Metric | Amount |
+|--------|--------|
+| Gross Sales | $50,000 |
+| Shopify Transaction Fees | -$1,450 |
+| Payment Processing | -$1,200 |
+| Refunds | -$800 |
+| Chargebacks | -$350 |
+| App Fees | -$200 |
+| **Net Payout** | **$46,000** |
+| | |
+| COGS | -$20,000 |
+| Ad Spend | -$10,000 |
+| **Real Profit** | **$15,400** |
+| **Real Margin** | **30.8%** |
 
-    <p>I say: "What about Shopify fees? Payment processing? Packaging? Fulfillment? Returns? Chargebacks? App fees? Currency conversion?"</p>
+Most founders would calculate their margin as:
+```
+($50,000 - $20,000 COGS) / $50,000 = 60% margin
+```
 
-    <p>Silence.</p>
+But the REAL margin is:
+```
+($50,000 - $20,000 COGS - $3,800 Fees - $800 Refunds - $10,000 Ads) / $50,000 = 30.8% margin
+```
 
-    <p>This is the most common financial mistake in DTC. Founders calculate their margin using 2-3 line items and ignore the other 10-15 costs that eat into profit. The result? They think they're profitable when they're actually breaking even — or losing money.</p>
+**That's half of what they think they're making.**
 
-    <h2 id="what-shopify-shows">What Shopify Shows You (And Why It's Misleading)</h2>
+## How to Calculate Your Real Profit Margin
 
-    <p>Shopify's dashboard is designed to make you feel good. It shows you:</p>
+### The Formula
+```
+Real Margin = (Gross Sales - COGS - All Fees - Refunds - Ad Spend) / Gross Sales
+```
 
-    <ul>
-      <li><strong>Gross sales:</strong> Total customer payments before any deductions</li>
-      <li><strong>Net sales:</strong> Gross sales minus refunds and discounts</li>
-      <li><strong>Average order value:</strong> Net sales divided by order count</li>
-    </ul>
+### What to Include
 
-    <p>What Shopify <strong>doesn't</strong> show you:</p>
+**Gross Sales**: Total sales before any fees or refunds
+**COGS**: Cost of goods sold (product cost + shipping)
+**All Fees**: 
+- Shopify transaction fees (2.9% + 30¢ per transaction)
+- Payment processing fees (2-3%)
+- App fees (Klaviyo, Judge.me, etc.)
+- Any other platform fees
+**Refunds**: Returned orders
+**Ad Spend**: Meta, Google, TikTok, influencer costs
 
-    <ul>
-      <li>Payment processing fees (2.9% + $0.30 per transaction)</li>
-      <li>App transaction fees (Recharge, Afterpay, etc.)</li>
-      <li>COGS (product cost, packaging, shipping)</li>
-      <li>Fulfillment fees (3PL costs)</li>
-      <li>Ad spend (Meta, Google, TikTok)</li>
-      <li>Return costs (return shipping, restocking)</li>
-      <li>Chargeback fees ($15-25 per dispute)</li>
-      <li>Sales tax remittance costs</li>
-      <li>Currency conversion spreads</li>
-    </ul>
+### Common Mistakes
 
-    <p>Shopify shows you revenue. It doesn't show you profit. And for a DTC brand, the gap between revenue and profit is massive.</p>
+1. **Using net payouts instead of gross sales** — inflates your margin
+2. **Forgetting app fees** — can add up to $200-500/month
+3. **Not accounting for refunds** — especially during holiday season
+4. **Ignoring ad spend** — this is often the biggest expense after COGS
 
-    <h2 id="real-margin">How to Calculate Your Real Profit Margin</h2>
+## Free Profit Margin Calculator
 
-    <p>Here's the correct formula for DTC profit margin:</p>
+We built a free tool that calculates your real profit margin in 2 minutes.
 
-    <div class="margin-calc">
-      <div class="line"><span class="label">Gross Sales</span><span class="value">+$50,000</span></div>
-      <div class="line"><span class="label">− Refunds & Returns (5%)</span><span class="value">− $2,500</span></div>
-      <div class="line"><span class="label">= Net Sales</span><span class="value">$47,500</span></div>
-      <div class="line" style="border-top: 1px solid #444; margin-top: 8px; padding-top: 12px;"><span class="label">− Product COGS (25%)</span><span class="value">− $12,500</span></div>
-      <div class="line"><span class="label">− Packaging</span><span class="value">− $1,000</span></div>
-      <div class="line"><span class="label">− Fulfillment/Picking</span><span class="value">− $1,750</span></div>
-      <div class="line"><span class="label">− Outbound Shipping (net of shipping revenue)</span><span class="value">− $2,000</span></div>
-      <div class="line"><span class="label">= Gross Profit</span><span class="value">$28,250</span></div>
-      <div class="line"><span class="label">Gross Margin</span><span class="value">56.5%</span></div>
-      <div class="line" style="border-top: 1px solid #444; margin-top: 8px; padding-top: 12px;"><span class="label">− Payment Processing Fees (3%)</span><span class="value">− $1,500</span></div>
-      <div class="line"><span class="label">− Shopify Subscription + Apps</span><span class="value">− $300</span></div>
-      <div class="line"><span class="label">− Ad Spend (Meta, Google, TikTok)</span><span class="value">− $12,000</span></div>
-      <div class="line"><span class="label">− Return Shipping Costs</span><span class="value">− $500</span></div>
-      <div class="line"><span class="label">− Chargeback Fees</span><span class="value">− $150</span></div>
-      <div class="line"><span class="label">− Software (Klaviyo, Gorgias, etc.)</span><span class="value">− $400</span></div>
-      <div class="line"><span class="label">− FX/Currency Conversion</span><span class="value">− $200</span></div>
-      <div class="line" style="border-top: 2px solid #444; margin-top: 8px; padding-top: 12px;"><span class="label total">= Net Profit</span><span class="value total">$11,700</span></div>
-      <div class="line"><span class="label total">Net Margin</span><span class="value total">23.4%</span></div>
-    </div>
+[Try it free →](/tools/)
 
-    <p>That founder who thought they were at 40% net margin? They're actually at 23.4%. That's a 16.6-point difference. On $50K in monthly revenue, that's $8,300/month in "profit" that doesn't actually exist. Over a year, that's nearly $100,000.</p>
+It shows:
+- Your real profit margin
+- Hidden fees you're not tracking
+- How you compare to industry benchmarks
+- Where money is leaking
 
-    <p>This is why accurate bookkeeping isn't just an accounting exercise. It's the difference between thinking your business is healthy and actually knowing.</p>
+## Industry Benchmarks
 
-    <h2 id="hidden-costs">7 Hidden Costs That Destroy DTC Margins</h2>
+Here are typical profit margins for DTC brands:
 
-    <p><strong>1. Payment processing fees.</strong> 2.9% + $0.30 per transaction sounds small. On $50K in sales, that's $1,450-1,750/month. If you also accept PayPal (2.99% + $0.49), it's even more.</p>
+| Category | Gross Margin | Net Margin |
+|----------|-------------|------------|
+| Skincare/Beauty | 60-70% | 15-25% |
+| Supplements | 50-60% | 10-20% |
+| Apparel/Fashion | 50-65% | 10-15% |
+| Food & Beverage | 40-50% | 5-15% |
+| Home Goods | 45-55% | 10-20% |
 
-    <p><strong>2. App transaction fees.</strong> Recharge charges $0.19 per subscription renewal. Afterpay charges a percentage. If you have 5 apps with per-transaction fees, you could be paying $500-800/month in app fees alone.</p>
+If your margins are significantly lower than these benchmarks, you're probably missing something in your bookkeeping.
 
-    <p><strong>3. Return processing costs.</strong> A returned product isn't just lost revenue. You pay return shipping ($5-8), restocking labor ($2-3), and the product may not be resellable (damaged packaging). Average cost per return: $10-15. At a 5% return rate on 1,000 orders, that's $500-750/month.</p>
+## How to Improve Your Profit Margin
 
-    <p><strong>4. Chargebacks.</strong> Each chargeback costs $15-25 in fees, plus the lost revenue. If you have 10 chargebacks/month (typical for a $50K/mo store), that's $150-250 in fees plus $500-1,000 in lost revenue.</p>
+### 1. Reduce Transaction Fees
+- Negotiate with payment processors
+- Use Shopify Payments (lower fees)
+- Consider ACH/bank transfers for B2B
 
-    <p><strong>5. Currency conversion spreads.</strong> If 20% of your sales are international, Shopify's currency conversion fee (1-2%) costs you $200-400/month. Using a multi-currency account like Wise can cut this in half.</p>
+### 2. Optimize COGS
+- Negotiate with suppliers
+- Order in bulk
+- Reduce shipping costs
 
-    <p><strong>6. Fulfillment creep.</strong> Your 3PL charges $3.50 per pick/pack. But they also charge for storage ($15-25/pallet/month), receiving ($25-40/pallet), and special services (poly bagging, inserts, kitting). These "extras" add $300-600/month.</p>
+### 3. Reduce Refunds
+- Improve product descriptions
+- Better quality control
+- Clear return policy
 
-    <p><strong>7. Ad platform fees.</strong> Meta and Google don't charge fees on ad spend, but if you use a management tool (Triple Whale, Northbeam), that's $100-300/month. Plus, your actual ROAS might be lower than reported due to attribution gaps.</p>
+### 4. Optimize Ad Spend
+- Focus on ROAS, not just traffic
+- Test different channels
+- Retarget existing customers
 
-    <h2 id="benchmarks">DTC Margin Benchmarks by Category</h2>
+### 5. Track Everything
+- Use proper bookkeeping
+- Reconcile monthly
+- Know your real numbers
 
-    <p>Here are realistic net margin ranges for DTC brands on Shopify (after ALL costs):</p>
+## When to Worry About Your Margins
 
-    <table class="margin-calc">
-      <div class="line"><span class="label">Skincare/Beauty</span><span class="value">15-25% net margin</span></div>
-      <div class="line"><span class="label">Supplements</span><span class="value">10-20% net margin</span></div>
-      <div class="line"><span class="label">Apparel</span><span class="value">5-15% net margin</span></div>
-      <div class="line"><span class="label">Food & Beverage</span><span class="value">5-12% net margin</span></div>
-      <div class="line"><span class="label">Home Goods</span><span class="value">10-20% net margin</span></div>
-      <div class="line"><span class="label">Pet Products</span><span class="value">15-25% net margin</span></div>
-      <div class="line"><span class="label">Electronics/Accessories</span><span class="value">10-18% net margin</span></div>
-    </table>
+**Red flags:**
+- Net margin below 10%
+- Declining margins over time
+- Can't explain where money is going
+- Tax bill is higher than expected
 
-    <p>If your margins are below these ranges, you're either underpricing, overspending on ads, or not tracking all your costs. If you're above them, congratulations — but make sure you're actually counting everything.</p>
+If any of these apply to you, it's time to fix your bookkeeping.
 
-    <h2 id="fix-it">How to Fix Your Margin Calculation</h2>
+## Get Help with Your Shopify Bookkeeping
 
-    <p>Here's a 4-step process to get your real margin number:</p>
+If you'd rather have someone handle your bookkeeping (and make sure your numbers are right), [Klarr](/) delivers:
 
-    <p><strong>Step 1: Export everything.</strong> Export your Shopify payouts, bank statements, ad platform reports, and 3PL invoices for the last 3 months.</p>
+- P&L Statement
+- Balance Sheet  
+- Cash Flow Statement
+- Delivered in 24 hours
+- $149/month
 
-    <p><strong>Step 2: List every cost.</strong> Go through every expense — not just the obvious ones. Include app fees, chargebacks, return shipping, fulfillment extras, currency conversion, everything.</p>
-
-    <p><strong>Step 3: Calculate monthly.</strong> Don't look at annual numbers. Monthly fluctuations hide problems. A bad month might be an outlier — or it might be the new normal.</p>
-
-    <p><strong>Step 4: Compare to benchmarks.</strong> Use the ranges above. If you're below benchmark, find the gap. It's usually one of the 7 hidden costs listed above.</p>
-
-    <p>Or, you can skip all of this and let us do it. We offer a <strong>free financial audit</strong> for Shopify brands — we'll calculate your real margin, find the leaks, and show you exactly where your money is going. No obligation. No sales call.</p>
-
-    <div class="cta-box">
-      <h3>Get your real profit number</h3>
-      <p>Free financial audit for Shopify brands. We'll calculate your real margin, find the leaks, and deliver a full P&L — in 24 hours.</p>
-      <a href="/#cta" class="cta-btn">Claim your free audit →</a>
-    </div>
-
-    <div class="cta-box" style="border-color: #333; margin-top: 24px;">
-      <h3 style="color: #ddd;">Quick: Check your store's financial health</h3>
-      <p>Take the free 2-minute assessment. See your real margin, hidden fees, and how you compare to DTC benchmarks.</p>
-      <a href="/tools/" class="cta-btn" style="background: #333; color: #fff;">Try the free tool →</a>
-    </div>
-
-    <p style="color: #555; font-size: 0.9rem; margin-top: 60px;">Related reading: <a href="/blog/dtc-bookkeeping-guide.html" style="color: #4CAF50;">Shopify Bookkeeping for DTC Brands</a> · <a href="/blog/shopify-payout-reconciliation-guide.html" style="color: #4CAF50;">How to Reconcile Shopify Payouts</a></p>
-  </div>
-
-  <footer>
-    <div class="footer-inner">
-      <p>© 2026 Klarr. AI-powered bookkeeping for Shopify merchants.</p>
-      <div class="footer-links">
-        <a href="/">Home</a>
-        <a href="/blog/">Blog</a>
-        <a href="mailto:klarr.space@gmail.com">Contact</a>
-      </div>
-    </div>
-  </footer>
-
-</body>
-</html>
+[Get started →](/)
