@@ -1,222 +1,118 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Reconcile Shopify Payouts With Bank Deposits: The Complete Guide | Klarr Blog</title>
-  <meta name="description" content="Shopify payouts never match your bank deposits. Here's exactly why, with step-by-step instructions to reconcile them properly — even with PayPal, Shopify Payments, and multiple currencies.">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=8">
-  <style>
-    .blog-post { max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
-    .blog-post h1 { font-size: 2.2rem; font-weight: 600; line-height: 1.2; margin-bottom: 12px; color: #fff; }
-    .blog-post .meta { color: #666; font-size: 0.9rem; margin-bottom: 40px; }
-    .blog-post h2 { font-size: 1.4rem; font-weight: 600; margin-top: 48px; margin-bottom: 16px; color: #fff; }
-    .blog-post h3 { font-size: 1.15rem; font-weight: 600; margin-top: 32px; margin-bottom: 12px; color: #ddd; }
-    .blog-post p { color: #aaa; line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; }
-    .blog-post ul, .blog-post ol { color: #aaa; line-height: 1.8; margin-bottom: 20px; padding-left: 24px; }
-    .blog-post li { margin-bottom: 8px; }
-    .blog-post strong { color: #ddd; }
-    .blog-post .highlight { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px 24px; margin: 32px 0; }
-    .blog-post .highlight p { margin-bottom: 0; }
-    .blog-post .cta-box { background: #0a0a0a; border: 1px solid #4CAF50; border-radius: 12px; padding: 32px; margin: 48px 0; text-align: center; }
-    .blog-post .cta-box h3 { color: #4CAF50; font-size: 1.3rem; margin-bottom: 12px; }
-    .blog-post .cta-box p { color: #999; margin-bottom: 20px; }
-    .blog-post .cta-box .cta-btn { display: inline-block; background: #4CAF50; color: #000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 1rem; }
-    .blog-back { display: inline-block; color: #666; text-decoration: none; margin-bottom: 32px; font-size: 0.9rem; }
-    .blog-back:hover { color: #4CAF50; }
-    .blog-toc { background: #111; border: 1px solid #222; border-radius: 8px; padding: 20px 24px; margin-bottom: 40px; }
-    .blog-toc h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 12px; }
-    .blog-toc ol { margin-bottom: 0; padding-left: 20px; }
-    .blog-toc a { color: #888; text-decoration: none; font-size: 0.95rem; }
-    .blog-toc a:hover { color: #4CAF50; }
-    .blog-toc li { margin-bottom: 6px; }
-    .example-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
-    .example-table th { text-align: left; padding: 10px 16px; border-bottom: 2px solid #333; color: #ddd; font-weight: 600; }
-    .example-table td { padding: 10px 16px; border-bottom: 1px solid #222; color: #aaa; }
-    .example-table tr:last-child td { border-bottom: none; }
-    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: #4CAF50; color: #000; border-radius: 50%; font-weight: 600; font-size: 0.85rem; margin-right: 10px; flex-shrink: 0; }
-    .step-row { display: flex; align-items: flex-start; margin-bottom: 16px; }
-    .step-content { flex: 1; }
-  </style>
-</head>
-<body>
+---
+title: "Shopify Payout Reconciliation: Complete Guide | Klarr"
+description: "Learn how to reconcile Shopify payouts with bank deposits. Step-by-step guide to finding hidden fees and tracking your real revenue."
+keywords: "Shopify payout reconciliation, Shopify bank deposit, Shopify fees, Shopify accounting"
+---
 
-  <nav>
-    <div class="nav-inner">
-      <a href="/" class="logo">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#4CAF50"/><text x="5" y="20" font-family="Inter" font-weight="600" font-size="16" fill="#000">K</text></svg>
-        <span>Klarr</span>
-      </a>
-      <div class="nav-links">
-        <a href="/#how">How it works</a>
-        <a href="/#pricing">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="/#cta" class="cta-nav">Get started</a>
-      </div>
-    </div>
-  </nav>
+# Shopify Payout Reconciliation: Complete Guide
 
-  <div class="blog-post">
-    <a href="/blog/" class="blog-back">← Back to blog</a>
-    <h1>How to Reconcile Shopify Payouts With Bank Deposits: The Complete Guide</h1>
-    <div class="meta">June 10, 2026 · 12 min read · Bookkeeping</div>
+*Last updated: June 2026*
 
-    <div class="blog-toc">
-      <h3>In this guide</h3>
-      <ol>
-        <li><a href="#why">Why Shopify payouts never match your bank deposits</a></li>
-        <li><a href="#whats-inside">What's actually inside a Shopify payout</a></li>
-        <li><a href="#step-by-step">Step-by-step: How to reconcile payouts</a></li>
-        <li><a href="#common-mistakes">5 common mistakes that break your books</a></li>
-        <li><a href="#multi-currency">Multi-currency payouts (the hidden killer)</a></li>
-        <li><a href="#tool">The tool that does this automatically</a></li>
-      </ol>
-    </div>
+If you've ever looked at your Shopify payout and thought "this doesn't match what hit my bank account," you're not alone. Shopify payout reconciliation is one of the most confusing parts of ecommerce bookkeeping.
 
-    <p>You check your Shopify dashboard. It says you made $50,000 last month. You check your bank account. $46,800 landed. Where did $3,200 go?</p>
+In this guide, we'll walk you through exactly how to reconcile your Shopify payouts so you always know where your money is going.
 
-    <p>If this sounds familiar, you're not alone. This is the single most common bookkeeping problem for Shopify merchants — and almost nobody explains it properly.</p>
+## What is Shopify Payout Reconciliation?
 
-    <p>The gap isn't a mistake. It's not fraud. It's the difference between <strong>gross sales</strong> and <strong>net payouts</strong>, and understanding that difference is the foundation of accurate books for any DTC brand.</p>
+Payout reconciliation is the process of matching your Shopify payouts to your bank deposits and making sure all the numbers add up.
 
-    <h2 id="why">Why Shopify Payouts Never Match Your Bank Deposits</h2>
+Sounds simple, right? It's not. Here's why:
 
-    <p>Here's the fundamental problem: Shopify doesn't transfer your revenue to your bank. It transfers your <strong>net payout</strong> — which is your revenue minus a stack of deductions that most founders don't fully understand.</p>
+- Shopify bundles fees inside payouts
+- Multiple payment processors (Shopify Payments, PayPal, etc.)
+- Refunds and chargebacks create timing differences
+- Currency conversion adds another layer
+- App fees are deducted separately
 
-    <p>When a customer pays you $100 for a product, here's what actually happens:</p>
+## Why Reconciliation Matters
 
-    <div class="highlight">
-      <p><strong>$100.00</strong> — Customer payment (gross sale)<br>
-      <strong>− $2.90</strong> — Shopify Payments processing fee (2.9% + $0.30)<br>
-      <strong>− $0.00</strong> — Shopify subscription fee (not per-transaction)<br>
-      <strong>− $1.50</strong> — Refund reserve holdback (if applicable)<br>
-      <strong>− $0.80</strong> — App transaction fees (Recharge, etc.)<br>
-      <strong>− $0.00</strong> — Currency conversion (if domestic)<br>
-      <strong>= $94.80</strong> — What actually hits your bank</p>
-    </div>
+If you don't reconcile properly:
 
-    <p>That $5.20 gap on a single $100 transaction? Multiply that by thousands of orders per month, and you're looking at thousands of dollars that "disappeared" from your revenue.</p>
+1. **You overpay taxes** — reporting net payouts instead of gross sales
+2. **You think you're more profitable than you are** — fees are hidden
+3. **You miss money leaks** — unauthorized charges, app fees, etc.
+4. **Your books are wrong** — making bad business decisions
 
-    <p>Shopify's dashboard shows you the $100. Your bank shows you $94.80. Your books need to account for both — and explain the difference.</p>
+## Step-by-Step Reconciliation Process
 
-    <h2 id="whats-inside">What's Actually Inside a Shopify Payout</h2>
+### Step 1: Export Your Payout Report
+1. Go to Shopify → Payments → Payouts
+2. Click "Export" for the period you want to reconcile
+3. Download as CSV
 
-    <p>A single Shopify payout can contain dozens of different transaction types. Here's the breakdown:</p>
+### Step 2: Export Your Bank Statement
+1. Log into your bank account
+2. Download the same period as a CSV
+3. Filter for Shopify deposits
 
-    <table class="example-table">
-      <tr><th>Transaction Type</th><th>What It Is</th><th>Impact</th></tr>
-      <tr><td>Order payments</td><td>Customer charges (gross)</td><td>Increases payout</td></tr>
-      <tr><td>Refunds</td><td>Customer refunds processed</td><td>Decreases payout</td></tr>
-      <tr><td>Processing fees</td><td>Shopify Payments / PayPal / Stripe fees</td><td>Decreases payout</td></tr>
-      <tr><td>Chargebacks</td><td>Disputed charges</td><td>Decreases payout</td></tr>
-      <tr><td>Adjustments</td><td>Shopify corrections, shipping label adjustments</td><td>Varies</td></tr>
-      <tr><td>Reserve holdbacks</td><td>Risk reserve (new/high-risk stores)</td><td>Decreases payout</td></tr>
-      <tr><td>Currency conversion</td><td>FX fees for international sales</td><td>Decreases payout</td></tr>
-    </table>
+### Step 3: Match Payouts to Deposits
+Create a spreadsheet with these columns:
 
-    <p>The critical insight: <strong>your payout is not your revenue</strong>. It's your revenue minus all of the above. If you log the payout amount as revenue in your books, your revenue is understated and your margins are wrong.</p>
+| Date | Shopify Payout | Bank Deposit | Difference | Notes |
+|------|---------------|--------------|------------|-------|
+| Jun 1 | $4,200 | $4,180 | -$20 | Currency conversion |
+| Jun 8 | $3,800 | $3,800 | $0 | Perfect match |
+| Jun 15 | $5,100 | $5,050 | -$50 | Held funds |
 
-    <h2 id="step-by-step">Step-by-Step: How to Reconcile Shopify Payouts</h2>
+### Step 4: Investigate Discrepancies
+Common reasons for differences:
+- **Currency conversion fees** — if you sell internationally
+- **Held funds** — Shopify holds funds for new accounts
+- **Chargebacks** — deducted from future payouts
+- **App fees** — some apps deduct fees separately
+- **Timing differences** — payouts deposited on different days
 
-    <p>Here's the exact process to reconcile your Shopify payouts with your bank deposits. Do this monthly.</p>
+### Step 5: Record in Your Books
+Once reconciled, record:
+- Gross sales (before fees)
+- All fees (broken out by type)
+- Net payout
+- Any discrepancies
 
-    <h3>Step 1: Export Your Shopify Payouts</h3>
-    <p>In Shopify Admin → Payments → Payouts → Export. Select the date range for the month you're reconciling. You'll get a CSV with every payout transaction.</p>
+## Common Reconciliation Mistakes
 
-    <h3>Step 2: Export Your Bank Statement</h3>
-    <p>Log into your bank. Download the statement for the same date range. You're looking for the Shopify deposit transactions.</p>
+### 1. Using Net Payout as Revenue
+This is the #1 mistake. Your revenue is gross sales, not net payouts.
 
-    <h3>Step 3: Match Payouts to Deposits</h3>
-    <p>Each Shopify payout has a unique ID and an expected deposit date. Match each payout to the corresponding bank deposit. In most cases, they should match exactly (minus timing differences).</p>
+### 2. Not Breaking Out Fees
+Don't just record "Shopify fees." Break them out:
+- Transaction fees
+- Payment processing fees
+- Currency conversion
+- App fees
 
-    <div class="highlight">
-      <p><strong>Timing note:</strong> Shopify payouts typically take 2-3 business days to land in your bank. A payout dated March 31 might not appear in your bank until April 3. This is normal. Account for the lag.</p>
-    </div>
+### 3. Ignoring Timing Differences
+Payouts don't always deposit on the same day. Track the dates carefully.
 
-    <h3>Step 4: Break Down Each Payout</h3>
-    <p>For each payout, separate the components:</p>
-    <ul>
-      <li><strong>Gross sales</strong> (total order value)</li>
-      <li><strong>Refunds</strong> (money returned to customers)</li>
-      <li><strong>Fees</strong> (processing fees, app fees)</li>
-      <li><strong>Net payout</strong> (what hit your bank)</li>
-    </ul>
+### 4. Not Accounting for Refunds
+Refunds reduce your payout but may not be obvious in the payout report.
 
-    <h3>Step 5: Record in Your Books</h3>
-    <p>Record the <strong>gross sales</strong> as revenue, not the net payout. Record the fees as expenses. This gives you an accurate picture of your actual revenue and your true profit margin.</p>
+## How Often Should You Reconcile?
 
-    <h3>Step 6: Investigate Discrepancies</h3>
-    <p>If a payout doesn't match the bank deposit, check for:</p>
-    <ul>
-      <li>Currency conversion differences (Shopify converts at their rate, not the mid-market rate)</li>
-      <li>Reserve holdbacks (new stores often have 5-10% held back)</li>
-      <li>Chargebacks that were deducted after the payout was calculated</li>
-      <li>Bank processing fees (some banks charge for incoming wires)</li>
-    </ul>
+**Monthly** is the minimum. Ideally, you should reconcile:
+- **Weekly** if you're doing >$100K/month
+- **Monthly** if you're doing $50K-$100K/month
+- **Quarterly** if you're doing <$50K/month (but monthly is still better)
 
-    <h2 id="common-mistakes">5 Common Mistakes That Break Your Books</h2>
+## Automate Your Reconciliation
 
-    <p><strong>Mistake #1: Logging net payouts as revenue.</strong> This is the most common error. If Shopify pays you $47,000, that's not your revenue — it's your revenue minus fees. Your actual revenue might be $50,000+. If you log $47K, you're understating revenue by 6%.</p>
+If this sounds like a lot of work, you're right. That's why we built Klarr.
 
-    <p><strong>Mistake #2: Ignoring refund timing.</strong> A refund processed in March might be deducted from your April payout. If you don't track this, your March books show revenue you didn't actually keep.</p>
+We automatically:
+- Pull your Shopify data
+- Reconcile payments to bank deposits
+- Break out all fees
+- Deliver P&L, Balance Sheet, and Cash Flow
+- All in 24 hours for $149/month
 
-    <p><strong>Mistake #3: Mixing payment processors.</strong> If you use both Shopify Payments and PayPal, you'll have two separate payout streams with different fee structures. Reconcile each one separately.</p>
+[Try Klarr free →](/)
 
-    <p><strong>Mistake #4: Forgetting app transaction fees.</strong> Apps like Recharge, ReBold, and others charge per-transaction fees that are deducted from your payouts. These are real expenses that need to be tracked.</p>
+## Free Reconciliation Template
 
-    <p><strong>Mistake #5: Not reconciling monthly.</strong> The longer you wait, the harder it becomes. A month's worth of payouts takes 30-60 minutes to reconcile. A year's worth takes days.</p>
+We built a free [Shopify Financial Health Check](/tools/) that shows you:
+- Your payout reconciliation status
+- Hidden fees you're missing
+- Your real profit margin
+- A financial health score
 
-    <h2 id="multi-currency">Multi-Currency Payouts (The Hidden Killer)</h2>
-
-    <p>If you sell internationally, multi-currency payouts add another layer of complexity. Here's what happens:</p>
-
-    <p>A customer in the UK pays £80 for your product. Shopify converts that to USD at their exchange rate (not the mid-market rate). The conversion fee is typically 1-2%. So your £80 sale might become $97.50 instead of the $100 you'd get at the real exchange rate.</p>
-
-    <p>That $2.50 difference per transaction adds up fast. On $100K in international sales, you could lose $2,000-3,000/year just on currency conversion spreads.</p>
-
-    <p><strong>How to track this:</strong> In your Shopify payout export, look for the "currency_conversion_fee" line items. Record these as a separate expense category so you can see exactly how much you're losing to FX.</p>
-
-    <h2 id="tool">The Tool That Does This Automatically</h2>
-
-    <p>If this guide sounds like a lot of work — it is. Most Shopify founders spend 3-5 hours per month on payout reconciliation alone. That's 36-60 hours per year spent on something that should be automatic.</p>
-
-    <p>That's why we built <strong>Klarr</strong>. We handle the entire reconciliation process for Shopify merchants:</p>
-
-    <ul>
-      <li>You export your Shopify orders and payouts (or connect your store)</li>
-      <li>We categorize every transaction, reconcile every payout, and produce a clean P&L</li>
-      <li>Delivered in 24 hours as a Google Sheet — no dashboard to learn</li>
-    </ul>
-
-    <div class="cta-box">
-      <h3>Get your books done in 24 hours</h3>
-      <p>Done-for-you bookkeeping for Shopify merchants. P&L, reconciliation, cash flow — $149/mo.</p>
-      <a href="/#cta" class="cta-btn">Start with a free audit →</a>
-    </div>
-
-    <div class="cta-box" style="border-color: #333; margin-top: 24px;">
-      <h3 style="color: #ddd;">Quick: Check your store's financial health</h3>
-      <p>Take the free 2-minute assessment. See your real margin, hidden fees, and how you compare to DTC benchmarks.</p>
-      <a href="/tools/" class="cta-btn" style="background: #333; color: #fff;">Try the free tool →</a>
-    </div>
-
-    <p style="color: #555; font-size: 0.9rem; margin-top: 60px;">Related reading: <a href="/blog/hidden-shopify-fees-guide.html" style="color: #4CAF50;">The Hidden Cost of Shopify Fees</a></p>
-  </div>
-
-  <footer>
-    <div class="footer-inner">
-      <p>© 2026 Klarr. AI-powered bookkeeping for Shopify merchants.</p>
-      <div class="footer-links">
-        <a href="/">Home</a>
-        <a href="/blog/">Blog</a>
-        <a href="mailto:klarr.space@gmail.com">Contact</a>
-      </div>
-    </div>
-  </footer>
-
-</body>
-</html>
+[Try it free →](/tools/)
