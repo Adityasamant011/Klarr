@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=9">
+  <link rel="stylesheet" href="/style.css?v=8">
   <style>
     :root {
       --font: 'Inter', system-ui, -apple-system, sans-serif;
@@ -146,7 +146,7 @@
     </div>
 
     <div class="header">
-      <div class="badge"><span class="badge-dot"></span> Free — Takes 2 minutes</div>
+      <div class="badge"><span class="badge-dot"></span> Free — No signup required</div>
       <h1>Shopify Financial Health Check</h1>
       <p>Find out how much money your store is losing to hidden fees, bad bookkeeping, and miscalculated margins. Takes 2 minutes.</p>
     </div>
@@ -300,12 +300,12 @@
     <div id="insights"></div>
 
     <div class="cta-box">
-      <h2>Want us to handle your bookkeeping?</h2>
-      <p>We'll categorize every transaction, reconcile payouts, and deliver clean financial statements — P&L, Balance Sheet, Cash Flow — in 24 hours.</p>
-      <div class="price">$99/mo</div>
-      <div class="price-label">Cancel anytime · No long-term contract</div>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScmI19tEC-vzQGP65u4cqe1pY0h--UBhg84lOItEkyKX-Sy-Q/formResponse" target="_blank" class="btn btn-primary" style="text-decoration:none;max-width:280px;margin:0 auto;">Get Started →</a>
-      <p style="font-size:11px;color:var(--text-dim);margin-top:12px;">Free health check above is instant. This is for ongoing monthly bookkeeping.</p>
+      <h2>Want us to fix this for you?</h2>
+      <p>Full financial audit of your Shopify store — P&L, fee analysis, margin breakdown. Delivered in 24 hours. Free. No obligation.</p>
+      <div class="price">$0</div>
+      <div class="price-label">Free audit · No credit card · No sales call</div>
+      <a href="/#signup" class="btn btn-primary" style="text-decoration:none;max-width:280px;margin:0 auto;">Claim My Free Audit →</a>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:12px;">Ongoing bookkeeping is $149/mo. Cancel anytime.</p>
     </div>
 
     <div class="card" style="text-align:center;">
@@ -429,22 +429,12 @@ function calculate() {
   document.getElementById('shareLinkedIn').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + shareUrl;
   document.getElementById('shareEmail').href = 'mailto:?subject=Check your Shopify store\'s real profit margin&body=' + shareText;
 
-  // Show lead capture after results
-  const ctaBox = document.querySelector('.cta-box');
-  const leadNotice = document.createElement('div');
-  leadNotice.style.cssText = 'text-align:center;margin-top:1rem;font-size:12px;color:var(--text-dim);';
-  leadNotice.innerHTML = '<strong>Lead captured:</strong> ' + (email || 'no email') + ' — Store: ' + store + ' — Score: ' + score + '/100';
-  ctaBox.appendChild(leadNotice);
-
-  // Save lead to localStorage for our reference
+  // Save lead
   try {
     const leads = JSON.parse(localStorage.getItem('klarr_leads') || '[]');
     leads.push({ name, email, store, revenue, category, netMargin, healthScore: score, createdAt: new Date().toISOString() });
     localStorage.setItem('klarr_leads', JSON.stringify(leads));
   } catch(e) {}
-
-  // Log lead so we can see it in console (for now — until we have a real backend)
-  console.log('KLARR LEAD:', { name, email, store, revenue, category, netMargin, healthScore: score });
 
   document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
   document.getElementById('results').classList.remove('hidden');
