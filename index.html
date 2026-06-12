@@ -292,14 +292,14 @@
             <span class="price-amt">$99</span>
             <span class="price-per">/mo</span>
           </div>
-          <p class="price-desc">For small stores doing <$50K/yr</p>
+          <p class="price-desc">For small stores doing &lt;$50K/yr</p>
           <ul class="price-features">
             <li>Monthly Profit & Loss</li>
             <li>Balance Sheet</li>
             <li>24-hour delivery</li>
             <li>Human-reviewed</li>
           </ul>
-          <a href="/tools/" class="btn-secondary btn-full">Start with Starter</a>
+          <a href="https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00" class="btn-secondary btn-full">Start with Starter</a>
         </div>
         <div class="price-card price-card-popular">
           <div class="price-popular-badge">Most Popular</div>
@@ -307,13 +307,14 @@
             <span class="price-amt">$149</span>
             <span class="price-per">/mo</span>
           </div>
-          <p class="price-desc">For growing stores doing $50K-500K/yr</p>
+          <p class="price-desc">For growing stores doing $50K–500K/yr</p>
           <ul class="price-features">
             <li>Everything in Starter</li>
             <li>Cash Flow Statement</li>
             <li>Quarterly reports</li>
+            <li>Free health check (first month)</li>
           </ul>
-          <a href="/tools/" class="btn-primary btn-full">Start with Growth</a>
+          <a href="https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00" class="btn-primary btn-full">Start with Growth</a>
         </div>
         <div class="price-card">
           <div class="price-tag">
@@ -327,10 +328,11 @@
             <li>Cash flow alerts</li>
             <li>Priority support</li>
           </ul>
-          <a href="/tools/" class="btn-secondary btn-full">Start with Pro</a>
+          <a href="https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00" class="btn-secondary btn-full">Start with Pro</a>
         </div>
       </div>
-      <p class="compare-note fade-in" style="margin-top: 2rem;">Finaloop charges $245/mo. Pilot.com charges $1,000+/mo. QuickBooks makes you do the work yourself. Klarr delivers from $99/mo.</p>
+      <p class="price-note fade-in" style="margin-top: 2rem; text-align: center;">Finaloop charges $245/mo. Pilot.com charges $1,000+/mo. QuickBooks makes you do the work yourself. Klarr delivers from $99/mo.</p>
+      <p class="price-note fade-in" style="text-align: center; margin-top: 0.5rem;">Cancel anytime. No long-term contracts. 24-hour delivery guarantee.</p>
     </div>
   </section>
 
@@ -386,10 +388,13 @@
     .final-cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
     .btn-large { padding: 14px 32px; font-size: 16px; }
     /* Pricing grid */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
-    .price-card-popular { border-color: var(--accent); position: relative; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; }
+    .price-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem 1.5rem; text-align: center; transition: transform 0.2s ease, border-color 0.2s ease; position: relative; }
+    .price-card:hover { transform: translateY(-4px); border-color: var(--text-dim); }
+    .price-card-popular { border-color: var(--accent); transform: scale(1.03); }
+    .price-card-popular:hover { transform: scale(1.03) translateY(-4px); border-color: var(--accent); }
     .price-popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 4px 16px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
-    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; max-width: 400px; } .price-card-popular { transform: none; } .price-card-popular:hover { transform: translateY(-4px); } }
   </style>
 
   <!-- Footer -->
