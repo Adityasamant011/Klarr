@@ -29,7 +29,7 @@
         <a href="/blog/">Blog</a>
       </div>
       <div class="nav-right">
-        <a href="#signup" class="nav-cta">Free Health Check</a>
+        <a href="/tools/" class="nav-cta">Free Health Check</a>
       </div>
     </div>
   </nav>
@@ -45,7 +45,7 @@
       <h1>Know your real profit margin.<br>Finally.</h1>
       <p class="hero-sub">Most Shopify founders are off by 15+ points on their margin. We deliver clean books — P&L, Balance Sheet, Cash Flow — in 24 hours. AI-powered, human-reviewed. From $99/month.</p>
       <div class="hero-actions">
-        <a href="#signup" class="btn-primary">Free Health Check</a>
+        <a href="/tools/" class="btn-primary">Free Health Check</a>
         <a href="#how" class="btn-ghost">See how it works</a>
       </div>
       <div class="hero-demo">
@@ -230,8 +230,8 @@
           <div class="compare-col">✗ No</div>
         </div>
         <div class="compare-row">
-          <div class="compare-col">Free Health Check</div>
-          <div class="compare-col compare-col-us"><strong>✓ Free</strong></div>
+          <div class="compare-col">Free trial</div>
+          <div class="compare-col compare-col-us"><strong>✓ 7 days</strong></div>
           <div class="compare-col">✗ No</div>
           <div class="compare-col">✗ No</div>
           <div class="compare-col">✗ No</div>
@@ -299,7 +299,7 @@
             <li>24-hour delivery</li>
             <li>Human-reviewed</li>
           </ul>
-          <a href="#signup" class="btn-secondary btn-full">Start with Starter</a>
+          <a href="/tools/" class="btn-secondary btn-full">Start with Starter</a>
         </div>
         <div class="price-card price-card-popular">
           <div class="price-popular-badge">Most Popular</div>
@@ -312,9 +312,8 @@
             <li>Everything in Starter</li>
             <li>Cash Flow Statement</li>
             <li>Quarterly reports</li>
-            <li>Free Health Check (first month)</li>
           </ul>
-          <a href="#signup" class="btn-primary btn-full">Start with Growth</a>
+          <a href="/tools/" class="btn-primary btn-full">Start with Growth</a>
         </div>
         <div class="price-card">
           <div class="price-tag">
@@ -328,7 +327,7 @@
             <li>Cash flow alerts</li>
             <li>Priority support</li>
           </ul>
-          <a href="#signup" class="btn-secondary btn-full">Start with Pro</a>
+          <a href="/tools/" class="btn-secondary btn-full">Start with Pro</a>
         </div>
       </div>
       <p class="compare-note fade-in" style="margin-top: 2rem;">Finaloop charges $245/mo. Pilot.com charges $1,000+/mo. QuickBooks makes you do the work yourself. Klarr delivers from $99/mo.</p>
@@ -374,85 +373,24 @@
     <div class="container">
       <p class="section-label">Get started</p>
       <h2 class="fade-in">Your books. Done.<br>24 hours.</h2>
-      <p class="fade-in">Start with a free health check. We'll analyze your last 3 months and show you exactly where you're losing money. No strings attached.</p>
-      
-      <!-- Stripe Payment Form -->
-      <div class="payment-form fade-in">
-        <div class="form-row">
-          <input type="email" id="email" placeholder="your@email.com" required>
-          <input type="url" id="store_url" placeholder="yourstore.myshopify.com" required>
-        </div>
-        <button type="button" class="btn-full" id="checkout-btn" onclick="startCheckout()">
-          Subscribe — $149/mo
-        </button>
-        <p class="tiny">$149/month · Cancel anytime · 24-hour delivery</p>
+      <p class="fade-in">Take the free health check first. See your real profit margin. Then decide if you want us to handle everything.</p>
+      <div class="final-cta-actions fade-in">
+        <a href="/tools/" class="btn-primary btn-large">Take the free health check →</a>
+        <a href="#pricing" class="btn-ghost btn-large">Compare plans</a>
       </div>
-      
-      <p class="signup-divider"><span>or</span></p>
-      
-      <p class="signup-alt">Just want the free health check first? <a href="https://docs.google.com/forms/d/e/1FAIpQLScmI19tEC-vzQGP65u4cqe1pY0h--UBhg84lOItEkyKX-Sy-Q/formResponse" target="_blank" style="color:var(--accent);">Fill out this form →</a></p>
     </div>
   </section>
 
-  <!-- Payment form styles -->
+  <!-- Pricing grid styles -->
   <style>
-    .payment-form { max-width: 420px; margin: 0 auto; }
-    .form-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
-    .form-row input { flex: 1; padding: 12.5px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 9999px; color: var(--text); font-size: 14px; font-family: var(--font); outline: none; transition: border-color 0.15s ease; }
-    .form-row input:focus { border-color: var(--accent); }
-    .form-row input::placeholder { color: var(--text-dim); }
-    #checkout-btn { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 14px; border-radius: 9999px; font-size: 16px; font-weight: 500; cursor: pointer; transition: opacity 0.15s ease; }
-    #checkout-btn:hover { opacity: 0.85; }
-    #checkout-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .signup-divider { text-align: center; margin: 1.5rem 0; position: relative; }
-    .signup-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
-    .signup-divider span { background: var(--bg); padding: 0 1rem; position: relative; color: var(--text-dim); font-size: 13px; }
-    .signup-alt { text-align: center; font-size: 13px; color: var(--text-muted); }
+    .final-cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+    .btn-large { padding: 14px 32px; font-size: 16px; }
     /* Pricing grid */
     .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
     .price-card-popular { border-color: var(--accent); position: relative; }
     .price-popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 4px 16px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
     @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; } }
   </style>
-
-  <!-- Stripe Checkout Script -->
-  <script>
-  function startCheckout() {
-    const email = document.getElementById('email').value.trim();
-    const storeUrl = document.getElementById('store_url').value.trim();
-    const btn = document.getElementById('checkout-btn');
-
-    if (!email) { alert('Please enter your email'); return; }
-    if (!storeUrl) { alert('Please enter your Shopify store URL'); return; }
-
-    // Basic URL validation
-    if (!storeUrl.includes('.myshopify.com') && !storeUrl.includes('http')) {
-      alert('Please enter a valid Shopify store URL (e.g., yourstore.myshopify.com)');
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Redirecting...';
-
-    // Save customer data to our backend, then redirect to Stripe
-    const customerData = {
-      email: email,
-      store_url: storeUrl,
-      timestamp: new Date().toISOString()
-    };
-
-    // Save to backend (fire and forget — Stripe payment is the source of truth)
-    fetch('https://klarr.space/api/customer', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(customerData)
-    }).catch(() => {}); // Ignore errors — Stripe webhook will catch it anyway
-
-    // Redirect to Stripe Checkout Payment Link with prefilled email
-    const stripeUrl = 'https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00?prefilled_email=' + encodeURIComponent(email);
-    window.location.href = stripeUrl;
-  }
-  </script>
 
   <!-- Footer -->
   <footer>
