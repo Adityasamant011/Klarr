@@ -524,6 +524,26 @@ section h2 {
   font-weight: 400;
 }
 
+.step-security {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(82, 200, 120, 0.06);
+  border: 1px solid rgba(82, 200, 120, 0.12);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: #52c878;
+  line-height: 1.5;
+}
+
+.step-security-icon {
+  flex-shrink: 0;
+  font-size: 13px;
+  margin-top: 1px;
+}
+
 /* ---- Testimonials ---- */
 .testimonials { padding: 5rem 0; }
 
