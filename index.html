@@ -340,8 +340,7 @@
           <a href="https://buy.stripe.com/aFa5kDggNcSu1RGgmIfAc02" class="btn-ghost btn-full">Start with Pro</a>
         </div>
       </div>
-      <p class="price-note fade-in" style="margin-top: 2rem; text-align: center;">Finaloop charges $245/mo. Pilot.com charges $1,000+/mo. QuickBooks makes you do the work yourself. Klarr delivers from $99/mo.</p>
-      <p class="price-note fade-in" style="text-align: center; margin-top: 0.5rem;">Cancel anytime. No long-term contracts. 24-hour delivery guarantee.</p>
+      <p class="price-note fade-in" style="text-align: center; margin-top: 1.5rem;">Cancel anytime. No long-term contracts. 24-hour delivery guarantee.</p>
     </div>
   </section>
 
@@ -397,9 +396,11 @@
     .final-cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
     .btn-large { padding: 14px 32px; font-size: 16px; }
     /* Pricing grid */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; }
-    .price-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem 1.5rem; text-align: center; transition: transform 0.2s ease, border-color 0.2s ease; position: relative; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; align-items: stretch; }
+    .price-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem 1.5rem; text-align: center; transition: transform 0.2s ease, border-color 0.2s ease; position: relative; display: flex; flex-direction: column; height: 100%; }
     .price-card:hover { transform: translateY(-4px); border-color: var(--text-dim); }
+    .price-card .price-features { flex: 1; }
+    .price-card .btn-full { margin-top: auto; }
     .btn-ghost { border: 1px solid var(--border); background: transparent; color: var(--text); }
     .btn-ghost:hover { border-color: var(--text-dim); background: transparent; }
     .price-card-popular { border-color: var(--accent); transform: scale(1.03); }
