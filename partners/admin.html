@@ -18,12 +18,24 @@
     .stat-card .num { font-size: 1.8rem; font-weight: 600; color: var(--text); }
     .stat-card .label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
     .stat-card.accent .num { color: var(--accent); }
+    .admin-section { margin-bottom: 32px; }
+    .admin-section h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
     table { width: 100%; border-collapse: collapse; }
     th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-alt); }
     td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--bg-card); }
-    .admin-section h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+    .btn-action { padding: 4px 10px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 11px; cursor: pointer; margin-right: 4px; }
+    .btn-action:hover { border-color: var(--text-dim); }
+    .btn-approve { background: rgba(82, 200, 120, 0.1); color: #52c878; border-color: rgba(82, 200, 120, 0.3); }
+    .btn-approve:hover { background: rgba(82, 200, 120, 0.2); }
+    .payout-pending { color: #b8860b; }
+    .payout-paid { color: #52c878; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .tab { padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; cursor: pointer; }
+    .tab.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
@@ -38,7 +50,7 @@
   <div class="admin-container">
     <div class="admin-header">
       <h1>Partner Program Admin</h1>
-      <span style="font-size:12px;color:var(--text-dim);">Bookmark this page</span>
+      <button class="btn-action" onclick="exportData()">Export CSV</button>
     </div>
 
     <div class="stats-grid">
@@ -48,16 +60,101 @@
       <div class="stat-card accent"><div class="num" id="admin-total-earnings">$0/mo</div><div class="label">Monthly Commission</div></div>
     </div>
 
-    <div class="admin-section">
-      <h2>All Partners</h2>
-      <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Clicks</th><th>Referrals</th><th>Earnings</th></tr></thead>
-        <tbody id="admin-partners-body"><tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:40px;">No partners yet. Share klarr.space/partners/</td></tr></tbody>
-      </table>
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('partners')">Partners</div>
+      <div class="tab" onclick="showTab('payouts')">Payout Requests</div>
+    </div>
+
+    <div id="tab-partners" class="tab-content active">
+      <div class="admin-section">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Clicks</th><th>Referrals</th><th>Earnings</th></tr></thead>
+          <tbody id="admin-partners-body"><tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:40px;">No partners yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="tab-payouts" class="tab-content">
+      <div class="admin-section">
+        <table>
+          <thead><tr><th>Partner</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="admin-payouts-body"><tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:40px;">No payout requests.</td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <script src="/partners/partner-system.js"></script>
-  <script>loadAdmin();</script>
+  <script type="module">
+    import { getAllPartners } from '/partners/firebase-init.js';
+
+    window.showTab = function(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelector('.tab:nth-child(' + (tab === 'partners' ? 1 : 2) + ')').classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    };
+
+    window.exportData = function() {
+      var partners = window._adminData ? window._adminData.partners : [];
+      if (partners.length === 0) { alert('No data to export'); return; }
+      var csv = 'Name,Email,Role,Joined,Clicks,Referrals,Earnings\n';
+      partners.forEach(function(p) {
+        csv += '"' + p.name + '","' + p.email + '","' + (p.role || '') + '","' + (p.createdAt && p.createdAt.toDate ? p.createdAt.toDate().toLocaleDateString() : '') + '",0,0,0\n';
+      });
+      var a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = 'klarr-partners.csv';
+      a.click();
+    };
+
+    (async () => {
+      try {
+        var data = await getAllPartners();
+        window._adminData = data;
+
+        document.getElementById('admin-total-partners').textContent = data.partners.length;
+        document.getElementById('admin-total-clicks').textContent = data.clicks.length;
+        document.getElementById('admin-total-signups').textContent = data.referrals.length;
+        var totalE = data.referrals.reduce(function(s, r) { return s + r.commission; }, 0);
+        document.getElementById('admin-total-earnings').textContent = '$' + totalE.toFixed(2) + '/mo';
+
+        // Partners table
+        if (data.partners.length > 0) {
+          document.getElementById('admin-partners-body').innerHTML = data.partners.map(function(p) {
+            var clicks = data.clicks.filter(function(c) { return c.partnerId === p.id; }).length;
+            var refs = data.referrals.filter(function(r) { return r.partnerId === p.id; });
+            var earnings = refs.reduce(function(s, r) { return s + r.commission; }, 0);
+            var d = p.createdAt && p.createdAt.toDate ? p.createdAt.toDate().toLocaleDateString() : '—';
+            return '<tr><td><strong>' + p.name + '</strong></td><td>' + p.email + '</td><td>' + (p.role || '—') + '</td><td>' + d + '</td><td>' + clicks + '</td><td>' + refs.length + '</td><td style="color:var(--accent)">$' + earnings.toFixed(2) + '/mo</td></tr>';
+          }).join('');
+        }
+
+        // Payouts table
+        if (data.payouts && data.payouts.length > 0) {
+          document.getElementById('admin-payouts-body').innerHTML = data.payouts.map(function(pay) {
+            var partner = data.partners.find(function(p) { return p.id === pay.partnerId; });
+            var d = pay.createdAt && pay.createdAt.toDate ? pay.createdAt.toDate().toLocaleDateString() : '—';
+            var sc = pay.status === 'pending' ? 'payout-pending' : 'payout-paid';
+            var btn = pay.status === 'pending' ? '<button class="btn-action btn-approve" onclick="markPaid(\'' + pay.id + '\')">Mark Paid</button>' : '';
+            return '<tr><td>' + (partner ? partner.name : pay.partnerId.substring(0, 15)) + '</td><td>$' + pay.amount.toFixed(2) + '</td><td class="' + sc + '">' + pay.status + '</td><td>' + d + '</td><td>' + btn + '</td></tr>';
+          }).join('');
+        }
+      } catch (e) {
+        console.error('Admin load failed:', e);
+        document.getElementById('admin-partners-body').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#e05050;">Error loading data. Check Firebase config.</td></tr>';
+      }
+    })();
+
+    window.markPaid = async function(payoutId) {
+      if (!confirm('Mark this payout as paid?')) return;
+      try {
+        var { getFirestore, doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        var db = getFirestore();
+        await updateDoc(doc(db, 'payouts', payoutId), { status: 'paid', paidAt: new Date() });
+        alert('Marked as paid!');
+        location.reload();
+      } catch (e) { alert('Error: ' + e.message); }
+    };
+  </script>
 </body>
 </html>

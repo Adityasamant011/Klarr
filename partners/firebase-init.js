@@ -145,16 +145,18 @@ export async function getPartnerStats(partnerId) {
 export async function getAllPartners() {
   if (!db) return { partners: [], clicks: [], referrals: [] };
 
-  const [partnersSnap, clicksSnap, referralsSnap] = await Promise.all([
+  const [partnersSnap, clicksSnap, referralsSnap, payoutsSnap] = await Promise.all([
     getDocs(query(collection(db, 'partners'), orderBy('createdAt', 'desc'))),
     getDocs(collection(db, 'clicks')),
-    getDocs(collection(db, 'referrals'))
+    getDocs(collection(db, 'referrals')),
+    getDocs(query(collection(db, 'payouts'), orderBy('createdAt', 'desc')))
   ]);
 
   return {
     partners: partnersSnap.docs.map(d => ({ ...d.data(), _id: d.id })),
     clicks: clicksSnap.docs.map(d => d.data()),
-    referrals: referralsSnap.docs.map(d => d.data())
+    referrals: referralsSnap.docs.map(d => d.data()),
+    payouts: payoutsSnap.docs.map(d => ({ ...d.data(), _id: d.id }))
   };
 }
 
