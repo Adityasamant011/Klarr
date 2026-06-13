@@ -94,7 +94,6 @@ export async function createPartner(data) {
     id: id,
     name: data.name,
     email: data.email,
-    website: data.website || '',
     role: data.role || '',
     clients: data.clients || '',
     createdAt: serverTimestamp(),
