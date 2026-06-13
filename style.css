@@ -544,6 +544,31 @@ section h2 {
   margin-top: 1px;
 }
 
+.how-security {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 520px;
+  margin: 24px auto 0;
+  padding: 14px 18px;
+  background: rgba(82, 200, 120, 0.06);
+  border: 1px solid rgba(82, 200, 120, 0.15);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.how-security strong {
+  color: #52c878;
+  font-weight: 500;
+}
+
+.how-security-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
 /* ---- Testimonials ---- */
 .testimonials { padding: 5rem 0; }
 
