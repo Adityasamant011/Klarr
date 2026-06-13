@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Partner Program | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=9">
+  <style>
+    .admin-container { max-width: 1000px; margin: 0 auto; padding: 100px 24px 80px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .admin-header h1 { font-size: 1.4rem; font-weight: 600; color: var(--text); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+    .stat-card .num { font-size: 1.8rem; font-weight: 600; color: var(--text); }
+    .stat-card .label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+    .stat-card.accent .num { color: var(--accent); }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-alt); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-card); }
+    .admin-section h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+    @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
+      <div class="nav-right"><a href="/" class="nav-cta">Back to Site</a></div>
+    </div>
+  </nav>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Partner Program Admin</h1>
+      <span style="font-size:12px;color:var(--text-dim);">Bookmark this page</span>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num" id="admin-total-partners">0</div><div class="label">Partners</div></div>
+      <div class="stat-card"><div class="num" id="admin-total-clicks">0</div><div class="label">Total Clicks</div></div>
+      <div class="stat-card"><div class="num" id="admin-total-signups">0</div><div class="label">Signups</div></div>
+      <div class="stat-card accent"><div class="num" id="admin-total-earnings">$0/mo</div><div class="label">Monthly Commission</div></div>
+    </div>
+
+    <div class="admin-section">
+      <h2>All Partners</h2>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Clicks</th><th>Referrals</th><th>Earnings</th></tr></thead>
+        <tbody id="admin-partners-body"><tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:40px;">No partners yet. Share klarr.space/partners/</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="/partners/partner-system.js"></script>
+  <script>loadAdmin();</script>
+</body>
+</html>

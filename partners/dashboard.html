@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Dashboard | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=9">
+  <style>
+    .dash-container { max-width: 900px; margin: 0 auto; padding: 100px 24px 80px; }
+    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .dash-header h1 { font-size: 1.4rem; font-weight: 600; color: var(--text); }
+    .dash-header p { font-size: 13px; color: var(--text-muted); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+    .stat-card .num { font-size: 1.8rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+    .stat-card .label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+    .stat-card.highlight .num { color: var(--accent); }
+    .link-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 32px; }
+    .link-box label { font-size: 11px; font-weight: 500; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 8px; }
+    .link-input-wrap { display: flex; gap: 8px; }
+    .link-input-wrap input { flex: 1; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 13px; font-family: inherit; }
+    .link-input-wrap input:focus { outline: none; border-color: var(--accent); }
+    .dash-copy-btn { padding: 10px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 13px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .dash-copy-btn:hover { border-color: var(--text-dim); }
+    .link-hint { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+    .dash-section { margin-bottom: 32px; }
+    .dash-section h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
+    tr:last-child td { border-bottom: none; }
+    .payout-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; }
+    .payout-info .amount { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+    .payout-info .label { font-size: 12px; color: var(--text-dim); }
+    .btn-payout { padding: 10px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+    .btn-payout:hover { opacity: 0.85; }
+    @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/#how">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/partners/">Partner Program</a>
+      </div>
+      <div class="nav-right"><a href="/tools/" class="nav-cta">Free Health Check</a></div>
+    </div>
+  </nav>
+
+  <div class="dash-container">
+    <div class="dash-header">
+      <div><h1>Partner Dashboard</h1><p>Welcome, <strong id="dash-name" style="color:var(--text);">Partner</strong></p></div>
+      <a href="/partners/" style="font-size:13px;color:var(--accent);text-decoration:none;">← Back to Partner Page</a>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num" id="dash-clicks">0</div><div class="label">Clicks</div></div>
+      <div class="stat-card"><div class="num" id="dash-signups">0</div><div class="label">Signups</div></div>
+      <div class="stat-card"><div class="num" id="dash-active">0</div><div class="label">Active</div></div>
+      <div class="stat-card highlight"><div class="num" id="dash-earnings">$0/mo</div><div class="label">Earnings</div></div>
+    </div>
+
+    <div class="link-box">
+      <label>Your Referral Link</label>
+      <div class="link-input-wrap">
+        <input type="text" id="dash-link" readonly>
+        <button class="dash-copy-btn" onclick="copyDashLink()">Copy</button>
+      </div>
+      <p class="link-hint">Share this link anywhere. 90-day cookie tracking. 20% recurring on all plans.</p>
+    </div>
+
+    <div class="payout-bar">
+      <div class="payout-info"><div class="amount" id="dash-balance">$0.00</div><div class="label">Current Balance (min payout $25)</div></div>
+      <button class="btn-payout" onclick="requestPayout()">Request Payout</button>
+    </div>
+
+    <div class="dash-section">
+      <h2>Your Referrals</h2>
+      <table>
+        <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>Commission</th></tr></thead>
+        <tbody id="dash-signups-body"><tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:20px;">No signups yet. Share your link!</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer><div class="container"><span>© 2026 Klarr</span><span>·</span><a href="/partners/" style="color:var(--accent);">Partner Program</a></div></footer>
+  <script src="/partners/partner-system.js"></script>
+  <script>loadDashboard();</script>
+</body>
+</html>
