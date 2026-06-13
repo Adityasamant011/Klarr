@@ -141,6 +141,7 @@ nav {
 .btn-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   background: var(--text);
   color: var(--bg);
@@ -160,6 +161,7 @@ nav {
 .btn-ghost {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   background: var(--bg-elevated);
   color: var(--text);
