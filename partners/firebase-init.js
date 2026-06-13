@@ -1,5 +1,5 @@
 // Klarr Partner Referral System — Firebase Backend
-// Uses Firestore for real cross-browser tracking
+// Real cross-browser tracking with Firestore
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
@@ -7,14 +7,15 @@ import {
   doc, getDoc, updateDoc, serverTimestamp, orderBy, limit
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-// Firebase config — replace with your own after creating a Firebase project
+// Your real Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyDemoKey_ReplaceWithYourOwn",
-  authDomain: "klarr-space.firebaseapp.com",
-  projectId: "klarr-space",
-  storageBucket: "klarr-space.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
+  apiKey: "AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",
+  authDomain: "klarr-fa508.firebaseapp.com",
+  projectId: "klarr-fa508",
+  storageBucket: "klarr-fa508.firebasestorage.app",
+  messagingSenderId: "1059958349807",
+  appId: "1:1059958349807:web:56a25844725fce7183e01a",
+  measurementId: "G-JEDM340TC4"
 };
 
 let app, db;
@@ -22,6 +23,7 @@ let app, db;
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
+  console.log('Firebase initialized');
 } catch (e) {
   console.error('Firebase init failed:', e);
 }
@@ -38,9 +40,9 @@ export async function trackReferralClick() {
       partnerId: ref,
       timestamp: serverTimestamp(),
       page: window.location.pathname,
-      referrer: document.referrer || 'direct',
-      userAgent: navigator.userAgent.substring(0, 200)
+      referrer: document.referrer || 'direct'
     });
+    console.log('Referral click tracked:', ref);
   } catch (e) { console.error('Click tracking failed:', e); }
 
   // Set 90-day cookie for attribution
@@ -65,7 +67,6 @@ export async function recordReferredSignup(email, plan) {
   const commission = commissions[plan] || 0;
 
   try {
-    // Check if already recorded
     const existing = await getDocs(
       query(collection(db, 'referrals'), where('email', '==', email))
     );
@@ -79,6 +80,7 @@ export async function recordReferredSignup(email, plan) {
       status: 'active',
       createdAt: serverTimestamp()
     });
+    console.log('Referred signup recorded:', email, plan);
   } catch (e) { console.error('Signup recording failed:', e); }
 }
 
@@ -168,7 +170,6 @@ export async function createPayoutRequest(partnerId, amount) {
     createdAt: serverTimestamp()
   });
 
-  // Mark referrals as payout requested
   const refs = await getDocs(
     query(collection(db, 'referrals'),
       where('partnerId', '==', partnerId),
