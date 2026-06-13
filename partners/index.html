@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klarr Partner Program — Refer & Earn 20% Recurring</title>
-  <meta name="description" content="Join the Klarr partner program. Earn 20% recurring commission for every Shopify merchant you refer. No minimums, no exclusivity.">
-  <meta name="google-site-verification" content="4KpN-VNCi489u4qDRZlknM6Ds37Tjg9rDn3mpWuXHsA" />
+  <meta name="description" content="Join the Klarr partner program. Earn 20% recurring commission for every Shopify merchant you refer.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,18 +16,17 @@
     .partner-hero p { font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; }
     .partner-hero .big-commission { font-size: 3rem; font-weight: 600; color: var(--accent); letter-spacing: -0.03em; }
     .partner-hero .commission-label { font-size: 14px; color: var(--text-dim); margin-top: 4px; margin-bottom: 32px; }
-
-    .signup-card { max-width: 480px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 32px; }
+    .signup-card { max-width: 480px; margin: 0 auto 60px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 32px; }
     .signup-card h2 { font-size: 1.2rem; font-weight: 500; margin-bottom: 24px; color: var(--text); }
     .field { margin-bottom: 16px; }
     .field label { display: block; font-size: 11px; font-weight: 500; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .field input, .field select { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 14px; font-family: inherit; transition: border-color 0.15s; }
+    .field input, .field select { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 14px; font-family: inherit; }
     .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
     .field input::placeholder { color: var(--text-dim); }
     .field select option { background: var(--bg-alt); }
-    .btn-submit { width: 100%; padding: 12px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; font-family: inherit; margin-top: 8px; }
+    .btn-submit { width: 100%; padding: 12px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 8px; }
     .btn-submit:hover { opacity: 0.85; }
-
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
     .success-box { display: none; text-align: center; padding: 20px 0; }
     .success-box .checkmark { font-size: 48px; margin-bottom: 16px; }
     .success-box h3 { font-size: 1.2rem; font-weight: 500; color: var(--text); margin-bottom: 8px; }
@@ -38,114 +36,67 @@
     .referral-link-box input:focus { outline: none; }
     .btn-copy { padding: 6px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 12px; cursor: pointer; font-family: inherit; white-space: nowrap; }
     .btn-copy:hover { border-color: var(--text-dim); }
-
-    .benefits { max-width: 800px; margin: 60px auto 0; padding: 0 24px; }
+    .benefits { max-width: 800px; margin: 0 auto; padding: 0 24px 60px; }
     .benefits h2 { font-size: 1.4rem; font-weight: 600; text-align: center; margin-bottom: 32px; color: var(--text); }
     .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .benefit { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; text-align: center; }
     .benefit .icon { font-size: 24px; margin-bottom: 12px; display: block; }
     .benefit h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
     .benefit p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-
-    .faq-section { max-width: 640px; margin: 60px auto; padding: 0 24px 80px; }
+    .faq-section { max-width: 640px; margin: 0 auto; padding: 0 24px 80px; }
     .faq-section h2 { font-size: 1.4rem; font-weight: 600; text-align: center; margin-bottom: 32px; color: var(--text); }
     .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; }
     .faq-q { font-size: 14px; font-weight: 500; color: var(--text); }
     .faq-a { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-top: 8px; }
-
-    @media (max-width: 640px) {
-      .benefits-grid { grid-template-columns: 1fr; }
-      .partner-hero .big-commission { font-size: 2.4rem; }
-    }
+    @media (max-width: 640px) { .benefits-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-
   <nav>
     <div class="nav-inner">
-      <a href="/" class="logo">
-        <img src="/favicon.svg" alt="Klarr">
-      </a>
+      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
       <div class="nav-links">
         <a href="/#features">Features</a>
         <a href="/#how">How it works</a>
         <a href="/#pricing">Pricing</a>
         <a href="/#faq">FAQ</a>
         <a href="/blog/">Blog</a>
+        <a href="/partners/">Partners</a>
       </div>
-      <div class="nav-right">
-        <a href="/tools/" class="nav-cta">Free Health Check</a>
-      </div>
+      <div class="nav-right"><a href="/tools/" class="nav-cta">Free Health Check</a></div>
     </div>
   </nav>
 
-  <!-- Hero -->
   <div class="partner-hero">
     <div class="big-commission">20%</div>
     <div class="commission-label">recurring commission. forever.</div>
     <h1>Refer Shopify merchants. Earn passive income.</h1>
     <p>Join the Klarr partner program. Every merchant you refer earns you 20% recurring commission — for as long as they stay. No minimums. No exclusivity. No risk.</p>
-    <a href="#signup" class="btn-primary" style="text-decoration:none;">Become a Partner →</a>
+    <a href="#signup" class="btn-primary" style="text-decoration:none;">Become a Partner</a>
   </div>
 
-  <!-- Benefits -->
   <div class="benefits">
     <h2>Why partner with Klarr?</h2>
     <div class="benefits-grid">
-      <div class="benefit">
-        <span class="icon">💰</span>
-        <h3>20% Recurring</h3>
-        <p>$29.80/mo per referral (Growth plan). Refer 10 merchants = $298/mo passive income.</p>
-      </div>
-      <div class="benefit">
-        <span class="icon">🔗</span>
-        <h3>Your Unique Link</h3>
-        <p>Get a personal referral link to share with clients, on your website, or in your newsletter.</p>
-      </div>
-      <div class="benefit">
-        <span class="icon">📊</span>
-        <h3>Real-time Dashboard</h3>
-        <p>Track clicks, signups, and earnings in your partner dashboard. Always know where you stand.</p>
-      </div>
-      <div class="benefit">
-        <span class="icon">⚡</span>
-        <h3>Zero Work Required</h3>
-        <p>You share your link. We handle onboarding, bookkeeping, and support. Completely hands-off.</p>
-      </div>
-      <div class="benefit">
-        <span class="icon">🔓</span>
-        <h3>No Exclusivity</h3>
-        <p>Recommend other solutions too. We don't care. Our product sells itself.</p>
-      </div>
-      <div class="benefit">
-        <span class="icon">💸</span>
-        <h3>Paid Monthly</h3>
-        <p>Commissions paid via PayPal or bank transfer. Minimum payout $25.</p>
-      </div>
+      <div class="benefit"><span class="icon">💰</span><h3>20% Recurring</h3><p>$29.80/mo per referral. Refer 10 merchants = $298/mo passive income.</p></div>
+      <div class="benefit"><span class="icon">🔗</span><h3>Your Unique Link</h3><p>Get a personal referral link. Share it anywhere — Twitter, email, your website.</p></div>
+      <div class="benefit"><span class="icon">📊</span><h3>Real-time Dashboard</h3><p>Track clicks, signups, and earnings in real-time. Always know where you stand.</p></div>
+      <div class="benefit"><span class="icon">⚡</span><h3>Zero Work Required</h3><p>You share your link. We handle everything else. Completely hands-off.</p></div>
+      <div class="benefit"><span class="icon">🔓</span><h3>No Exclusivity</h3><p>Recommend other solutions too. Our product sells itself.</p></div>
+      <div class="benefit"><span class="icon">💸</span><h3>Paid Monthly</h3><p>Commissions paid via PayPal or bank transfer. Minimum payout $25.</p></div>
     </div>
   </div>
 
-  <!-- Signup Form -->
-  <div id="signup" style="padding: 60px 24px;">
+  <div id="signup" style="padding: 0 24px;">
     <div class="signup-card">
       <div id="signup-form">
         <h2>Sign up — it's free</h2>
-        <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="p_name" placeholder="Your name" required>
-        </div>
-        <div class="field">
-          <label>Email</label>
-          <input type="email" id="p_email" placeholder="you@example.com" required>
-        </div>
-        <div class="field">
-          <label>Website / Twitter / LinkedIn</label>
-          <input type="url" id="p_website" placeholder="https://yourwebsite.com">
-        </div>
-        <div class="field">
-          <label>How do you work with Shopify merchants?</label>
+        <div class="field"><label>Full Name</label><input type="text" id="p_name" placeholder="Your name" required></div>
+        <div class="field"><label>Email</label><input type="email" id="p_email" placeholder="you@example.com" required></div>
+        <div class="field"><label>Website / Twitter / LinkedIn</label><input type="url" id="p_website" placeholder="https://"></div>
+        <div class="field"><label>How do you work with Shopify merchants?</label>
           <select id="p_role">
-            <option value="">Select one...</option>
+            <option value="">Select...</option>
             <option value="developer">Shopify Developer</option>
             <option value="designer">Shopify Designer</option>
             <option value="agency">Agency</option>
@@ -155,69 +106,80 @@
             <option value="other">Other</option>
           </select>
         </div>
-        <div class="field">
-          <label>How many merchant clients do you work with? (approx)</label>
+        <div class="field"><label>How many merchant clients do you work with?</label>
           <select id="p_clients">
-            <option value="">Select one...</option>
+            <option value="">Select...</option>
             <option value="1-5">1-5</option>
             <option value="5-20">5-20</option>
             <option value="20-50">20-50</option>
             <option value="50+">50+</option>
           </select>
         </div>
-        <button class="btn-submit" onclick="signupPartner()">Create My Partner Account →</button>
+        <button class="btn-submit" id="btn-signup" onclick="handleSignup()">Create My Partner Account</button>
       </div>
-
       <div id="success-box" class="success-box">
         <div class="checkmark">🎉</div>
-        <h3>You're in!</h3>
-        <p>Your partner account is ready. Here is your unique referral link — share it anywhere:</p>
+        <h3>You are in!</h3>
+        <p>Your partner account is ready. Here is your unique referral link:</p>
         <div class="referral-link-box">
           <input type="text" id="ref-link" readonly>
           <button class="btn-copy" onclick="copyLink()">Copy</button>
         </div>
-        <p style="font-size: 12px; color: var(--text-dim);">Save this link. You can access your dashboard anytime at:<br><strong>klarr.space/partners/dashboard.html?id=<span id="partner-id"></span></strong></p>
-        <a href="#" id="dashboard-link" class="btn-primary" style="text-decoration:none; display:inline-block; margin-top:16px;">Open Your Dashboard →</a>
+        <p style="font-size:12px;color:var(--text-dim);">Dashboard: <strong id="dash-url"></strong></p>
+        <a href="#" id="dashboard-link" class="btn-primary" style="text-decoration:none;display:inline-block;margin-top:16px;">Open Your Dashboard</a>
       </div>
     </div>
   </div>
 
-  <!-- FAQ -->
   <div class="faq-section">
     <h2>FAQ</h2>
-    <div class="faq-item">
-      <div class="faq-q">How does tracking work?</div>
-      <div class="faq-a">When someone clicks your referral link, we track them with a cookie. If they sign up within 90 days, you get credit for the referral.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">How much do I earn?</div>
-      <div class="faq-a">20% of the customer's monthly plan. Growth plan ($149/mo) = $29.80/mo commission. Pro plan ($249/mo) = $49.80/mo. Starter ($99/mo) = $19.80/mo.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">When do I get paid?</div>
-      <div class="faq-a">Commissions accrue monthly. When your balance reaches $25, you can request a payout via PayPal or bank transfer.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Is there a contract?</div>
-      <div class="faq-a">No. You can leave anytime. No exclusivity requirements.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Can I see my referrals?</div>
-      <div class="faq-a">Yes. Your partner dashboard shows clicks, signups, active customers, and total earnings.</div>
-    </div>
+    <div class="faq-item"><div class="faq-q">How does tracking work?</div><div class="faq-a">When someone clicks your referral link, we track them with a 90-day cookie. If they sign up within 90 days, you get credit.</div></div>
+    <div class="faq-item"><div class="faq-q">How much do I earn?</div><div class="faq-a">20% of the customer's monthly plan. Growth ($149) = $29.80/mo. Pro ($249) = $49.80/mo. Starter ($99) = $19.80/mo.</div></div>
+    <div class="faq-item"><div class="faq-q">When do I get paid?</div><div class="faq-a">Commissions accrue monthly. When your balance reaches $25, request a payout via PayPal or bank transfer.</div></div>
+    <div class="faq-item"><div class="faq-q">Is there a contract?</div><div class="faq-a">No. Leave anytime. No exclusivity requirements.</div></div>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <span>© 2026 Klarr</span>
-      <span>·</span>
-      <span>All rights reserved</span>
-      <span>·</span>
-      <a href="/partners/" style="color: var(--accent);">Partner Program</a>
-    </div>
-  </footer>
+  <footer><div class="container"><span>© 2026 Klarr</span><span>·</span><a href="/partners/" style="color:var(--accent);">Partner Program</a></div></footer>
 
-  <script src="/partners/partner-system.js"></script>
+  <script type="module">
+    import { createPartner } from '/partners/firebase-init.js';
+
+    window.handleSignup = async function() {
+      const name = document.getElementById('p_name').value.trim();
+      const email = document.getElementById('p_email').value.trim();
+      if (!name || !email) { alert('Name and email required.'); return; }
+
+      const btn = document.getElementById('btn-signup');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      try {
+        const result = await createPartner({
+          name, email,
+          website: document.getElementById('p_website').value.trim(),
+          role: document.getElementById('p_role').value,
+          clients: document.getElementById('p_clients').value
+        });
+
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('success-box').style.display = 'block';
+        document.getElementById('ref-link').value = result.link;
+        document.getElementById('dash-url').textContent = result.dashboardUrl;
+        document.getElementById('dashboard-link').href = result.dashboardUrl;
+      } catch (e) {
+        alert('Error: ' + e.message);
+        btn.disabled = false;
+        btn.textContent = 'Create My Partner Account';
+      }
+    };
+
+    window.copyLink = function() {
+      const input = document.getElementById('ref-link');
+      navigator.clipboard.writeText(input.value);
+      const btn = document.querySelector('.btn-copy');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    };
+  </script>
 </body>
 </html>

@@ -25,19 +25,19 @@
     .link-input-wrap input { flex: 1; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 13px; font-family: inherit; }
     .link-input-wrap input:focus { outline: none; border-color: var(--accent); }
     .dash-copy-btn { padding: 10px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 13px; cursor: pointer; font-family: inherit; white-space: nowrap; }
-    .dash-copy-btn:hover { border-color: var(--text-dim); }
     .link-hint { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+    .payout-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; }
+    .payout-info .amount { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+    .payout-info .label { font-size: 12px; color: var(--text-dim); }
+    .btn-payout { padding: 10px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+    .btn-payout:hover { opacity: 0.85; }
     .dash-section { margin-bottom: 32px; }
     .dash-section h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
     table { width: 100%; border-collapse: collapse; }
     th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
     td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
     tr:last-child td { border-bottom: none; }
-    .payout-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; }
-    .payout-info .amount { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-    .payout-info .label { font-size: 12px; color: var(--text-dim); }
-    .btn-payout { padding: 10px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
-    .btn-payout:hover { opacity: 0.85; }
+    .loading { text-align: center; padding: 40px; color: var(--text-dim); }
     @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
@@ -45,54 +45,84 @@
   <nav>
     <div class="nav-inner">
       <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
-      <div class="nav-links">
-        <a href="/#features">Features</a>
-        <a href="/#how">How it works</a>
-        <a href="/#pricing">Pricing</a>
-        <a href="/partners/">Partner Program</a>
-      </div>
+      <div class="nav-links"><a href="/partners/">Partner Program</a></div>
       <div class="nav-right"><a href="/tools/" class="nav-cta">Free Health Check</a></div>
     </div>
   </nav>
 
   <div class="dash-container">
     <div class="dash-header">
-      <div><h1>Partner Dashboard</h1><p>Welcome, <strong id="dash-name" style="color:var(--text);">Partner</strong></p></div>
-      <a href="/partners/" style="font-size:13px;color:var(--accent);text-decoration:none;">← Back to Partner Page</a>
+      <div><h1>Partner Dashboard</h1><p>Welcome, <strong id="dash-name" style="color:var(--text);">loading...</strong></p></div>
+      <a href="/partners/" style="font-size:13px;color:var(--accent);">← Partner Page</a>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card"><div class="num" id="dash-clicks">0</div><div class="label">Clicks</div></div>
-      <div class="stat-card"><div class="num" id="dash-signups">0</div><div class="label">Signups</div></div>
-      <div class="stat-card"><div class="num" id="dash-active">0</div><div class="label">Active</div></div>
-      <div class="stat-card highlight"><div class="num" id="dash-earnings">$0/mo</div><div class="label">Earnings</div></div>
-    </div>
-
-    <div class="link-box">
-      <label>Your Referral Link</label>
-      <div class="link-input-wrap">
-        <input type="text" id="dash-link" readonly>
-        <button class="dash-copy-btn" onclick="copyDashLink()">Copy</button>
-      </div>
-      <p class="link-hint">Share this link anywhere. 90-day cookie tracking. 20% recurring on all plans.</p>
-    </div>
-
-    <div class="payout-bar">
-      <div class="payout-info"><div class="amount" id="dash-balance">$0.00</div><div class="label">Current Balance (min payout $25)</div></div>
-      <button class="btn-payout" onclick="requestPayout()">Request Payout</button>
-    </div>
-
-    <div class="dash-section">
-      <h2>Your Referrals</h2>
-      <table>
-        <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>Commission</th></tr></thead>
-        <tbody id="dash-signups-body"><tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:20px;">No signups yet. Share your link!</td></tr></tbody>
-      </table>
-    </div>
+    <div id="dash-content"><div class="loading">Loading your stats...</div></div>
   </div>
 
-  <footer><div class="container"><span>© 2026 Klarr</span><span>·</span><a href="/partners/" style="color:var(--accent);">Partner Program</a></div></footer>
-  <script src="/partners/partner-system.js"></script>
-  <script>loadDashboard();</script>
+  <footer><div class="container"><span>© 2026 Klarr</span></div></footer>
+
+  <script type="module">
+    import { getPartnerStats } from '/partners/firebase-init.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const partnerId = params.get('id');
+
+    if (!partnerId) {
+      document.getElementById('dash-content').innerHTML = '<div class="loading">No partner ID found. <a href="/partners/" style="color:var(--accent);">Sign up first</a>.</div>';
+    } else {
+      (async () => {
+        try {
+          const stats = await getPartnerStats(partnerId);
+          if (!stats) { document.getElementById('dash-content').innerHTML = '<div class="loading">Data not found.</div>'; return; }
+
+          document.getElementById('dash-name').textContent = partnerId.substring(0, 20) + '...';
+
+          const refLink = 'https://klarr.space/?ref=' + partnerId;
+
+          let refRows = '';
+          if (stats.referrals.length === 0) {
+            refRows = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:20px;">No signups yet. Share your link!</td></tr>';
+          } else {
+            refRows = stats.referrals.map(r => {
+              const d = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString() : '—';
+              const sc = r.status === 'active' ? '#52c878' : '#8b8880';
+              return `<tr><td>${d}</td><td>@${r.email.split('@')[0]}</td><td>${r.plan}</td><td style="color:${sc}">${r.status}</td><td style="color:var(--accent)">$${r.commission.toFixed(2)}/mo</td></tr>`;
+            }).join('');
+          }
+
+          document.getElementById('dash-content').innerHTML = `
+            <div class="stats-grid">
+              <div class="stat-card"><div class="num">${stats.clicks}</div><div class="label">Clicks</div></div>
+              <div class="stat-card"><div class="num">${stats.signups}</div><div class="label">Signups</div></div>
+              <div class="stat-card"><div class="num">${stats.active}</div><div class="label">Active</div></div>
+              <div class="stat-card highlight"><div class="num">$${stats.earnings}/mo</div><div class="label">Earnings</div></div>
+            </div>
+            <div class="link-box">
+              <label>Your Referral Link</label>
+              <div class="link-input-wrap">
+                <input type="text" value="${refLink}" readonly id="ref-link-input">
+                <button class="dash-copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('ref-link-input').value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+              </div>
+              <p class="link-hint">Share anywhere. 90-day cookie. Works across all browsers.</p>
+            </div>
+            <div class="payout-bar">
+              <div class="payout-info"><div class="amount">$${(parseFloat(stats.earnings)).toFixed(2)}</div><div class="label">Est. monthly earnings (active referrals)</div></div>
+              <button class="btn-payout" onclick="alert('Payout system coming soon. Contact hello@klarr.space')">Request Payout</button>
+            </div>
+            <div class="dash-section">
+              <h2>Your Referrals</h2>
+              <table>
+                <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>You Earn</th></tr></thead>
+                <tbody>${refRows}</tbody>
+              </table>
+            </div>
+          `;
+        } catch (e) {
+          document.getElementById('dash-content').innerHTML = '<div class="loading">Error loading data. <a href="/partners/" style="color:var(--accent);">Try again</a>.</div>';
+          console.error(e);
+        }
+      })();
+    }
+  </script>
 </body>
 </html>

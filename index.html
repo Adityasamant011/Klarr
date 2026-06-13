@@ -419,5 +419,11 @@
   </footer>
 
   <script src="main.js"></script>
+  <script type="module">
+    import { trackReferralClick, getReferrerId } from '/partners/firebase-init.js';
+    trackReferralClick();
+    // Make referrer ID available for signup tracking
+    window.klarrReferrerId = getReferrerId();
+  </script>
 </body>
 </html>
