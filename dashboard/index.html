@@ -43,10 +43,9 @@
 <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
 
 <script type="module">
-  import { auth, onAuthStateChanged, signOut, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
+  const { auth, onAuthStateChanged, signOut, getCustomerProfile } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
   import { getFirestore, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
-
+  
   const db = getFirestore();
   updateNav();
   requireAuth('/login');

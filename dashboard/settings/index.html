@@ -13,7 +13,6 @@
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
-
 <div class="dash-layout">
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <div class="dash-sidebar" id="sidebar">
@@ -33,7 +32,6 @@
     <div class="page-header">
       <div><h1>⚙️ Settings</h1><p class="page-subtitle">Manage your account</p></div>
     </div>
-
     <div class="panel">
       <div class="panel-header"><h2>👤 Profile</h2></div>
       <form id="profile-form">
@@ -44,7 +42,6 @@
         <button type="submit" class="btn primary" id="btn-save-profile">💾 Save Changes</button>
       </form>
     </div>
-
     <div class="panel">
       <div class="panel-header"><h2>🔒 Change Password</h2></div>
       <form id="password-form" style="max-width:420px;">
@@ -54,7 +51,6 @@
         <button type="submit" class="btn primary" id="btn-save-pass">🔑 Update Password</button>
       </form>
     </div>
-
     <div class="panel" style="border-color:rgba(224,80,80,0.2);">
       <div class="panel-header"><h2>🛡️ Danger Zone</h2></div>
       <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">Once you delete your account, there is no going back. All your data will be permanently removed.</p>
@@ -62,16 +58,12 @@
     </div>
   </div>
 </div>
-
 <script type="module">
-  import { auth, onAuthStateChanged, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
-  import { getFirestore, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
-
-  var db = getFirestore();
-  updateNav();
-  requireAuth('/login');
-
+  const [{ auth, onAuthStateChanged, getCustomerProfile }, { getFirestore, doc, updateDoc }] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+  ]);
+  const db = getFirestore();
   window.showToast = function(msg, type) {
     var c = document.getElementById('toast-container');
     if (!c) { alert(msg); return; }
@@ -81,15 +73,12 @@
     c.appendChild(t);
     setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
   };
-
   onAuthStateChanged(auth, async function(user) {
     if (!user) return;
     var profile = { name: '', email: user.email };
     try { var p = await getCustomerProfile(user.uid); if (p) Object.assign(profile, p); } catch(e) {}
     document.getElementById('set-name').value = profile.name;
     document.getElementById('set-email').value = user.email;
-
-    // Save profile
     document.getElementById('profile-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       var btn = document.getElementById('btn-save-profile');
@@ -97,26 +86,18 @@
       try {
         await updateDoc(doc(db, 'customers', user.uid), { name: document.getElementById('set-name').value.trim() });
         showToast('Profile updated successfully!', 'success');
-      } catch(err) {
-        showToast('Error: ' + err.message, 'error');
-      }
+      } catch(err) { showToast('Error: ' + err.message, 'error'); }
       btn.disabled = false; btn.textContent = '💾 Save Changes';
     });
-
-    // Change password
     document.getElementById('password-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       var np = document.getElementById('new-pass').value;
       var cp = document.getElementById('conf-pass').value;
       if (np !== cp) { showToast('Passwords do not match', 'error'); return; }
-      if (np.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
-      showToast('Password change requires re-authentication. Please log in again to change your password.', 'info');
+      showToast('Password change requires re-authentication.', 'info');
     });
-
-    // Delete account
     document.getElementById('btn-delete').addEventListener('click', async function() {
-      if (!confirm('⚠️ Are you sure you want to delete your account? This cannot be undone.')) return;
-      if (!confirm('This will permanently delete all your data. Type "DELETE" to confirm.')) return;
+      if (!confirm('⚠️ Are you sure? This cannot be undone.')) return;
       showToast('Account deletion is not available in demo mode.', 'info');
     });
   });

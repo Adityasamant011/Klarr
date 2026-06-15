@@ -62,9 +62,8 @@
   </div>
 </div>
 <script type="module">
-  import { auth, onAuthStateChanged, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
-  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
-  updateNav(); requireAuth('/login');
+  const { auth, onAuthStateChanged, getCustomerProfile } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+    updateNav(); requireAuth('/login');
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
     const profile = await getCustomerProfile(user.uid) || {};
