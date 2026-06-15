@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Partner Dashboard | Klarr</title>
@@ -50,7 +49,7 @@
 
   async function loadDashboard() {
     try {
-      const { getPartnerStats, createPayoutRequest, getAllPartners } = await import('/partners/firebase-init.js');
+      const { getPartnerStats, createPayoutRequest, getAllPartners } = await import('https://klarr.space/partners/firebase-init.js');
       const stats = await getPartnerStats(partnerId);
       if (!stats) { document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Partner not found.</p></div>'; return; }
 
