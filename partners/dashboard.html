@@ -21,7 +21,6 @@
   <symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
   <symbol id="icon-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
   <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
-  <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
   <symbol id="icon-dollar" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
   <symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
 </svg>
@@ -33,15 +32,12 @@
     <a href="#" class="active"><svg class="icon"><use href="#icon-chart"/></svg> Overview</a>
     <a href="/partners/"><svg class="icon"><use href="#icon-home"/></svg> Partner Program</a>
   </div>
-
   <div class="main" id="dash-content">
     <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading...</div>
   </div>
 </div>
 
 <script type="module">
-  import { getPartnerStats, createPayoutRequest, getAllPartners } from '/partners/firebase-init.js';
-
   const params = new URLSearchParams(window.location.search);
   const partnerId = params.get('id');
 
@@ -53,6 +49,7 @@
 
   async function loadDashboard() {
     try {
+      const { getPartnerStats, createPayoutRequest, getAllPartners } = await import('/partners/firebase-init.js');
       const stats = await getPartnerStats(partnerId);
       if (!stats) { document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Partner not found.</p></div>'; return; }
 
@@ -69,7 +66,7 @@
         refRows = stats.referrals.map(r => {
           const d = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString() : '—';
           const sc = r.status === 'active' ? '#52c878' : (r.status === 'paid' ? '#8b8880' : '#b8860b');
-          return `<tr><td>${d}</td><td>${r.email.split('@')[0]}</td><td>${r.plan}</td><td style="color:${sc}">${r.status}</td><td style="color:var(--accent)">$${r.commission.toFixed(2)}/mo</td></tr>`;
+          return '<tr><td>' + d + '</td><td>' + r.email.split('@')[0] + '</td><td>' + r.plan + '</td><td style="color:' + sc + '">' + r.status + '</td><td style="color:var(--accent)">$' + r.commission.toFixed(2) + '/mo</td></tr>';
         }).join('');
       }
 
@@ -78,47 +75,37 @@
           <div><h1>Partner Dashboard</h1><p class="subtitle">Welcome, ${partner ? partner.name : 'Partner'}</p></div>
           <a href="/partners/" style="font-size:13px;color:var(--accent);text-decoration:none;">← Partner Page</a>
         </div>
-
         <div class="stats-grid">
           <div class="stat-card"><div class="label">Clicks</div><div class="value">${stats.clicks}</div></div>
           <div class="stat-card"><div class="label">Signups</div><div class="value">${stats.signups}</div></div>
           <div class="stat-card"><div class="label">Active</div><div class="value">${stats.active}</div></div>
           <div class="stat-card highlight"><div class="label">Monthly Earnings</div><div class="value">$${stats.earnings}/mo</div></div>
         </div>
-
         <div class="panel">
           <div class="panel-header"><h2>Your Referral Link</h2></div>
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="text" value="${refLink}" readonly id="ref-link-input" class="form-control" style="flex:1;">
-            <button class="btn sm" onclick="navigator.clipboard.writeText(document.getElementById('ref-link-input').value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+            <button class="btn sm" onclick="copyRefLink()">Copy</button>
           </div>
           <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">Share anywhere. 90-day cookie. 20% recurring on all plans.</p>
         </div>
-
         <div class="panel">
           <div class="panel-header"><h2>Earnings</h2></div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div style="font-size:1.5rem;font-weight:600;color:var(--accent);">$${balance}</div>
-              <div style="font-size:12px;color:var(--text-dim);">Available Balance</div>
-            </div>
+            <div><div style="font-size:1.5rem;font-weight:600;color:var(--accent);">$${balance}</div><div style="font-size:12px;color:var(--text-dim);">Available Balance</div></div>
             <button class="btn accent" id="btn-payout" ${canPayout ? '' : 'disabled'}>Request Payout</button>
           </div>
-          ${!canPayout ? `<p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Minimum payout is $25. You need $${(25 - parseFloat(balance)).toFixed(2)} more.</p>` : ''}
+          ${!canPayout ? '<p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Minimum payout is $25. You need $' + (25 - parseFloat(balance)).toFixed(2) + ' more.</p>' : ''}
         </div>
-
         <div class="panel">
           <div class="panel-header"><h2>Your Referrals</h2></div>
-          <table>
-            <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>You Earn</th></tr></thead>
-            <tbody>${refRows}</tbody>
-          </table>
+          <table><thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>You Earn</th></tr></thead><tbody>${refRows}</tbody></table>
         </div>
       `;
 
       if (canPayout) {
         document.getElementById('btn-payout').onclick = async function() {
-          if (!confirm('Request $' + balance + ' payout? This will be processed via PayPal or bank transfer within 7 business days.')) return;
+          if (!confirm('Request $' + balance + ' payout?')) return;
           try {
             await createPayoutRequest(partnerId, parseFloat(balance));
             document.getElementById('btn-payout').disabled = true;
@@ -128,10 +115,17 @@
         };
       }
     } catch (e) {
-      document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Error loading data. Refresh to try again.</p></div>';
+      document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Error loading data: ' + e.message + '</p></div>';
       console.error(e);
     }
   }
+
+  window.copyRefLink = function() {
+    navigator.clipboard.writeText(document.getElementById('ref-link-input').value);
+    var btn = document.querySelector('#ref-link-input + button');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  };
 </script>
 </body>
 </html>
