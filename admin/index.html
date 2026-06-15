@@ -88,12 +88,21 @@
   const db = getFirestore();
   updateNav();
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = '/login.html?redirect=/admin/'; return; }
-    const profile = await getCustomerProfile(user.uid);
-    if (!profile || profile.role !== 'admin') { window.location.href = '/dashboard.html'; return; }
-    await loadDashboard();
-  });
+  async function init() {
+    if (auth.currentUser) {
+      const profile = await getCustomerProfile(auth.currentUser.uid);
+      if (!profile || profile.role !== 'admin') { window.location.href = '/dashboard.html'; return; }
+      await loadDashboard();
+    } else {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = '/login.html?redirect=/admin/'; return; }
+        const profile = await getCustomerProfile(user.uid);
+        if (!profile || profile.role !== 'admin') { window.location.href = '/dashboard.html'; return; }
+        await loadDashboard();
+      });
+    }
+  }
+  init();
 
   async function loadDashboard() {
     try {
