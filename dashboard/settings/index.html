@@ -64,9 +64,9 @@
 </div>
 
 <script type="module">
-  import { auth, onAuthStateChanged, getCustomerProfile } from '/partners/firebase-init.js';
+  import { auth, onAuthStateChanged, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
   import { getFirestore, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { updateNav, requireAuth } from '/auth.js';
+  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
 
   var db = getFirestore();
   updateNav();

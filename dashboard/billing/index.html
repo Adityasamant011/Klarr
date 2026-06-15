@@ -62,8 +62,8 @@
   </div>
 </div>
 <script type="module">
-  import { auth, onAuthStateChanged, getCustomerProfile } from '/partners/firebase-init.js';
-  import { updateNav, requireAuth } from '/auth.js';
+  import { auth, onAuthStateChanged, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
+  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
   updateNav(); requireAuth('/login');
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;

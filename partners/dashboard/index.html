@@ -49,7 +49,7 @@
 
   async function loadDashboard() {
     try {
-      const { getPartnerStats, createPayoutRequest, getAllPartners } = await import('/partners/firebase-init.js');
+      const { getPartnerStats, createPayoutRequest, getAllPartners } = await import('https://klarr.space/partners/firebase-init.js');
       const stats = await getPartnerStats(partnerId);
       if (!stats) { document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Partner not found.</p></div>'; return; }
 
