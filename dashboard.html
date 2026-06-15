@@ -50,16 +50,16 @@
   <div class="dash-sidebar" id="sidebar">
     <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
     <div class="section-label">Main</div>
-    <a href="/dashboard.html" class="active" id="nav-overview"><svg class="icon"><use href="#icon-chart"/></svg> Overview</a>
-    <a href="/dashboard/reports.html" id="nav-reports"><svg class="icon"><use href="#icon-reports"/></svg> Reports</a>
-    <a href="/dashboard/upload.html" id="nav-upload"><svg class="icon"><use href="#icon-upload"/></svg> Upload Data</a>
-    <a href="/dashboard/billing.html" id="nav-billing"><svg class="icon"><use href="#icon-billing"/></svg> Billing</a>
+    <a href="/dashboard.html" class="active" id="nav-overview">📊 Overview</a>
+    <a href="/dashboard/reports.html" id="nav-reports">📄 Reports</a>
+    <a href="/dashboard/upload.html" id="nav-upload">📤 Upload Data</a>
+    <a href="/dashboard/billing.html" id="nav-billing">💳 Billing</a>
     <div class="section-label">Account</div>
-    <a href="/dashboard/settings.html" id="nav-settings"><svg class="icon"><use href="#icon-settings"/></svg> Settings</a>
-    <a href="/partners/"><svg class="icon"><use href="#icon-partners"/></svg> Partner Program</a>
+    <a href="/dashboard/settings.html" id="nav-settings">⚙️ Settings</a>
+    <a href="/partners/">🤝 Partner Program</a>
   </div>
 
-  <div class="main" id="dash-content">
+  <div class="dash-main" id="dash-content">
     <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading...</div>
   </div>
 </div>
@@ -151,12 +151,35 @@
       </div>
 
       <div class="panel">
-        <div class="panel-header"><h2>Your Reports</h2></div>
+        <div class="panel-header"><h2>📄 Your Reports</h2></div>
         <div class="empty-state">
-          <svg class="icon icon-xl" style="margin-bottom:12px;opacity:0.3"><use href="#icon-file"/></svg>
+          <div style="font-size:32px;margin-bottom:12px;opacity:0.3;">📊</div>
           <h3>No reports yet</h3>
-          <p>Once you upload your Shopify data, your monthly reports will appear here.</p>
+          <p>Once you upload your Shopify data, your monthly reports will appear here. We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
+          <a href="/dashboard/upload.html" class="btn primary" style="margin-top:16px;">Upload Your First Data</a>
         </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>📬 How You Receive Your Work</h2></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <div style="padding:16px;background:var(--bg-alt);border-radius:8px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:8px;">📊</div>
+            <h3 style="font-size:13px;font-weight:500;margin-bottom:4px;">Profit & Loss</h3>
+            <p style="font-size:12px;color:var(--text-muted);">Monthly P&L with every transaction categorized</p>
+          </div>
+          <div style="padding:16px;background:var(--bg-alt);border-radius:8px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:8px;">📋</div>
+            <h3 style="font-size:13px;font-weight:500;margin-bottom:4px;">Balance Sheet</h3>
+            <p style="font-size:12px;color:var(--text-muted);">Assets, liabilities, and equity — always up to date</p>
+          </div>
+          <div style="padding:16px;background:var(--bg-alt);border-radius:8px;text-align:center;">
+            <div style="font-size:24px;margin-bottom:8px;">💵</div>
+            <h3 style="font-size:13px;font-weight:500;margin-bottom:4px;">Cash Flow</h3>
+            <p style="font-size:12px;color:var(--text-muted);">See why cash is tight even when sales are up</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:12px;text-align:center;">All reports delivered as clean Google Sheets within 24 hours of upload</p>
       </div>
 
       <div class="panel">
