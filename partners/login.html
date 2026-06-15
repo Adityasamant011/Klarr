@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Login | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=14">
+  <style>
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 80px 24px 40px; }
+    .auth-card { width: 100%; max-width: 420px; }
+    .auth-card h1 { font-size: 1.4rem; font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.02em; }
+    .auth-card .auth-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
+    .auth-field { margin-bottom: 16px; }
+    .auth-field label { display: block; font-size: 11px; font-weight: 500; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .auth-field input { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 14px; font-family: inherit; }
+    .auth-field input:focus { outline: none; border-color: var(--accent); }
+    .auth-error { background: rgba(224, 80, 80, 0.1); border: 1px solid rgba(224, 80, 80, 0.2); border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #e05050; margin-bottom: 16px; display: none; }
+    .auth-success { background: rgba(82, 200, 120, 0.1); border: 1px solid rgba(82, 200, 120, 0.2); border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #52c878; margin-bottom: 16px; display: none; }
+    .auth-btn { width: 100%; padding: 12px; background: var(--text); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 8px; }
+    .auth-btn:hover { opacity: 0.85; }
+    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .auth-divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .auth-divider span { font-size: 12px; color: var(--text-dim); }
+    .google-btn { width: 100%; padding: 12px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 14px; font-weight: 400; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .google-btn:hover { border-color: var(--text-dim); }
+    .google-btn svg { width: 18px; height: 18px; }
+    .auth-footer { text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted); }
+    .auth-footer a { color: var(--text); text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+    .partner-info { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+    .partner-info .p-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .partner-info .p-email { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .partner-info .p-link { font-size: 12px; color: var(--accent); margin-top: 8px; word-break: break-all; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
+      <div class="nav-links">
+        <a href="/partners/">Partner Program</a>
+      </div>
+      <div class="nav-right" id="nav-auth-area"></div>
+    </div>
+  </nav>
+
+  <div class="auth-page">
+    <div class="auth-card">
+      <h1>Partner login</h1>
+      <p class="auth-sub">Access your partner dashboard, track referrals, and manage your earnings.</p>
+
+      <!-- Step 1: Enter email to find partner account -->
+      <div id="step-find">
+        <div class="auth-field">
+          <label>Partner email</label>
+          <input type="email" id="partner-email" placeholder="your@email.com">
+        </div>
+        <div class="auth-error" id="find-error"></div>
+        <button class="auth-btn" id="btn-find" onclick="findPartner()">Continue</button>
+      </div>
+
+      <!-- Step 2: Create password for existing partner -->
+      <div id="step-setup" style="display:none;">
+        <div class="partner-info" id="partner-found-info"></div>
+        <div class="auth-field">
+          <label>Create password</label>
+          <input type="password" id="new-password" placeholder="Min 6 characters">
+        </div>
+        <div class="auth-field">
+          <label>Confirm password</label>
+          <input type="password" id="confirm-password" placeholder="Repeat password">
+        </div>
+        <div class="auth-error" id="setup-error"></div>
+        <div class="auth-success" id="setup-success"></div>
+        <button class="auth-btn" id="btn-setup" onclick="setupPartnerAccount()">Create account & access dashboard</button>
+      </div>
+
+      <!-- Step 3: Login for partners who already have Auth -->
+      <div id="step-login" style="display:none;">
+        <div class="partner-info" id="partner-login-info"></div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="Your password">
+        </div>
+        <div class="auth-error" id="login-error"></div>
+        <button class="auth-btn" id="btn-login" onclick="loginPartner()">Log in</button>
+        <div class="auth-footer" style="margin-top:16px;">
+          <a href="#" id="forgot-link">Forgot password?</a>
+        </div>
+      </div>
+
+      <div class="auth-divider"><span>or</span></div>
+
+      <button class="google-btn" id="google-login-btn">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-footer">
+        Not a partner yet? <a href="/partners/">Join the program</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut, getCustomerProfile } from '/partners/firebase-init.js';
+    import { updateNav } from '/auth.js';
+    import { getAllPartners, getPartnerStats } from '/partners/firebase-init.js';
+
+    updateNav();
+
+    // Check if already logged in
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check if this user has a partner profile linked
+        try {
+          const data = await getAllPartners();
+          // Check by email match
+          const partner = data.partners.find(p => p.email === user.email);
+          if (partner) {
+            window.location.href = '/partners/dashboard.html?id=' + partner.id;
+          } else {
+            // Has auth but no partner profile — redirect to dashboard
+            window.location.href = '/dashboard.html';
+          }
+        } catch (e) {
+          window.location.href = '/dashboard.html';
+        }
+      }
+    });
+
+    // Google login
+    document.getElementById('google-login-btn').addEventListener('click', async () => {
+      try {
+        const user = await signInWithGoogle();
+        const data = await getAllPartners();
+        const partner = data.partners.find(p => p.email === user.email);
+        if (partner) {
+          window.location.href = '/partners/dashboard.html?id=' + partner.id;
+        } else {
+          window.location.href = '/dashboard.html';
+        }
+      } catch (err) {
+        document.getElementById('find-error').textContent = err.message;
+        document.getElementById('find-error').style.display = 'block';
+      }
+    });
+
+    // Forgot password
+    document.getElementById('forgot-link')?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = window._foundPartner?.email;
+      if (!email) return;
+      try {
+        const { resetPassword } = await import('/partners/firebase-init.js');
+        await resetPassword(email);
+        alert('Password reset email sent to ' + email);
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    window._foundPartner = null;
+
+    // Step 1: Find partner by email
+    window.findPartner = async function() {
+      const email = document.getElementById('partner-email').value.trim().toLowerCase();
+      const errorEl = document.getElementById('find-error');
+      errorEl.style.display = 'none';
+
+      if (!email || !email.includes('@')) {
+        errorEl.textContent = 'Please enter a valid email.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('btn-find');
+      btn.disabled = true;
+      btn.textContent = 'Looking up...';
+
+      try {
+        const data = await getAllPartners();
+        const partner = data.partners.find(p => p.email.toLowerCase() === email);
+
+        if (!partner) {
+          errorEl.textContent = 'No partner account found with this email. Sign up at klarr.space/partners/';
+          errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Continue';
+          return;
+        }
+
+        window._foundPartner = partner;
+
+        // Check if this partner already has a Firebase Auth account
+        // We try to sign in with a dummy password — if it fails with wrong-password, account exists
+        // If it fails with user-not-found, no account yet
+        try {
+          await signInWithEmail(email, '__check_exists__');
+        } catch (err) {
+          if (err.code === 'auth/user-not-found') {
+            // No Auth account — show setup step
+            showStep('step-setup');
+            document.getElementById('partner-found-info').innerHTML = `
+              <div class="p-name">${partner.name}</div>
+              <div class="p-email">${partner.email}</div>
+              <div class="p-link">Referral: klarr.space/?ref=${partner.id}</div>
+            `;
+            return;
+          } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+            // Account exists — show login step
+            showStep('step-login');
+            document.getElementById('partner-login-info').innerHTML = `
+              <div class="p-name">${partner.name}</div>
+              <div class="p-email">${partner.email}</div>
+            `;
+            return;
+          }
+        }
+
+        // If we got here, login somehow succeeded (shouldn't happen with dummy password)
+        window.location.href = '/partners/dashboard.html?id=' + partner.id;
+      } catch (err) {
+        errorEl.textContent = 'Error looking up partner. Try again.';
+        errorEl.style.display = 'block';
+      }
+      btn.disabled = false;
+      btn.textContent = 'Continue';
+    };
+
+    // Step 2: Setup new Auth account for existing partner
+    window.setupPartnerAccount = async function() {
+      const password = document.getElementById('new-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+      const errorEl = document.getElementById('setup-error');
+      const successEl = document.getElementById('setup-success');
+      errorEl.style.display = 'none';
+      successEl.style.display = 'none';
+
+      if (password.length < 6) {
+        errorEl.textContent = 'Password must be at least 6 characters.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (password !== confirm) {
+        errorEl.textContent = 'Passwords do not match.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('btn-setup');
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+
+      try {
+        const user = await signUpWithEmail(window._foundPartner.email, password, window._foundPartner.name);
+        successEl.textContent = 'Account created! Redirecting to your dashboard...';
+        successEl.style.display = 'block';
+        setTimeout(() => {
+          window.location.href = '/partners/dashboard.html?id=' + window._foundPartner.id;
+        }, 1500);
+      } catch (err) {
+        if (err.code === 'auth/email-already-in-use') {
+          errorEl.textContent = 'An account with this email already exists. Try logging in instead.';
+        } else {
+          errorEl.textContent = err.message;
+        }
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Create account & access dashboard';
+      }
+    };
+
+    // Step 3: Login existing partner
+    window.loginPartner = async function() {
+      const password = document.getElementById('login-password').value;
+      const errorEl = document.getElementById('login-error');
+      errorEl.style.display = 'none';
+
+      const btn = document.getElementById('btn-login');
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+
+      try {
+        await signInWithEmail(window._foundPartner.email, password);
+        window.location.href = '/partners/dashboard.html?id=' + window._foundPartner.id;
+      } catch (err) {
+        errorEl.textContent = 'Incorrect password. Try again or reset your password.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Log in';
+      }
+    };
+
+    function showStep(stepId) {
+      document.getElementById('step-find').style.display = 'none';
+      document.getElementById('step-setup').style.display = 'none';
+      document.getElementById('step-login').style.display = 'none';
+      document.getElementById(stepId).style.display = 'block';
+    }
+  </script>
+</body>
+</html>
