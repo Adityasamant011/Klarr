@@ -7,7 +7,7 @@ import {
   doc, getDoc, updateDoc, serverTimestamp, orderBy, limit, setDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
-  getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   onAuthStateChanged, signOut, sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -80,10 +80,28 @@ export async function signInWithEmail(email, password) {
   return cred.user;
 }
 
-// Sign in with Google (uses redirect — works everywhere)
+// Sign in with Google (try popup first, fallback to redirect)
 export async function signInWithGoogle() {
   if (!auth) throw new Error('Auth not initialized');
-  await signInWithRedirect(auth, googleProvider);
+  try {
+    const cred = await signInWithPopup(auth, googleProvider);
+    const profileRef = doc(db, 'customers', cred.user.uid);
+    const profileSnap = await getDoc(profileRef);
+    if (!profileSnap.exists()) {
+      await setDoc(profileRef, {
+        name: cred.user.displayName || '',
+        email: cred.user.email,
+        plan: 'none',
+        status: 'active',
+        createdAt: serverTimestamp()
+      });
+    }
+    return cred.user;
+  } catch (popupErr) {
+    // If popup fails (blocked, unauthorized domain), try redirect
+    console.log('Popup failed, trying redirect:', popupErr.code);
+    await signInWithRedirect(auth, googleProvider);
+  }
 }
 
 // Password reset

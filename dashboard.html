@@ -8,181 +8,170 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=14">
-  <style>
-    .dash-layout { display: min-content; min-height: 100vh; }
-    .dash-sidebar { width: 220px; background: var(--bg-alt); border-right: 1px solid var(--border); padding: 24px 0; position: fixed; top: 52px; bottom: 0; left: 0; overflow-y: auto; }
-    .dash-sidebar .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-    .dash-sidebar .sidebar-logo a { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none; }
-    .dash-sidebar .sidebar-logo img { height: 24px; }
-    .dash-sidebar .sidebar-section { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); padding: 12px 20px 6px; }
-    .dash-sidebar a.sidebar-link { display: flex; align-items: center; gap: 10px; padding: 8px 20px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: all 0.15s; }
-    .dash-sidebar a.sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.02); }
-    .dash-sidebar a.sidebar-link.active { color: var(--text); background: rgba(255,255,255,0.04); border-right: 2px solid var(--accent); }
-    .dash-sidebar a.sidebar-link .icon { font-size: 15px; width: 20px; text-align: center; }
-    .dash-main { margin-left: 220px; padding: 80px 32px 40px; min-height: 100vh; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-    .dash-header h1 { font-size: 1.3rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
-    .dash-header .dash-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-    .dash-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-    .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-    .dash-card .card-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 8px; }
-    .dash-card .card-value { font-size: 1.6rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
-    .dash-card .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-    .dash-card.accent .card-value { color: var(--accent); }
-    .dash-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
-    .dash-section h2 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
-    .dash-section p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-    .dash-empty { text-align: center; padding: 48px 24px; }
-    .dash-empty .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
-    .dash-empty h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
-    .dash-empty p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
-    .status-badge.active { background: rgba(82, 200, 120, 0.1); color: #52c878; }
-    .status-badge.pending { background: rgba(184, 134, 11, 0.1); color: #b8860b; }
-    .status-badge.none { background: rgba(139, 136, 128, 0.1); color: var(--text-dim); }
-    .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-    .btn-sm { padding: 8px 16px; font-size: 13px; }
-    @media (max-width: 768px) {
-      .dash-sidebar { display: none; }
-      .dash-main { margin-left: 0; padding: 72px 16px 32px; }
-      .dash-cards { grid-template-columns: 1fr; }
-    }
-  </style>
+  <link rel="stylesheet" href="/style.css?v=15">
+  <link rel="stylesheet" href="/css/dashboard.css?v=1">
 </head>
 <body>
 
-  <nav style="background:var(--bg);border-bottom:1px solid var(--border);">
-    <div class="nav-inner">
-      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
-      <div class="nav-right" id="nav-auth-area"></div>
-    </div>
-  </nav>
+<!-- Icons -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></symbol>
+  <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="icon-partners" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></symbol>
+  <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></symbol>
+  <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="icon-reports" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></symbol>
+  <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="icon-billing" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
+  <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+  <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="icon-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="icon-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="icon-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="icon-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+  <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="icon-dollar" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+  <symbol id="icon-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+  <symbol id="icon-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="icon-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="icon-file" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></symbol>
+  <symbol id="icon-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+</svg>
 
-  <div class="dash-layout">
-    <div class="dash-sidebar">
-      <div class="sidebar-logo"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
-      <div class="sidebar-section">Main</div>
-      <a href="/dashboard.html" class="sidebar-link active"><span class="icon">📊</span> Overview</a>
-      <a href="#reports" class="sidebar-link"><span class="icon">📄</span> Reports</a>
-      <a href="#upload" class="sidebar-link"><span class="icon">📤</span> Upload Data</a>
-      <div class="sidebar-section">Account</div>
-      <a href="#settings" class="sidebar-link"><span class="icon">⚙️</span> Settings</a>
-      <a href="/partners/" class="sidebar-link"><span class="icon">🤝</span> Partner Program</a>
-    </div>
-
-    <div class="dash-main" id="dash-content">
-      <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading your dashboard...</div>
-    </div>
+<div class="dash-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="section-label">Main</div>
+    <a href="/dashboard.html" class="active" id="nav-overview"><svg class="icon"><use href="#icon-chart"/></svg> Overview</a>
+    <a href="/dashboard/reports.html" id="nav-reports"><svg class="icon"><use href="#icon-reports"/></svg> Reports</a>
+    <a href="/dashboard/upload.html" id="nav-upload"><svg class="icon"><use href="#icon-upload"/></svg> Upload Data</a>
+    <a href="/dashboard/billing.html" id="nav-billing"><svg class="icon"><use href="#icon-billing"/></svg> Billing</a>
+    <div class="section-label">Account</div>
+    <a href="/dashboard/settings.html" id="nav-settings"><svg class="icon"><use href="#icon-settings"/></svg> Settings</a>
+    <a href="/partners/"><svg class="icon"><use href="#icon-partners"/></svg> Partner Program</a>
   </div>
 
-  <script type="module">
-    import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-    import { updateNav, requireAuth } from '/auth.js';
+  <div class="main" id="dash-content">
+    <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading...</div>
+  </div>
+</div>
 
-    updateNav();
-    requireAuth('/login.html');
+<script type="module">
+  import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
+  import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { updateNav, requireAuth, doLogout } from '/auth.js';
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
+  const db = getFirestore();
+  updateNav();
+  requireAuth('/login.html');
 
-      // Check for payment success redirect
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentStatus = urlParams.get('payment');
-      const planFromUrl = urlParams.get('plan');
+  // Mobile menu
+  document.querySelector('.mobile-menu-btn')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('open');
+  });
+  document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
+  });
 
-      if (paymentStatus === 'success' && planFromUrl) {
-        try {
-          const { doc, updateDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
-          await updateDoc(doc(getFirestore(), 'customers', user.uid), {
-            plan: planFromUrl,
-            planStartedAt: serverTimestamp(),
-            status: 'active'
-          });
-          // Clean URL
-          window.history.replaceState({}, '', '/dashboard.html');
-        } catch (e) { console.error('Plan update failed:', e); }
-      }
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
 
-      let name = 'there';
-      let plan = 'none';
-      let planLabel = 'No active plan';
-      let statusClass = 'none';
-      let statusText = 'Get started';
-
+    // Handle Stripe payment success redirect
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success' && params.get('plan')) {
       try {
-        const profile = await getCustomerProfile(user.uid);
-        if (profile) {
-          name = profile.name ? profile.name.split(' ')[0] : 'there';
-          plan = profile.plan || 'none';
-          if (plan !== 'none') {
-            planLabel = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
-            statusClass = 'active';
-            statusText = 'Active';
-          }
-        }
-      } catch (e) {}
+        await updateDoc(doc(db, 'customers', user.uid), {
+          plan: params.get('plan'), planStartedAt: serverTimestamp(), status: 'active'
+        });
+        window.history.replaceState({}, '', '/dashboard.html');
+      } catch (e) { console.error('Plan update failed:', e); }
+    }
 
-      const content = document.getElementById('dash-content');
-      content.innerHTML = `
-        <div class="dash-header">
+    // Load profile
+    let profile = { name: 'there', plan: 'none', email: user.email };
+    try {
+      const p = await getCustomerProfile(user.uid);
+      if (p) profile = { ...profile, ...p };
+    } catch (e) {}
+
+    const planLabel = profile.plan && profile.plan !== 'none' ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) + ' Plan' : 'No active plan';
+    const isActive = profile.plan && profile.plan !== 'none';
+
+    document.getElementById('dash-content').innerHTML = `
+      <div class="dash-topbar">
+        <div>
+          <h1>Welcome, ${profile.name.split(' ')[0]}</h1>
+          <p class="subtitle">Here's your bookkeeping overview.</p>
+        </div>
+        <span class="badge ${isActive ? 'active' : 'pending'}">${isActive ? 'Active' : 'Get started'}</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">Current Plan</div>
+          <div class="value">${profile.plan === 'none' ? '—' : profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}</div>
+          <div class="sub">${planLabel}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Reports This Month</div>
+          <div class="value">0</div>
+          <div class="sub">Upload your first data</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Health Score</div>
+          <div class="value">—</div>
+          <div class="sub">Complete setup to see score</div>
+        </div>
+        <div class="stat-card highlight">
+          <div class="label">Next Delivery</div>
+          <div class="value">—</div>
+          <div class="sub">After first upload</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Get started</h2></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="/dashboard/upload.html" class="btn primary">Upload Data</a>
+          <a href="/tools/" class="btn">Free Health Check</a>
+          ${!isActive ? '<a href="/#pricing" class="btn accent">Upgrade Plan</a>' : ''}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Your Reports</h2></div>
+        <div class="empty-state">
+          <svg class="icon icon-xl" style="margin-bottom:12px;opacity:0.3"><use href="#icon-file"/></svg>
+          <h3>No reports yet</h3>
+          <p>Once you upload your Shopify data, your monthly reports will appear here.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Account</h2></div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:var(--text);">${profile.name.charAt(0).toUpperCase()}</div>
           <div>
-            <h1>Welcome, ${name}</h1>
-            <p class="dash-sub">Here's your bookkeeping overview.</p>
-          </div>
-          <span class="status-badge ${statusClass}"><span class="dot"></span> ${statusText}</span>
-        </div>
-
-        <div class="dash-cards">
-          <div class="dash-card">
-            <div class="card-label">Current Plan</div>
-            <div class="card-value">${plan === 'none' ? '—' : plan.charAt(0).toUpperCase() + plan.slice(1)}</div>
-            <div class="card-sub">${planLabel}</div>
-          </div>
-          <div class="dash-card">
-            <div class="card-label">Reports This Month</div>
-            <div class="card-value">0</div>
-            <div class="card-sub">Upload your first data</div>
-          </div>
-          <div class="dash-card accent">
-            <div class="card-label">Health Score</div>
-            <div class="card-value">—</div>
-            <div class="card-sub">Complete setup to see score</div>
+            <div style="font-size:14px;color:var(--text);font-weight:500;">${profile.name}</div>
+            <div style="font-size:12px;color:var(--text-dim);">${profile.email}</div>
           </div>
         </div>
-
-        <div class="dash-section" id="upload">
-          <h2>Get started — upload your Shopify data</h2>
-          <p>Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
-          <div style="margin-top:20px;">
-            <a href="/#pricing" class="btn-primary btn-sm" style="text-decoration:none;">Choose a plan</a>
-            <a href="/tools/" class="btn-ghost btn-sm" style="text-decoration:none;margin-left:8px;">Free health check</a>
-          </div>
-        </div>
-
-        <div class="dash-section" id="reports">
-          <h2>Your Reports</h2>
-          <div class="dash-empty">
-            <div class="empty-icon">📊</div>
-            <h3>No reports yet</h3>
-            <p>Once you upload your Shopify data, your monthly reports will appear here.</p>
-          </div>
-        </div>
-
-        <div class="dash-section" id="settings">
-          <h2>Account Settings</h2>
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:var(--text);">${name.charAt(0).toUpperCase()}</div>
-            <div>
-              <div style="font-size:14px;color:var(--text);font-weight:500;">${user.displayName || name}</div>
-              <div style="font-size:12px;color:var(--text-dim);">${user.email}</div>
-            </div>
-          </div>
-          <button onclick="signOut(auth).then(()=>window.location.href='/')" class="btn-ghost btn-sm" style="border-color:rgba(224,80,80,0.3);color:#e05050;">Log out</button>
-        </div>
-      `;
-    });
-  </script>
+        <a href="/dashboard/settings.html" class="btn sm">Edit Profile</a>
+      </div>
+    `;
+  });
+</script>
 </body>
 </html>
