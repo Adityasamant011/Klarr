@@ -78,6 +78,7 @@
 
   <script type="module">
     import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { updateNav, requireAuth } from '/auth.js';
 
     updateNav();
@@ -85,6 +86,24 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) return;
+
+      // Check for payment success redirect
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get('payment');
+      const planFromUrl = urlParams.get('plan');
+
+      if (paymentStatus === 'success' && planFromUrl) {
+        try {
+          const { doc, updateDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+          await updateDoc(doc(getFirestore(), 'customers', user.uid), {
+            plan: planFromUrl,
+            planStartedAt: serverTimestamp(),
+            status: 'active'
+          });
+          // Clean URL
+          window.history.replaceState({}, '', '/dashboard.html');
+        } catch (e) { console.error('Plan update failed:', e); }
+      }
 
       let name = 'there';
       let plan = 'none';
