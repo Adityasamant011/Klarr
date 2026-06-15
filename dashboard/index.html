@@ -7,11 +7,14 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=16">
-  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=17">
+  <link rel="stylesheet" href="/css/dashboard.css?v=3">
 </head>
 <body>
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
 <div class="dash-layout">
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <div class="dash-sidebar" id="sidebar">
@@ -28,9 +31,16 @@
     </div>
   </div>
   <div class="dash-main" id="dash-content">
-    <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading...</div>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--text-dim);">
+      <div style="text-align:center;">
+        <div style="font-size:32px;margin-bottom:12px;animation:pulse 1.5s infinite;">⏳</div>
+        <p>Loading your dashboard...</p>
+      </div>
+    </div>
   </div>
 </div>
+
+<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
 
 <script type="module">
   import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
@@ -41,53 +51,69 @@
   updateNav();
   requireAuth('/login');
 
-  onAuthStateChanged(auth, async (user) => {
+  // Toast notification system
+  window.showToast = function(msg, type) {
+    var container = document.getElementById('toast-container');
+    if (!container) { alert(msg); return; }
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + (type || 'info');
+    toast.innerHTML = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
+    container.appendChild(toast);
+    setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 300); }, 4000);
+  };
+
+  onAuthStateChanged(auth, async function(user) {
     if (!user) return;
 
-    // Handle Stripe payment success redirect
-    const params = new URLSearchParams(window.location.search);
+    // Handle Stripe payment success
+    var params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success' && params.get('plan')) {
       try {
         await updateDoc(doc(db, 'customers', user.uid), {
           plan: params.get('plan'), planStartedAt: serverTimestamp(), status: 'active'
         });
         window.history.replaceState({}, '', '/dashboard');
-      } catch (e) { console.error('Plan update failed:', e); }
+        showToast('🎉 Payment successful! Your ' + params.get('plan') + ' plan is now active.', 'success');
+      } catch (e) {
+        showToast('Error updating plan: ' + e.message, 'error');
+      }
     }
 
     // Load profile
-    let profile = { name: 'there', plan: 'none', email: user.email };
+    var profile = { name: 'there', plan: 'none', email: user.email, status: 'active' };
     try {
-      const p = await getCustomerProfile(user.uid);
-      if (p) profile = { ...profile, ...p };
+      var p = await getCustomerProfile(user.uid);
+      if (p) profile = Object.assign(profile, p);
     } catch (e) {}
 
-    const planLabel = profile.plan && profile.plan !== 'none' ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) + ' Plan' : 'No active plan';
-    const isActive = profile.plan && profile.plan !== 'none';
+    var isActive = profile.plan && profile.plan !== 'none';
+    var planLabel = isActive ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) + ' Plan' : 'No active plan';
+    var planValue = isActive ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) : '—';
+    var initials = profile.name.split(' ').map(function(n){return n[0];}).join('').toUpperCase().substring(0,2);
 
     document.getElementById('dash-content').innerHTML = `
       <div class="page-header">
-        <div><h1>Welcome, ${profile.name.split(' ')[0]}</h1><p class="page-subtitle">Here's your bookkeeping overview.</p></div>
-        <span class="badge ${isActive ? 'active' : 'pending'}">${isActive ? 'Active' : 'Get started'}</span>
+        <div><h1>Welcome, ${profile.name.split(' ')[0]} 👋</h1><p class="page-subtitle">Here's your bookkeeping overview.</p></div>
+        <span class="badge ${isActive ? 'active' : 'pending'}">${isActive ? '● Active' : '○ Get started'}</span>
       </div>
 
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card accent">
           <div class="label">Current Plan</div>
-          <div class="value">${profile.plan === 'none' ? '—' : profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}</div>
+          <div class="value">${planValue}</div>
           <div class="sub">${planLabel}</div>
         </div>
         <div class="stat-card">
           <div class="label">Reports This Month</div>
           <div class="value">0</div>
-          <div class="sub">Upload your first data</div>
+          <div class="sub">${isActive ? 'Upload your first data' : 'Upgrade to get started'}</div>
         </div>
         <div class="stat-card">
           <div class="label">Health Score</div>
           <div class="value">—</div>
           <div class="sub">Complete setup to see score</div>
         </div>
-        <div class="stat-card accent">
+        <div class="stat-card">
           <div class="label">Next Delivery</div>
           <div class="value">—</div>
           <div class="sub">After first upload</div>
@@ -95,19 +121,19 @@
       </div>
 
       <div class="panel">
-        <div class="panel-header"><h2>🚀 Get started</h2></div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
+        <div class="panel-header"><h2>🚀 Get Started</h2></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="/dashboard/upload" class="btn primary">Upload Data</a>
-          <a href="/tools" class="btn">Free Health Check</a>
-          ${!isActive ? '<a href="/#pricing" class="btn accent">Upgrade Plan</a>' : ''}
+          <a href="/dashboard/upload" class="btn primary">📤 Upload Data</a>
+          <a href="/tools" class="btn">🏥 Free Health Check</a>
+          ${!isActive ? '<a href="/#pricing" class="btn accent">💎 Upgrade Plan</a>' : ''}
         </div>
       </div>
 
       <div class="panel">
         <div class="panel-header"><h2>📄 Your Reports</h2></div>
         <div class="empty-state">
-          <div style="font-size:40px;margin-bottom:12px;opacity:0.3;">📊</div>
+          <div class="empty-icon">📊</div>
           <h3>No reports yet</h3>
           <p>Once you upload your Shopify data, your monthly reports will appear here. We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
           <a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Your First Data</a>
@@ -117,23 +143,23 @@
       <div class="panel">
         <div class="panel-header"><h2>📬 How You Receive Your Work</h2></div>
         <div class="grid-3">
-          <div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized</p></div>
-          <div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date</p></div>
-          <div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See why cash is tight even when sales are up</p></div>
+          <div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized. Know exactly where your money goes.</p></div>
+          <div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date. Ready for your CPA.</p></div>
+          <div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See why cash is tight even when sales are up. All payouts reconciled.</p></div>
         </div>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:12px;text-align:center;">All reports delivered as clean Google Sheets within 24 hours of upload</p>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:16px;text-align:center;">All reports delivered as clean Google Sheets within 24 hours of upload</p>
       </div>
 
       <div class="panel">
         <div class="panel-header"><h2>👤 Account</h2></div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-          <div style="width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:var(--text);">${profile.name.charAt(0).toUpperCase()}</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a06828);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--bg);">${initials}</div>
           <div>
             <div style="font-size:14px;color:var(--text);font-weight:500;">${profile.name}</div>
             <div style="font-size:12px;color:var(--text-dim);">${profile.email}</div>
           </div>
         </div>
-        <a href="/dashboard/settings" class="btn sm">Edit Profile</a>
+        <a href="/dashboard/settings" class="btn sm">✏️ Edit Profile</a>
       </div>
     `;
   });
