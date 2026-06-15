@@ -7,11 +7,15 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=16">
-  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </head>
 <body>
+<div class="toast-container" id="toast-container"></div>
 <div class="dash-layout">
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <div class="dash-sidebar" id="sidebar">
@@ -22,15 +26,17 @@
       <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
       <a href="/dashboard/billing" class="active"><span class="nav-icon">💳</span> Billing</a>
     </div>
+    <div class="nav-section" id="partner-nav" style="display:none;">
+      <div class="nav-label">Partner</div>
+      <a href="/dashboard/partner"><span class="nav-icon">🤝</span> Partner Dashboard</a>
+    </div>
     <div class="nav-section">
       <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main">
-    <div class="page-header">
-      <div><h1>💳 Billing</h1><p class="page-subtitle">Manage your subscription</p></div>
-    </div>
+    <div class="page-header"><div><h1>💳 Billing</h1><p class="page-subtitle">Manage your subscription</p></div></div>
     <div class="panel">
       <div class="panel-header"><h2>Current Plan</h2></div>
       <div id="billing-plan"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
@@ -61,23 +67,34 @@
     </div>
   </div>
 </div>
-<script type="module">
-  const { auth, onAuthStateChanged, getCustomerProfile } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-    updateNav(); requireAuth('/login');
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) return;
-    const profile = await getCustomerProfile(user.uid) || {};
-    const plan = profile.plan || 'none';
-    const isActive = plan !== 'none';
-    const names = { starter: 'Starter', growth: 'Growth', pro: 'Pro', none: 'Free' };
-    const prices = { starter: '$99/mo', growth: '$149/mo', pro: '$249/mo', none: '—' };
-    document.getElementById('billing-plan').innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div><div style="font-size:18px;font-weight:600;">${names[plan]}</div><div style="font-size:13px;color:var(--text-muted);">${prices[plan]}</div></div>
-        <span class="badge ${isActive ? 'active' : 'pending'}">${isActive ? 'Active' : 'No subscription'}</span>
-      </div>
-    `;
-  });
+<script>
+var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a",measurementId:"G-JEDM340TC4"};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+
+auth.onAuthStateChanged(async function(user) {
+  if (!user) { window.location.href = '/login'; return; }
+  
+  // Check partner
+  try {
+    var snap = await db.collection('partners').where('email','==',user.email).get();
+    if (!snap.empty) document.getElementById('partner-nav').style.display = 'block';
+  } catch(e) {}
+
+  // Load plan
+  var plan = 'none';
+  try {
+    var doc = await db.collection('customers').doc(user.uid).get();
+    if (doc.exists && doc.data().plan) plan = doc.data().plan;
+  } catch(e) {}
+
+  var names = {starter:'Starter',growth:'Growth',pro:'Pro',none:'Free'};
+  var prices = {starter:'$99/mo',growth:'$149/mo',pro:'$249/mo',none:'—'};
+  var isActive = plan !== 'none';
+
+  document.getElementById('billing-plan').innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:18px;font-weight:600;">' + names[plan] + '</div><div style="font-size:13px;color:var(--text-muted);">' + prices[plan] + '</div></div><span class="badge ' + (isActive?'active':'pending') + '">' + (isActive?'● Active':'○ No subscription') + '</span></div>';
+});
 </script>
 </body>
 </html>

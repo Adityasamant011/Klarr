@@ -7,11 +7,15 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=16">
-  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </head>
 <body>
+<div class="toast-container" id="toast-container"></div>
 <div class="dash-layout">
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <div class="dash-sidebar" id="sidebar">
@@ -22,38 +26,41 @@
       <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
       <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
     </div>
+    <div class="nav-section" id="partner-nav" style="display:none;">
+      <div class="nav-label">Partner</div>
+      <a href="/dashboard/partner"><span class="nav-icon">🤝</span> Partner Dashboard</a>
+    </div>
     <div class="nav-section">
       <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main">
-    <div class="page-header">
-      <div><h1>📄 Reports</h1><p class="page-subtitle">Your monthly financial statements</p></div>
-    </div>
+    <div class="page-header"><div><h1>📄 Reports</h1><p class="page-subtitle">Your monthly financial statements</p></div></div>
     <div class="panel">
       <div class="panel-header"><h2>Available Reports</h2></div>
-      <div class="empty-state">
-        <div style="font-size:40px;margin-bottom:12px;opacity:0.3;">📊</div>
-        <h3>No reports yet</h3>
-        <p>Upload your Shopify data to generate your first report.<br>We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
-        <a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Data</a>
-      </div>
+      <div class="empty-state"><div class="empty-icon">📊</div><h3>No reports yet</h3><p>Upload your Shopify data to generate your first report. We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p><a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Data</a></div>
     </div>
     <div class="panel">
       <div class="panel-header"><h2>What you get each month</h2></div>
       <div class="grid-3">
-        <div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized. Know exactly where your money goes.</p></div>
-        <div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date. Ready for your CPA or investors.</p></div>
-        <div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See exactly why cash is tight even when sales are up. Shopify payout timing, fees, refunds — all reconciled.</p></div>
+        <div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized</p></div>
+        <div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date</p></div>
+        <div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See why cash is tight even when sales are up</p></div>
       </div>
     </div>
   </div>
 </div>
-<script type="module">
-  import { auth, onAuthStateChanged } from 'https://klarr.space/partners/firebase-init.js';
-    updateNav(); requireAuth('/login');
-  onAuthStateChanged(auth, (user) => { if (!user) return; });
+<script>
+var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a",measurementId:"G-JEDM340TC4"};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+firebase.auth().onAuthStateChanged(function(user){
+  if(!user) window.location.href='/login';
+  // Check partner status
+  firebase.firestore().collection('partners').where('email','==',user.email).get().then(function(snap){
+    if(!snap.empty) document.getElementById('partner-nav').style.display='block';
+  }).catch(function(){});
+});
 </script>
 </body>
 </html>

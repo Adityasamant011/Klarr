@@ -8,8 +8,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=17">
-  <link rel="stylesheet" href="/css/dashboard.css?v=3">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
@@ -25,13 +28,11 @@
     </div>
     <div class="nav-section">
       <a href="/dashboard/settings" class="active"><span class="nav-icon">⚙️</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main">
-    <div class="page-header">
-      <div><h1>⚙️ Settings</h1><p class="page-subtitle">Manage your account</p></div>
-    </div>
+    <div class="page-header"><div><h1>⚙️ Settings</h1><p class="page-subtitle">Manage your account</p></div></div>
     <div class="panel">
       <div class="panel-header"><h2>👤 Profile</h2></div>
       <form id="profile-form">
@@ -58,49 +59,71 @@
     </div>
   </div>
 </div>
-<script type="module">
-  const [{ auth, onAuthStateChanged, getCustomerProfile }, { getFirestore, doc, updateDoc }] = await Promise.all([
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
-  ]);
-  const db = getFirestore();
-  window.showToast = function(msg, type) {
-    var c = document.getElementById('toast-container');
-    if (!c) { alert(msg); return; }
-    var t = document.createElement('div');
-    t.className = 'toast ' + (type || 'info');
-    t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
-    c.appendChild(t);
-    setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
-  };
-  onAuthStateChanged(auth, async function(user) {
-    if (!user) return;
-    var profile = { name: '', email: user.email };
-    try { var p = await getCustomerProfile(user.uid); if (p) Object.assign(profile, p); } catch(e) {}
-    document.getElementById('set-name').value = profile.name;
-    document.getElementById('set-email').value = user.email;
-    document.getElementById('profile-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var btn = document.getElementById('btn-save-profile');
-      btn.disabled = true; btn.textContent = '⏳ Saving...';
-      try {
-        await updateDoc(doc(db, 'customers', user.uid), { name: document.getElementById('set-name').value.trim() });
-        showToast('Profile updated successfully!', 'success');
-      } catch(err) { showToast('Error: ' + err.message, 'error'); }
-      btn.disabled = false; btn.textContent = '💾 Save Changes';
-    });
-    document.getElementById('password-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var np = document.getElementById('new-pass').value;
-      var cp = document.getElementById('conf-pass').value;
-      if (np !== cp) { showToast('Passwords do not match', 'error'); return; }
-      showToast('Password change requires re-authentication.', 'info');
-    });
-    document.getElementById('btn-delete').addEventListener('click', async function() {
-      if (!confirm('⚠️ Are you sure? This cannot be undone.')) return;
-      showToast('Account deletion is not available in demo mode.', 'info');
-    });
+<script>
+var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a",measurementId:"G-JEDM340TC4"};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+
+function showToast(msg, type) {
+  var c = document.getElementById('toast-container');
+  if (!c) { alert(msg); return; }
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || 'info');
+  t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+  c.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
+}
+
+auth.onAuthStateChanged(async function(user) {
+  if (!user) { window.location.href = '/login'; return; }
+  
+  // Load profile
+  var profile = { name: '', email: user.email };
+  try { var doc = await db.collection('customers').doc(user.uid).get(); if (doc.exists) Object.assign(profile, doc.data()); } catch(e) {}
+  document.getElementById('set-name').value = profile.name;
+  document.getElementById('set-email').value = user.email;
+
+  // Save profile
+  document.getElementById('profile-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var btn = document.getElementById('btn-save-profile');
+    btn.disabled = true; btn.textContent = '⏳ Saving...';
+    try {
+      await db.collection('customers').doc(user.uid).update({ name: document.getElementById('set-name').value.trim() });
+      showToast('Profile updated successfully!', 'success');
+    } catch(err) { showToast('Error: ' + err.message, 'error'); }
+    btn.disabled = false; btn.textContent = '💾 Save Changes';
   });
+
+  // Change password
+  document.getElementById('password-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var np = document.getElementById('new-pass').value;
+    var cp = document.getElementById('conf-pass').value;
+    if (np !== cp) { showToast('Passwords do not match', 'error'); return; }
+    if (np.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+    try {
+      await auth.currentUser.updatePassword(np);
+      showToast('Password updated successfully!', 'success');
+      document.getElementById('curr-pass').value = '';
+      document.getElementById('new-pass').value = '';
+      document.getElementById('conf-pass').value = '';
+    } catch(err) {
+      if (err.code === 'auth/requires-recent-login') {
+        showToast('Please log in again to change your password.', 'error');
+      } else {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+  });
+
+  // Delete account
+  document.getElementById('btn-delete').addEventListener('click', async function() {
+    if (!confirm('⚠️ Are you sure you want to delete your account? This cannot be undone.')) return;
+    showToast('Account deletion is not available in demo mode.', 'info');
+  });
+});
 </script>
 </body>
 </html>

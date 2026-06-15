@@ -7,11 +7,15 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=16">
-  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </head>
 <body>
+<div class="toast-container" id="toast-container"></div>
 <div class="dash-layout">
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <div class="dash-sidebar" id="sidebar">
@@ -22,21 +26,23 @@
       <a href="/dashboard/upload" class="active"><span class="nav-icon">📤</span> Upload Data</a>
       <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
     </div>
+    <div class="nav-section" id="partner-nav" style="display:none;">
+      <div class="nav-label">Partner</div>
+      <a href="/dashboard/partner"><span class="nav-icon">🤝</span> Partner Dashboard</a>
+    </div>
     <div class="nav-section">
       <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main">
-    <div class="page-header">
-      <div><h1>📤 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div>
-    </div>
+    <div class="page-header"><div><h1>📤 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div></div>
     <div class="panel">
       <div class="panel-header"><h2>How it works</h2></div>
       <div class="grid-3">
-        <div class="info-card"><div class="info-icon">1</div><h3>Export from Shopify</h3><p>Go to Shopify → Analytics → Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
-        <div class="info-card"><div class="info-icon">2</div><h3>Upload here</h3><p>Drag and drop or select your CSV files. We accept orders, payouts, and fees exports.</p></div>
-        <div class="info-card"><div class="info-icon">3</div><h3>Get your books</h3><p>Within 24 hours, you'll get P&L, Balance Sheet, and Cash Flow in a clean Google Sheet.</p></div>
+        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">1</div><h3>Export from Shopify</h3><p>Go to Shopify → Analytics → Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
+        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">2</div><h3>Upload here</h3><p>Drag and drop or select your CSV files. We accept orders, payouts, and fees exports.</p></div>
+        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">3</div><h3>Get your books</h3><p>Within 24 hours, you'll get P&L, Balance Sheet, and Cash Flow in a clean Google Sheet.</p></div>
       </div>
     </div>
     <div class="panel">
@@ -51,24 +57,45 @@
     </div>
   </div>
 </div>
-<script type="module">
-  import { auth, onAuthStateChanged } from 'https://klarr.space/partners/firebase-init.js';
-    updateNav(); requireAuth('/login');
-  onAuthStateChanged(auth, (user) => { if (!user) return; });
-  const zone = document.getElementById('upload-zone');
-  const input = document.getElementById('file-input');
-  zone.addEventListener('click', () => input.click());
-  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.style.borderColor = 'var(--accent)'; });
-  zone.addEventListener('dragleave', () => { zone.style.borderColor = 'var(--border)'; });
-  zone.addEventListener('drop', (e) => { e.preventDefault(); zone.style.borderColor = 'var(--border)'; handleFiles(e.dataTransfer.files); });
-  input.addEventListener('change', (e) => handleFiles(e.target.files));
-  function handleFiles(files) {
-    if (!files.length) return;
-    document.getElementById('upload-status').innerHTML = '<div class="alert info">Uploading...</div>';
-    setTimeout(() => {
-      document.getElementById('upload-status').innerHTML = '<div class="alert success">Files received! In production, these would be sent to our bookkeeping team.</div>';
-    }, 1500);
-  }
+<script>
+var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a",measurementId:"G-JEDM340TC4"};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+
+function showToast(msg, type) {
+  var c = document.getElementById('toast-container');
+  if (!c) { alert(msg); return; }
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || 'info');
+  t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+  c.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
+}
+
+auth.onAuthStateChanged(function(user){
+  if(!user) window.location.href='/login';
+  db.collection('partners').where('email','==',user.email).get().then(function(snap){
+    if(!snap.empty) document.getElementById('partner-nav').style.display='block';
+  }).catch(function(){});
+});
+
+// File upload
+var zone = document.getElementById('upload-zone');
+var input = document.getElementById('file-input');
+zone.addEventListener('click', function(){ input.click(); });
+zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.style.borderColor='var(--accent)'; });
+zone.addEventListener('dragleave', function(){ zone.style.borderColor='var(--border)'; });
+zone.addEventListener('drop', function(e){ e.preventDefault(); zone.style.borderColor='var(--border)'; handleFiles(e.dataTransfer.files); });
+input.addEventListener('change', function(e){ handleFiles(e.target.files); });
+
+function handleFiles(files) {
+  if (!files.length) return;
+  document.getElementById('upload-status').innerHTML = '<div class="alert info">⏳ Uploading...</div>';
+  setTimeout(function(){
+    document.getElementById('upload-status').innerHTML = '<div class="alert success">✅ Files received! In production, these would be sent to our bookkeeping team for processing.</div>';
+  }, 1500);
+}
 </script>
 </body>
 </html>
