@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=16">
+  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+</head>
+<body>
+<div class="dash-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="nav-section">
+      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
+      <a href="/dashboard/reports"><span class="nav-icon">📄</span> Reports</a>
+      <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
+      <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
+    </div>
+    <div class="nav-section">
+      <a href="/dashboard/settings" class="active"><span class="nav-icon">⚙️</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="page-header">
+      <div><h1>⚙️ Settings</h1><p class="page-subtitle">Manage your account</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Profile</h2></div>
+      <form id="profile-form">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" class="form-control" id="set-name" placeholder="Your name"></div>
+          <div class="form-group"><label>Email</label><input type="email" class="form-control" id="set-email" disabled></div>
+        </div>
+        <button type="submit" class="btn primary">Save Changes</button>
+      </form>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Change Password</h2></div>
+      <form id="password-form" style="max-width:400px;">
+        <div class="form-group"><label>Current Password</label><input type="password" class="form-control" id="curr-pass" required></div>
+        <div class="form-group"><label>New Password</label><input type="password" class="form-control" id="new-pass" required minlength="6"></div>
+        <div class="form-group"><label>Confirm New Password</label><input type="password" class="form-control" id="conf-pass" required></div>
+        <button type="submit" class="btn primary">Update Password</button>
+      </form>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>🛡️ Danger Zone</h2></div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Once you delete your account, there is no going back.</p>
+      <button class="btn danger" id="delete-btn">Delete Account</button>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { auth, onAuthStateChanged, getCustomerProfile } from '/partners/firebase-init.js';
+  import { getFirestore, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { updateNav, requireAuth } from '/auth.js';
+  const db = getFirestore();
+  updateNav(); requireAuth('/login');
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    const profile = await getCustomerProfile(user.uid) || {};
+    document.getElementById('set-name').value = profile.name || '';
+    document.getElementById('set-email').value = user.email;
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await updateDoc(doc(db, 'customers', user.uid), { name: document.getElementById('set-name').value });
+      alert('Profile updated!');
+    });
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const np = document.getElementById('new-pass').value;
+      const cp = document.getElementById('conf-pass').value;
+      if (np !== cp) { alert('Passwords do not match'); return; }
+      alert('Password change requires re-authentication.');
+    });
+    document.getElementById('delete-btn').addEventListener('click', () => {
+      if (confirm('Are you sure? This cannot be undone.')) alert('Account deletion is disabled in demo mode.');
+    });
+  });
+</script>
+</body>
+</html>

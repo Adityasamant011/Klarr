@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Data | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=16">
+  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+</head>
+<body>
+<div class="dash-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="nav-section">
+      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
+      <a href="/dashboard/reports"><span class="nav-icon">📄</span> Reports</a>
+      <a href="/dashboard/upload" class="active"><span class="nav-icon">📤</span> Upload Data</a>
+      <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
+    </div>
+    <div class="nav-section">
+      <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="page-header">
+      <div><h1>📤 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>How it works</h2></div>
+      <div class="grid-3">
+        <div class="info-card"><div class="info-icon">1</div><h3>Export from Shopify</h3><p>Go to Shopify → Analytics → Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
+        <div class="info-card"><div class="info-icon">2</div><h3>Upload here</h3><p>Drag and drop or select your CSV files. We accept orders, payouts, and fees exports.</p></div>
+        <div class="info-card"><div class="info-icon">3</div><h3>Get your books</h3><p>Within 24 hours, you'll get P&L, Balance Sheet, and Cash Flow in a clean Google Sheet.</p></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Upload files</h2></div>
+      <div id="upload-zone" class="upload-zone">
+        <div style="font-size:40px;margin-bottom:12px;color:var(--text-dim);">📤</div>
+        <p style="font-size:14px;color:var(--text);margin-bottom:4px;">Drop your CSV files here</p>
+        <p style="font-size:12px;color:var(--text-dim);">or click to browse</p>
+        <input type="file" id="file-input" accept=".csv" multiple style="display:none">
+      </div>
+      <div id="upload-status" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { auth, onAuthStateChanged } from '/partners/firebase-init.js';
+  import { updateNav, requireAuth } from '/auth.js';
+  updateNav(); requireAuth('/login');
+  onAuthStateChanged(auth, (user) => { if (!user) return; });
+  const zone = document.getElementById('upload-zone');
+  const input = document.getElementById('file-input');
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.style.borderColor = 'var(--accent)'; });
+  zone.addEventListener('dragleave', () => { zone.style.borderColor = 'var(--border)'; });
+  zone.addEventListener('drop', (e) => { e.preventDefault(); zone.style.borderColor = 'var(--border)'; handleFiles(e.dataTransfer.files); });
+  input.addEventListener('change', (e) => handleFiles(e.target.files));
+  function handleFiles(files) {
+    if (!files.length) return;
+    document.getElementById('upload-status').innerHTML = '<div class="alert info">Uploading...</div>';
+    setTimeout(() => {
+      document.getElementById('upload-status').innerHTML = '<div class="alert success">Files received! In production, these would be sent to our bookkeeping team.</div>';
+    }, 1500);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=16">
+  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+</head>
+<body>
+<div class="dash-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="nav-section">
+      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
+      <a href="/dashboard/reports" class="active"><span class="nav-icon">📄</span> Reports</a>
+      <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
+      <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
+    </div>
+    <div class="nav-section">
+      <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="page-header">
+      <div><h1>📄 Reports</h1><p class="page-subtitle">Your monthly financial statements</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Available Reports</h2></div>
+      <div class="empty-state">
+        <div style="font-size:40px;margin-bottom:12px;opacity:0.3;">📊</div>
+        <h3>No reports yet</h3>
+        <p>Upload your Shopify data to generate your first report.<br>We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
+        <a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Data</a>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>What you get each month</h2></div>
+      <div class="grid-3">
+        <div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized. Know exactly where your money goes.</p></div>
+        <div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date. Ready for your CPA or investors.</p></div>
+        <div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See exactly why cash is tight even when sales are up. Shopify payout timing, fees, refunds — all reconciled.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { auth, onAuthStateChanged } from '/partners/firebase-init.js';
+  import { updateNav, requireAuth } from '/auth.js';
+  updateNav(); requireAuth('/login');
+  onAuthStateChanged(auth, (user) => { if (!user) return; });
+</script>
+</body>
+</html>

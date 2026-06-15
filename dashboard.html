@@ -50,12 +50,12 @@
   <div class="dash-sidebar" id="sidebar">
     <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
     <div class="section-label">Main</div>
-    <a href="/dashboard.html" class="active" id="nav-overview">📊 Overview</a>
-    <a href="/dashboard/reports.html" id="nav-reports">📄 Reports</a>
-    <a href="/dashboard/upload.html" id="nav-upload">📤 Upload Data</a>
-    <a href="/dashboard/billing.html" id="nav-billing">💳 Billing</a>
+    <a href="/dashboard" class="active" id="nav-overview">📊 Overview</a>
+    <a href="/dashboard/reports" id="nav-reports">📄 Reports</a>
+    <a href="/dashboard/upload" id="nav-upload">📤 Upload Data</a>
+    <a href="/dashboard/billing" id="nav-billing">💳 Billing</a>
     <div class="section-label">Account</div>
-    <a href="/dashboard/settings.html" id="nav-settings">⚙️ Settings</a>
+    <a href="/dashboard/settings" id="nav-settings">⚙️ Settings</a>
     <a href="/partners/">🤝 Partner Program</a>
   </div>
 
@@ -144,7 +144,7 @@
         <div class="panel-header"><h2>Get started</h2></div>
         <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="/dashboard/upload.html" class="btn primary">Upload Data</a>
+          <a href="/dashboard/upload" class="btn primary">Upload Data</a>
           <a href="/tools/" class="btn">Free Health Check</a>
           ${!isActive ? '<a href="/#pricing" class="btn accent">Upgrade Plan</a>' : ''}
         </div>
@@ -156,7 +156,7 @@
           <div style="font-size:32px;margin-bottom:12px;opacity:0.3;">📊</div>
           <h3>No reports yet</h3>
           <p>Once you upload your Shopify data, your monthly reports will appear here. We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
-          <a href="/dashboard/upload.html" class="btn primary" style="margin-top:16px;">Upload Your First Data</a>
+          <a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Your First Data</a>
         </div>
       </div>
 
@@ -191,7 +191,7 @@
             <div style="font-size:12px;color:var(--text-dim);">${profile.email}</div>
           </div>
         </div>
-        <a href="/dashboard/settings.html" class="btn sm">Edit Profile</a>
+        <a href="/dashboard/settings" class="btn sm">Edit Profile</a>
       </div>
     `;
   });

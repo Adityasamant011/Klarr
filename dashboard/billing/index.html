@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=16">
+  <link rel="stylesheet" href="/css/dashboard.css?v=2">
+</head>
+<body>
+<div class="dash-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="nav-section">
+      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
+      <a href="/dashboard/reports"><span class="nav-icon">📄</span> Reports</a>
+      <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
+      <a href="/dashboard/billing" class="active"><span class="nav-icon">💳</span> Billing</a>
+    </div>
+    <div class="nav-section">
+      <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="page-header">
+      <div><h1>💳 Billing</h1><p class="page-subtitle">Manage your subscription</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Current Plan</h2></div>
+      <div id="billing-plan"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>Available Plans</h2></div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-tag"><span class="price-amt">$99</span><span class="price-per">/mo</span></div>
+          <p class="price-desc">For small stores doing &lt;$50K/yr</p>
+          <ul class="price-features"><li>Monthly P&L</li><li>Balance Sheet</li><li>24hr delivery</li><li>Human-reviewed</li></ul>
+          <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn btn-block">Choose Starter</a>
+        </div>
+        <div class="price-card price-card-popular">
+          <div class="price-popular-badge">Most Popular</div>
+          <div class="price-tag"><span class="price-amt">$149</span><span class="price-per">/mo</span></div>
+          <p class="price-desc">For growing stores doing $50K–500K/yr</p>
+          <ul class="price-features"><li>Everything in Starter</li><li>Cash Flow Statement</li><li>Quarterly reports</li><li>Free health check</li></ul>
+          <a href="https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00" class="btn primary btn-block">Choose Growth</a>
+        </div>
+        <div class="price-card">
+          <div class="price-tag"><span class="price-amt">$249</span><span class="price-per">/mo</span></div>
+          <p class="price-desc">For scaling stores doing $500K+/yr</p>
+          <ul class="price-features"><li>Everything in Growth</li><li>Weekly bookkeeping</li><li>Cash flow alerts</li><li>Priority support</li></ul>
+          <a href="https://buy.stripe.com/aFa5kDggNcSu1RGgmIfAc02" class="btn btn-block">Choose Pro</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { auth, onAuthStateChanged, getCustomerProfile } from '/partners/firebase-init.js';
+  import { updateNav, requireAuth } from '/auth.js';
+  updateNav(); requireAuth('/login');
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    const profile = await getCustomerProfile(user.uid) || {};
+    const plan = profile.plan || 'none';
+    const isActive = plan !== 'none';
+    const names = { starter: 'Starter', growth: 'Growth', pro: 'Pro', none: 'Free' };
+    const prices = { starter: '$99/mo', growth: '$149/mo', pro: '$249/mo', none: '—' };
+    document.getElementById('billing-plan').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:18px;font-weight:600;">${names[plan]}</div><div style="font-size:13px;color:var(--text-muted);">${prices[plan]}</div></div>
+        <span class="badge ${isActive ? 'active' : 'pending'}">${isActive ? 'Active' : 'No subscription'}</span>
+      </div>
+    `;
+  });
+</script>
+</body>
+</html>

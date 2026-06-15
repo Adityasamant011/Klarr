@@ -8,26 +8,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=15">
-  <link rel="stylesheet" href="/css/dashboard.css?v=1">
+  <link rel="stylesheet" href="/style.css?v=16">
+  <link rel="stylesheet" href="/css/dashboard.css?v=2">
   <style>
     .auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:80px 24px 40px; }
     .auth-card { width:100%; max-width:420px; }
     .auth-card h1 { font-size:1.4rem; font-weight:600; color:var(--text); margin-bottom:8px; letter-spacing:-0.02em; }
     .auth-card .auth-sub { font-size:14px; color:var(--text-muted); margin-bottom:32px; line-height:1.5; }
-    .auth-error { background:rgba(224,80,80,0.1); border:1px solid rgba(224,80,80,0.2); border-radius:4px; padding:10px 14px; font-size:13px; color:#e05050; margin-bottom:16px; display:none; }
-    .auth-success { background:rgba(82,200,120,0.1); border:1px solid rgba(82,200,120,0.2); border-radius:4px; padding:10px 14px; font-size:13px; color:#52c878; margin-bottom:16px; display:none; }
-    .auth-btn { width:100%; padding:12px; background:var(--text); color:var(--bg); border:none; border-radius:4px; font-size:14px; font-weight:500; cursor:pointer; font-family:inherit; margin-top:8px; }
+    .auth-error { background:rgba(224,80,80,0.1); border:1px solid rgba(224,80,80,0.2); border-radius:6px; padding:10px 14px; font-size:13px; color:#e05050; margin-bottom:16px; display:none; }
+    .auth-success { background:rgba(82,200,120,0.1); border:1px solid rgba(82,200,120,0.2); border-radius:6px; padding:10px 14px; font-size:13px; color:#52c878; margin-bottom:16px; display:none; }
+    .auth-btn { width:100%; padding:12px; background:var(--text); color:var(--bg); border:none; border-radius:6px; font-size:14px; font-weight:500; cursor:pointer; font-family:inherit; margin-top:8px; }
     .auth-btn:hover { opacity:0.85; }
     .auth-btn:disabled { opacity:0.5; cursor:not-allowed; }
     .auth-divider { display:flex; align-items:center; gap:12px; margin:24px 0; }
     .auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:var(--border); }
     .auth-divider span { font-size:12px; color:var(--text-dim); }
-    .google-btn { width:100%; padding:12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:4px; color:var(--text); font-size:14px; font-weight:400; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .google-btn { width:100%; padding:12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:14px; font-weight:400; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:8px; }
     .google-btn:hover { border-color:var(--text-dim); }
     .auth-footer { text-align:center; margin-top:24px; font-size:13px; color:var(--text-muted); }
     .auth-footer a { color:var(--text); text-decoration:none; }
-    .auth-footer a:hover { text-decoration:underline; }
     .partner-info { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:24px; }
     .partner-info .p-name { font-size:14px; font-weight:500; color:var(--text); }
     .partner-info .p-email { font-size:12px; color:var(--text-dim); margin-top:2px; }
@@ -35,11 +34,10 @@
   </style>
 </head>
 <body>
-
   <nav>
     <div class="nav-inner">
       <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
-      <div class="nav-links"><a href="/partners/">Partner Program</a></div>
+      <div class="nav-links"><a href="/partners">Partner Program</a></div>
       <div class="nav-right" id="nav-auth-area"><a href="/login" class="nav-login-link">Log in</a><a href="/signup" class="nav-cta">Sign up</a></div>
     </div>
   </nav>
@@ -75,7 +73,7 @@
       <div class="auth-divider"><span>or</span></div>
       <button class="google-btn" id="google-login-btn"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Continue with Google</button>
 
-      <div class="auth-footer">Not a partner yet? <a href="/partners/">Join the program</a></div>
+      <div class="auth-footer">Not a partner yet? <a href="/partners">Join the program</a></div>
     </div>
   </div>
 
@@ -85,12 +83,17 @@
     import { getAllPartners } from '/partners/firebase-init.js';
     updateNav();
 
+    // If already logged in, check if they're a partner and redirect
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const data = await getAllPartners();
         const partner = data.partners.find(p => p.email === user.email);
-        if (partner) window.location.href = '/partners/dashboard.html?id=' + partner.id;
-        else window.location.href = '/dashboard.html';
+        if (partner) {
+          window.location.href = '/partners/dashboard?id=' + partner.id;
+        } else {
+          // Logged in but not a partner — redirect to partner signup
+          window.location.href = '/partners#signup';
+        }
       }
     });
 
@@ -120,13 +123,13 @@
       try {
         const data = await getAllPartners();
         const partner = data.partners.find(p => p.email.toLowerCase() === email);
-        if (!partner) { showError('find-error', 'No partner account found. Sign up at klarr.space/partners/'); btn.disabled = false; btn.textContent = 'Continue'; return; }
+        if (!partner) { showError('find-error', 'No partner account found. Sign up at klarr.space/partners'); btn.disabled = false; btn.textContent = 'Continue'; return; }
         window._foundPartner = partner;
         try { await signInWithEmail(email, '__check__'); } catch (err) {
-          if (err.code === 'auth/user-not-found') { showStep('step-setup'); document.getElementById('partner-found-info').innerHTML = `<div class="p-name">${partner.name}</div><div class="p-email">${partner.email}</div><div class="p-link">Referral: klarr.space/?ref=${partner.id}</div>`; btn.disabled = false; btn.textContent = 'Continue'; return; }
-          else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') { showStep('step-login'); document.getElementById('partner-login-info').innerHTML = `<div class="p-name">${partner.name}</div><div class="p-email">${partner.email}</div>`; btn.disabled = false; btn.textContent = 'Continue'; return; }
+          if (err.code === 'auth/user-not-found') { showStep('step-setup'); document.getElementById('partner-found-info').innerHTML = '<div class="p-name">' + partner.name + '</div><div class="p-email">' + partner.email + '</div><div class="p-link">Referral: klarr.space/?ref=' + partner.id + '</div>'; btn.disabled = false; btn.textContent = 'Continue'; return; }
+          else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') { showStep('step-login'); document.getElementById('partner-login-info').innerHTML = '<div class="p-name">' + partner.name + '</div><div class="p-email">' + partner.email + '</div>'; btn.disabled = false; btn.textContent = 'Continue'; return; }
         }
-        window.location.href = '/partners/dashboard.html?id=' + partner.id;
+        window.location.href = '/partners/dashboard?id=' + partner.id;
       } catch (err) { showError('find-error', 'Error. Try again.'); btn.disabled = false; btn.textContent = 'Continue'; }
     };
 
@@ -142,7 +145,7 @@
         const user = await signUpWithEmail(window._foundPartner.email, password, window._foundPartner.name);
         document.getElementById('setup-success').textContent = 'Account created! Redirecting...';
         document.getElementById('setup-success').style.display = 'block';
-        setTimeout(() => { window.location.href = '/partners/dashboard.html?id=' + window._foundPartner.id; }, 1500);
+        setTimeout(() => { window.location.href = '/partners/dashboard?id=' + window._foundPartner.id; }, 1500);
       } catch (err) { showError('setup-error', err.message); btn.disabled = false; btn.textContent = 'Create account & access dashboard'; }
     };
 
@@ -153,7 +156,7 @@
       btn.disabled = true; btn.textContent = 'Logging in...';
       try {
         await signInWithEmail(window._foundPartner.email, password);
-        window.location.href = '/partners/dashboard.html?id=' + window._foundPartner.id;
+        window.location.href = '/partners/dashboard?id=' + window._foundPartner.id;
       } catch (err) { showError('login-error', 'Incorrect password. Try again or reset.'); btn.disabled = false; btn.textContent = 'Log in'; }
     };
 
