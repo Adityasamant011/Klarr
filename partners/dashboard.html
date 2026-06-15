@@ -8,153 +8,130 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=9">
-  <style>
-    .dash-container { max-width: 900px; margin: 0 auto; padding: 100px 24px 80px; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
-    .dash-header h1 { font-size: 1.4rem; font-weight: 600; color: var(--text); }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
-    .stat-card .num { font-size: 1.8rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
-    .stat-card .label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
-    .stat-card.highlight .num { color: var(--accent); }
-    .link-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 32px; }
-    .link-box label { font-size: 11px; font-weight: 500; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 8px; }
-    .link-input-wrap { display: flex; gap: 8px; }
-    .link-input-wrap input { flex: 1; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 13px; font-family: inherit; }
-    .link-input-wrap input:focus { outline: none; border-color: var(--accent); }
-    .dash-copy-btn { padding: 10px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 13px; cursor: pointer; font-family: inherit; white-space: nowrap; }
-    .link-hint { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
-    .payout-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; }
-    .payout-amount { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-    .payout-label { font-size: 12px; color: var(--text-dim); }
-    .btn-payout { padding: 10px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
-    .btn-payout:hover { opacity: 0.85; }
-    .btn-payout:disabled { background: var(--bg-elevated); color: var(--text-dim); cursor: not-allowed; }
-    .payout-status { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
-    .payout-status .pending { color: #b8860b; }
-    .payout-status .paid { color: #52c878; }
-    .dash-section { margin-bottom: 32px; }
-    .dash-section h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
-    td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
-    tr:last-child td { border-bottom: none; }
-    .loading { text-align: center; padding: 40px; color: var(--text-dim); }
-    .payout-history { margin-top: 8px; font-size: 12px; color: var(--text-dim); }
-    .payout-history-item { padding: 4px 0; border-bottom: 1px solid var(--border); }
-    @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-  </style>
+  <link rel="stylesheet" href="/style.css?v=15">
+  <link rel="stylesheet" href="/css/dashboard.css?v=1">
 </head>
 <body>
-  <nav>
-    <div class="nav-inner">
-      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
-      <div class="nav-links"><a href="/partners/">Partner Program</a></div>
-      <div class="nav-right" id="nav-auth-area">
-        <a href="/login.html" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
-        <a href="/signup.html" class="nav-cta">Sign up</a>
-      </div>
-    </div>
-  </nav>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></symbol>
+  <symbol id="icon-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></symbol>
+  <symbol id="icon-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="icon-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+  <symbol id="icon-dollar" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+  <symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+</svg>
 
-  <div class="dash-container">
-    <div class="dash-header">
-      <div><h1>Partner Dashboard</h1><p>Welcome, <strong id="dash-name" style="color:var(--text);">loading...</strong></p></div>
-      <a href="/partners/" style="font-size:13px;color:var(--accent);text-decoration:none;">← Partner Page</a>
-    </div>
-    <div id="dash-content"><div class="loading">Loading your stats...</div></div>
+<div class="dash-layout">
+  <div class="dash-sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr Partner</a></div>
+    <div class="section-label">Dashboard</div>
+    <a href="#" class="active"><svg class="icon"><use href="#icon-chart"/></svg> Overview</a>
+    <a href="/partners/"><svg class="icon"><use href="#icon-home"/></svg> Partner Program</a>
   </div>
 
-  <footer><div class="container"><span>copyright 2026 Klarr</span><span>·</span><span>klarr.space@gmail.com</span></div></footer>
-  <script type="module">
-    import { getPartnerStats, createPayoutRequest, getAllPartners } from '/partners/firebase-init.js';
-    import { updateNav } from '/auth.js';
-    updateNav();
+  <div class="main" id="dash-content">
+    <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading...</div>
+  </div>
+</div>
 
-    const params = new URLSearchParams(window.location.search);
-    const partnerId = params.get('id');
+<script type="module">
+  import { getPartnerStats, createPayoutRequest, getAllPartners } from '/partners/firebase-init.js';
 
-    if (!partnerId) {
-      document.getElementById('dash-content').innerHTML = '<div class="loading">No partner ID. <a href="/partners/" style="color:var(--accent);">Sign up</a>.</div>';
-    } else {
-      (async () => {
-        try {
-          const stats = await getPartnerStats(partnerId);
-          if (!stats) { document.getElementById('dash-content').innerHTML = '<div class="loading">Partner not found.</div>'; return; }
+  const params = new URLSearchParams(window.location.search);
+  const partnerId = params.get('id');
 
-          // Get partner name from Firestore
-          var allData = await getAllPartners();
-          var partner = allData.partners.find(p => p.id === partnerId);
-          document.getElementById('dash-name').textContent = partner ? partner.name : partnerId.substring(0, 15);
+  if (!partnerId) {
+    document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>No partner ID. <a href="/partners/">Sign up</a> or <a href="/partners/login.html">log in</a>.</p></div>';
+  } else {
+    loadDashboard();
+  }
 
-          var refLink = 'https://klarr.space/?ref=' + partnerId;
+  async function loadDashboard() {
+    try {
+      const stats = await getPartnerStats(partnerId);
+      if (!stats) { document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Partner not found.</p></div>'; return; }
 
-          var refRows = '';
-          if (stats.referrals.length === 0) {
-            refRows = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:20px;">No signups yet. Share your link!</td></tr>';
-          } else {
-            refRows = stats.referrals.map(function(r) {
-              var d = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString() : '—';
-              var sc = r.status === 'active' ? '#52c878' : (r.status === 'paid' ? '#8b8880' : '#b8860b');
-              return '<tr><td>' + d + '</td><td>' + r.email.split('@')[0] + '</td><td>' + r.plan + '</td><td style="color:' + sc + '">' + r.status + '</td><td style="color:var(--accent)">$' + r.commission.toFixed(2) + '/mo</td></tr>';
-            }).join('');
-          }
+      const allData = await getAllPartners();
+      const partner = allData.partners.find(p => p.id === partnerId);
+      const refLink = 'https://klarr.space/?ref=' + partnerId;
+      const balance = parseFloat(stats.earnings).toFixed(2);
+      const canPayout = parseFloat(balance) >= 25;
 
-          var balance = parseFloat(stats.earnings).toFixed(2);
-          var canPayout = parseFloat(balance) >= 25;
+      let refRows = '';
+      if (stats.referrals.length === 0) {
+        refRows = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-dim);">No signups yet. Share your link!</td></tr>';
+      } else {
+        refRows = stats.referrals.map(r => {
+          const d = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString() : '—';
+          const sc = r.status === 'active' ? '#52c878' : (r.status === 'paid' ? '#8b8880' : '#b8860b');
+          return `<tr><td>${d}</td><td>${r.email.split('@')[0]}</td><td>${r.plan}</td><td style="color:${sc}">${r.status}</td><td style="color:var(--accent)">$${r.commission.toFixed(2)}/mo</td></tr>`;
+        }).join('');
+      }
 
-          document.getElementById('dash-content').innerHTML = `
-            <div class="stats-grid">
-              <div class="stat-card"><div class="num">${stats.clicks}</div><div class="label">Clicks</div></div>
-              <div class="stat-card"><div class="num">${stats.signups}</div><div class="label">Signups</div></div>
-              <div class="stat-card"><div class="num">${stats.active}</div><div class="label">Active</div></div>
-              <div class="stat-card highlight"><div class="num">$${stats.earnings}/mo</div><div class="label">Monthly Earnings</div></div>
+      document.getElementById('dash-content').innerHTML = `
+        <div class="dash-topbar">
+          <div><h1>Partner Dashboard</h1><p class="subtitle">Welcome, ${partner ? partner.name : 'Partner'}</p></div>
+          <a href="/partners/" style="font-size:13px;color:var(--accent);text-decoration:none;">← Partner Page</a>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">Clicks</div><div class="value">${stats.clicks}</div></div>
+          <div class="stat-card"><div class="label">Signups</div><div class="value">${stats.signups}</div></div>
+          <div class="stat-card"><div class="label">Active</div><div class="value">${stats.active}</div></div>
+          <div class="stat-card highlight"><div class="label">Monthly Earnings</div><div class="value">$${stats.earnings}/mo</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Your Referral Link</h2></div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" value="${refLink}" readonly id="ref-link-input" class="form-control" style="flex:1;">
+            <button class="btn sm" onclick="navigator.clipboard.writeText(document.getElementById('ref-link-input').value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+          </div>
+          <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">Share anywhere. 90-day cookie. 20% recurring on all plans.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Earnings</h2></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:1.5rem;font-weight:600;color:var(--accent);">$${balance}</div>
+              <div style="font-size:12px;color:var(--text-dim);">Available Balance</div>
             </div>
-            <div class="link-box">
-              <label>Your Referral Link</label>
-              <div class="link-input-wrap">
-                <input type="text" value="${refLink}" readonly id="ref-link-input">
-                <button class="dash-copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('ref-link-input').value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
-              </div>
-              <p class="link-hint">Share anywhere. 90-day cookie. 20% recurring on all plans.</p>
-            </div>
-            <div class="payout-bar">
-              <div>
-                <div class="payout-amount">$${balance}</div>
-                <div class="payout-label">Available Balance</div>
-                <div class="payout-status" id="payout-status-text"></div>
-              </div>
-              <button class="btn-payout" id="btn-payout" ${canPayout ? '' : 'disabled'}>Request Payout</button>
-            </div>
-            ${!canPayout ? '<p style="font-size:12px;color:var(--text-dim);margin-top:-24px;margin-bottom:24px;">Minimum payout is $25. You need $' + (25 - parseFloat(balance)).toFixed(2) + ' more.</p>' : ''}
-            <div class="dash-section">
-              <h2>Your Referrals</h2>
-              <table>
-                <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>You Earn</th></tr></thead>
-                <tbody>${refRows}</tbody>
-              </table>
-            </div>
-          `;
+            <button class="btn accent" id="btn-payout" ${canPayout ? '' : 'disabled'}>Request Payout</button>
+          </div>
+          ${!canPayout ? `<p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Minimum payout is $25. You need $${(25 - parseFloat(balance)).toFixed(2)} more.</p>` : ''}
+        </div>
 
-          if (canPayout) {
-            document.getElementById('btn-payout').onclick = async function() {
-              if (!confirm('Request $' + balance + ' payout? This will be processed via PayPal or bank transfer within 7 business days.')) return;
-              try {
-                await createPayoutRequest(partnerId, parseFloat(balance));
-                document.getElementById('btn-payout').disabled = true;
-                document.getElementById('btn-payout').textContent = 'Payout Requested';
-                document.getElementById('payout-status-text').innerHTML = '<span class="pending">⏳ Pending — will be processed within 7 business days</span>';
-                alert('Payout requested! You will receive $' + balance + ' via PayPal or bank transfer within 7 business days.');
-              } catch (e) { alert('Error: ' + e.message); }
-            };
-          }
-        } catch (e) {
-          document.getElementById('dash-content').innerHTML = '<div class="loading">Error loading data. Refresh to try again.</div>';
-          console.error(e);
-        }
-      })();
+        <div class="panel">
+          <div class="panel-header"><h2>Your Referrals</h2></div>
+          <table>
+            <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>You Earn</th></tr></thead>
+            <tbody>${refRows}</tbody>
+          </table>
+        </div>
+      `;
+
+      if (canPayout) {
+        document.getElementById('btn-payout').onclick = async function() {
+          if (!confirm('Request $' + balance + ' payout? This will be processed via PayPal or bank transfer within 7 business days.')) return;
+          try {
+            await createPayoutRequest(partnerId, parseFloat(balance));
+            document.getElementById('btn-payout').disabled = true;
+            document.getElementById('btn-payout').textContent = 'Payout Requested';
+            alert('Payout requested! You will receive $' + balance + ' via PayPal or bank transfer within 7 business days.');
+          } catch (e) { alert('Error: ' + e.message); }
+        };
+      }
+    } catch (e) {
+      document.getElementById('dash-content').innerHTML = '<div class="empty-state"><p>Error loading data. Refresh to try again.</p></div>';
+      console.error(e);
     }
-  </script>
+  }
+</script>
 </body>
 </html>
