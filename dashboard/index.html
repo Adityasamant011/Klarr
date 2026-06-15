@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Klarr</title>
@@ -43,9 +44,9 @@
 <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
 
 <script type="module">
-  import { auth, onAuthStateChanged, signOut, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
+  import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
   import { getFirestore, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
+  import { updateNav, requireAuth } from '/auth.js';
 
   const db = getFirestore();
   updateNav();

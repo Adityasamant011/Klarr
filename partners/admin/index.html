@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Partner Program | Klarr</title>
@@ -88,8 +89,8 @@
   </div>
 
   <script type="module">
-    import { getAllPartners } from 'https://klarr.space/partners/firebase-init.js';
-    import { updateNav } from 'https://klarr.space/auth.js';
+    import { getAllPartners } from '/partners/firebase-init.js';
+    import { updateNav } from '/auth.js';
     updateNav();
 
     window.showTab = function(tab) {

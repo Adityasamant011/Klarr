@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Billing | Klarr</title>
@@ -62,8 +63,8 @@
   </div>
 </div>
 <script type="module">
-  import { auth, onAuthStateChanged, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
-  import { updateNav, requireAuth } from 'https://klarr.space/auth.js';
+  import { auth, onAuthStateChanged, getCustomerProfile } from '/partners/firebase-init.js';
+  import { updateNav, requireAuth } from '/auth.js';
   updateNav(); requireAuth('/login');
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;

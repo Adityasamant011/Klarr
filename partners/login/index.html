@@ -78,9 +78,9 @@
   </div>
 
   <script type="module">
-    import { auth, onAuthStateChanged, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut, getCustomerProfile } from 'https://klarr.space/partners/firebase-init.js';
-    import { updateNav } from 'https://klarr.space/auth.js';
-    import { getAllPartners } from 'https://klarr.space/partners/firebase-init.js';
+    import { auth, onAuthStateChanged, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut, getCustomerProfile } from '/partners/firebase-init.js';
+    import { updateNav } from '/auth.js';
+    import { getAllPartners } from '/partners/firebase-init.js';
     updateNav();
 
     // If already logged in, check if they're a partner and redirect
@@ -106,7 +106,7 @@
       const email = window._foundPartner?.email;
       if (!email) return;
       try {
-        const { resetPassword } = await import('https://klarr.space/partners/firebase-init.js');
+        const { resetPassword } = await import('/partners/firebase-init.js');
         await resetPassword(email);
         alert('Password reset email sent to ' + email);
       } catch (err) { alert(err.message); }
