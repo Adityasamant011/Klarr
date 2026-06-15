@@ -1,13 +1,17 @@
-// Klarr Partner Referral System — Firebase Backend
-// Real cross-browser tracking with Firestore
+// Klarr — Firebase Backend v2
+// Auth + Firestore for customers, partners, referrals
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
   getFirestore, collection, addDoc, getDocs, query, where,
-  doc, getDoc, updateDoc, serverTimestamp, orderBy, limit
+  doc, getDoc, updateDoc, serverTimestamp, orderBy, limit, setDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut, sendPasswordResetEmail
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-// Your real Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",
   authDomain: "klarr-fa508.firebaseapp.com",
@@ -18,23 +22,83 @@ const firebaseConfig = {
   measurementId: "G-JEDM340TC4"
 };
 
-let app, db;
+let app, db, auth, googleProvider;
 
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
-  console.log('Firebase initialized');
+  auth = getAuth(app);
+  googleProvider = new GoogleAuthProvider();
+  console.log('Firebase initialized (Auth + Firestore)');
 } catch (e) {
   console.error('Firebase init failed:', e);
 }
 
-// --- TRACKING: Record referral click ---
+// ============ AUTH FUNCTIONS ============
+
+export { auth, googleProvider, onAuthStateChanged, signOut };
+
+// Sign up with email/password
+export async function signUpWithEmail(email, password, name) {
+  if (!auth) throw new Error('Auth not initialized');
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  // Save customer profile
+  await setDoc(doc(db, 'customers', cred.user.uid), {
+    name: name,
+    email: email,
+    plan: 'none',
+    status: 'active',
+    createdAt: serverTimestamp()
+  });
+  return cred.user;
+}
+
+// Sign in with email/password
+export async function signInWithEmail(email, password) {
+  if (!auth) throw new Error('Auth not initialized');
+  const cred = await signInWithEmailAndPassword(auth, email, password);
+  return cred.user;
+}
+
+// Sign in with Google
+export async function signInWithGoogle() {
+  if (!auth) throw new Error('Auth not initialized');
+  const cred = await signInWithPopup(auth, googleProvider);
+  // Check if customer profile exists, if not create it
+  const profileRef = doc(db, 'customers', cred.user.uid);
+  const profileSnap = await getDoc(profileRef);
+  if (!profileSnap.exists()) {
+    await setDoc(profileRef, {
+      name: cred.user.displayName || '',
+      email: cred.user.email,
+      plan: 'none',
+      status: 'active',
+      createdAt: serverTimestamp()
+    });
+  }
+  return cred.user;
+}
+
+// Password reset
+export async function resetPassword(email) {
+  if (!auth) throw new Error('Auth not initialized');
+  await sendPasswordResetEmail(auth, email);
+}
+
+// Get current user's customer profile
+export async function getCustomerProfile(uid) {
+  if (!db) return null;
+  const snap = await getDoc(doc(db, 'customers', uid));
+  return snap.exists() ? snap.data() : null;
+}
+
+// ============ TRACKING ============
+
 export async function trackReferralClick() {
   if (!db) return;
   const params = new URLSearchParams(window.location.search);
   const ref = params.get('ref');
   if (!ref) return;
-
   try {
     await addDoc(collection(db, 'clicks'), {
       partnerId: ref,
@@ -42,14 +106,10 @@ export async function trackReferralClick() {
       page: window.location.pathname,
       referrer: document.referrer || 'direct'
     });
-    console.log('Referral click tracked:', ref);
   } catch (e) { console.error('Click tracking failed:', e); }
-
-  // Set 90-day cookie for attribution
   document.cookie = `klarr_ref=${ref}; max-age=7776000; path=/; SameSite=Lax`;
 }
 
-// --- TRACKING: Get referrer from URL or cookie ---
 export function getReferrerId() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('ref')) return params.get('ref');
@@ -57,77 +117,52 @@ export function getReferrerId() {
   return match ? match[1] : null;
 }
 
-// --- SIGNUP: Record a referred customer ---
+// ============ REFERRALS ============
+
 export async function recordReferredSignup(email, plan) {
   if (!db) return;
   const refId = getReferrerId();
   if (!refId) return;
-
   const commissions = { starter: 19.80, growth: 29.80, pro: 49.80 };
   const commission = commissions[plan] || 0;
-
   try {
-    const existing = await getDocs(
-      query(collection(db, 'referrals'), where('email', '==', email))
-    );
+    const existing = await getDocs(query(collection(db, 'referrals'), where('email', '==', email)));
     if (!existing.empty) return;
-
     await addDoc(collection(db, 'referrals'), {
-      partnerId: refId,
-      email: email,
-      plan: plan,
-      commission: commission,
-      status: 'active',
-      createdAt: serverTimestamp()
+      partnerId: refId, email, plan, commission,
+      status: 'active', createdAt: serverTimestamp()
     });
-    console.log('Referred signup recorded:', email, plan);
   } catch (e) { console.error('Signup recording failed:', e); }
 }
 
-// --- PARTNER SIGNUP: Create new partner ---
+// ============ PARTNER FUNCTIONS ============
+
 export async function createPartner(data) {
   if (!db) throw new Error('Firebase not initialized');
-
   const id = 'klarr_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-
   await addDoc(collection(db, 'partners'), {
-    id: id,
-    name: data.name,
-    email: data.email,
-    role: data.role || '',
-    clients: data.clients || '',
-    createdAt: serverTimestamp(),
-    status: 'active'
+    id, name: data.name, email: data.email,
+    role: data.role || '', clients: data.clients || '',
+    createdAt: serverTimestamp(), status: 'active'
   });
-
   return {
-    id: id,
+    id,
     link: 'https://klarr.space/?ref=' + id,
     dashboardUrl: '/partners/dashboard.html?id=' + id
   };
 }
 
-// --- DASHBOARD: Load partner stats ---
 export async function getPartnerStats(partnerId) {
   if (!db) return null;
-
-  const clicksSnap = await getDocs(
-    query(collection(db, 'clicks'), where('partnerId', '==', partnerId))
-  );
-  const referralsSnap = await getDocs(
-    query(collection(db, 'referrals'), where('partnerId', '==', partnerId))
-  );
-
+  const clicksSnap = await getDocs(query(collection(db, 'clicks'), where('partnerId', '==', partnerId)));
+  const referralsSnap = await getDocs(query(collection(db, 'referrals'), where('partnerId', '==', partnerId)));
   const clicks = clicksSnap.docs.map(d => d.data());
   const referrals = referralsSnap.docs.map(d => d.data());
   const active = referrals.filter(r => r.status === 'active');
   const earnings = active.reduce((sum, r) => sum + r.commission, 0);
-
   return {
-    clicks: clicks.length,
-    signups: referrals.length,
-    active: active.length,
-    earnings: earnings.toFixed(2),
+    clicks: clicks.length, signups: referrals.length,
+    active: active.length, earnings: earnings.toFixed(2),
     referrals: referrals.sort((a, b) => {
       const ta = a.createdAt?.toDate?.() || new Date(0);
       const tb = b.createdAt?.toDate?.() || new Date(0);
@@ -141,17 +176,14 @@ export async function getPartnerStats(partnerId) {
   };
 }
 
-// --- ADMIN: Load all partners ---
 export async function getAllPartners() {
-  if (!db) return { partners: [], clicks: [], referrals: [] };
-
+  if (!db) return { partners: [], clicks: [], referrals: [], payouts: [] };
   const [partnersSnap, clicksSnap, referralsSnap, payoutsSnap] = await Promise.all([
     getDocs(query(collection(db, 'partners'), orderBy('createdAt', 'desc'))),
     getDocs(collection(db, 'clicks')),
     getDocs(collection(db, 'referrals')),
     getDocs(query(collection(db, 'payouts'), orderBy('createdAt', 'desc')))
   ]);
-
   return {
     partners: partnersSnap.docs.map(d => ({ ...d.data(), _id: d.id })),
     clicks: clicksSnap.docs.map(d => d.data()),
@@ -160,22 +192,13 @@ export async function getAllPartners() {
   };
 }
 
-// --- PAYOUT: Create payout request ---
 export async function createPayoutRequest(partnerId, amount) {
   if (!db) throw new Error('Firebase not initialized');
-
   await addDoc(collection(db, 'payouts'), {
-    partnerId: partnerId,
-    amount: amount,
-    status: 'pending',
-    createdAt: serverTimestamp()
+    partnerId, amount, status: 'pending', createdAt: serverTimestamp()
   });
-
-  const refs = await getDocs(
-    query(collection(db, 'referrals'),
-      where('partnerId', '==', partnerId),
-      where('status', '==', 'active'))
-  );
+  const refs = await getDocs(query(collection(db, 'referrals'),
+    where('partnerId', '==', partnerId), where('status', '==', 'active')));
   for (const r of refs.docs) {
     await updateDoc(doc(db, 'referrals', r.id), { status: 'paid' });
   }

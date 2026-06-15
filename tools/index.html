@@ -228,8 +228,9 @@
         <a href="/">Home</a>
         <a href="/blog/">Blog</a>
       </div>
-      <div class="nav-right">
-        <a href="/#signup" class="nav-cta">Get free audit</a>
+      <div class="nav-right" id="nav-auth-area">
+        <a href="/login.html" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
+        <a href="/signup.html" class="nav-cta">Sign up</a>
       </div>
     </div>
   </nav>
@@ -330,6 +331,11 @@
   <div class="tool-footer-nav">
     <a href="/">← Back to Klarr</a>
   </div>
+
+  <script type="module">
+    import { updateNav } from '/auth.js';
+    updateNav();
+  </script>
 
 </body>
 </html>

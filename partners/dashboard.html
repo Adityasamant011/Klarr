@@ -51,7 +51,10 @@
     <div class="nav-inner">
       <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
       <div class="nav-links"><a href="/partners/">Partner Program</a></div>
-      <div class="nav-right"><a href="/tools/" class="nav-cta">Free Health Check</a></div>
+      <div class="nav-right" id="nav-auth-area">
+        <a href="/login.html" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
+        <a href="/signup.html" class="nav-cta">Sign up</a>
+      </div>
     </div>
   </nav>
 
@@ -66,6 +69,8 @@
   <footer><div class="container"><span>copyright 2026 Klarr</span><span>·</span><span>klarr.space@gmail.com</span></div></footer>
   <script type="module">
     import { getPartnerStats, createPayoutRequest, getAllPartners } from '/partners/firebase-init.js';
+    import { updateNav } from '/auth.js';
+    updateNav();
 
     const params = new URLSearchParams(window.location.search);
     const partnerId = params.get('id');

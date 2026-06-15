@@ -28,8 +28,9 @@
         <a href="/blog/">Blog</a>
         <a href="/partners/">Partners</a>
       </div>
-      <div class="nav-right">
-        <a href="/tools/" class="nav-cta">Free Health Check</a>
+      <div class="nav-right" id="nav-auth-area">
+        <a href="/login.html" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
+        <a href="/signup.html" class="nav-cta">Sign up</a>
       </div>
     </div>
   </nav>
@@ -422,8 +423,9 @@
   <script src="main.js"></script>
   <script type="module">
     import { trackReferralClick, getReferrerId } from '/partners/firebase-init.js';
+    import { updateNav } from '/auth.js';
     trackReferralClick();
-    // Make referrer ID available for signup tracking
+    updateNav();
     window.klarrReferrerId = getReferrerId();
   </script>
 </body>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=14">
+  <style>
+    .dash-layout { display: min-content; min-height: 100vh; }
+    .dash-sidebar { width: 220px; background: var(--bg-alt); border-right: 1px solid var(--border); padding: 24px 0; position: fixed; top: 52px; bottom: 0; left: 0; overflow-y: auto; }
+    .dash-sidebar .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    .dash-sidebar .sidebar-logo a { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none; }
+    .dash-sidebar .sidebar-logo img { height: 24px; }
+    .dash-sidebar .sidebar-section { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); padding: 12px 20px 6px; }
+    .dash-sidebar a.sidebar-link { display: flex; align-items: center; gap: 10px; padding: 8px 20px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: all 0.15s; }
+    .dash-sidebar a.sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+    .dash-sidebar a.sidebar-link.active { color: var(--text); background: rgba(255,255,255,0.04); border-right: 2px solid var(--accent); }
+    .dash-sidebar a.sidebar-link .icon { font-size: 15px; width: 20px; text-align: center; }
+    .dash-main { margin-left: 220px; padding: 80px 32px 40px; min-height: 100vh; }
+    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .dash-header h1 { font-size: 1.3rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+    .dash-header .dash-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .dash-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+    .dash-card .card-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 8px; }
+    .dash-card .card-value { font-size: 1.6rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+    .dash-card .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .dash-card.accent .card-value { color: var(--accent); }
+    .dash-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+    .dash-section h2 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+    .dash-section p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .dash-empty { text-align: center; padding: 48px 24px; }
+    .dash-empty .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+    .dash-empty h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .dash-empty p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
+    .status-badge.active { background: rgba(82, 200, 120, 0.1); color: #52c878; }
+    .status-badge.pending { background: rgba(184, 134, 11, 0.1); color: #b8860b; }
+    .status-badge.none { background: rgba(139, 136, 128, 0.1); color: var(--text-dim); }
+    .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .btn-sm { padding: 8px 16px; font-size: 13px; }
+    @media (max-width: 768px) {
+      .dash-sidebar { display: none; }
+      .dash-main { margin-left: 0; padding: 72px 16px 32px; }
+      .dash-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav style="background:var(--bg);border-bottom:1px solid var(--border);">
+    <div class="nav-inner">
+      <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
+      <div class="nav-right" id="nav-auth-area"></div>
+    </div>
+  </nav>
+
+  <div class="dash-layout">
+    <div class="dash-sidebar">
+      <div class="sidebar-logo"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+      <div class="sidebar-section">Main</div>
+      <a href="/dashboard.html" class="sidebar-link active"><span class="icon">📊</span> Overview</a>
+      <a href="#reports" class="sidebar-link"><span class="icon">📄</span> Reports</a>
+      <a href="#upload" class="sidebar-link"><span class="icon">📤</span> Upload Data</a>
+      <div class="sidebar-section">Account</div>
+      <a href="#settings" class="sidebar-link"><span class="icon">⚙️</span> Settings</a>
+      <a href="/partners/" class="sidebar-link"><span class="icon">🤝</span> Partner Program</a>
+    </div>
+
+    <div class="dash-main" id="dash-content">
+      <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading your dashboard...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
+    import { updateNav, requireAuth } from '/auth.js';
+
+    updateNav();
+    requireAuth('/login.html');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      let name = 'there';
+      let plan = 'none';
+      let planLabel = 'No active plan';
+      let statusClass = 'none';
+      let statusText = 'Get started';
+
+      try {
+        const profile = await getCustomerProfile(user.uid);
+        if (profile) {
+          name = profile.name ? profile.name.split(' ')[0] : 'there';
+          plan = profile.plan || 'none';
+          if (plan !== 'none') {
+            planLabel = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+            statusClass = 'active';
+            statusText = 'Active';
+          }
+        }
+      } catch (e) {}
+
+      const content = document.getElementById('dash-content');
+      content.innerHTML = `
+        <div class="dash-header">
+          <div>
+            <h1>Welcome, ${name}</h1>
+            <p class="dash-sub">Here's your bookkeeping overview.</p>
+          </div>
+          <span class="status-badge ${statusClass}"><span class="dot"></span> ${statusText}</span>
+        </div>
+
+        <div class="dash-cards">
+          <div class="dash-card">
+            <div class="card-label">Current Plan</div>
+            <div class="card-value">${plan === 'none' ? '—' : plan.charAt(0).toUpperCase() + plan.slice(1)}</div>
+            <div class="card-sub">${planLabel}</div>
+          </div>
+          <div class="dash-card">
+            <div class="card-label">Reports This Month</div>
+            <div class="card-value">0</div>
+            <div class="card-sub">Upload your first data</div>
+          </div>
+          <div class="dash-card accent">
+            <div class="card-label">Health Score</div>
+            <div class="card-value">—</div>
+            <div class="card-sub">Complete setup to see score</div>
+          </div>
+        </div>
+
+        <div class="dash-section" id="upload">
+          <h2>Get started — upload your Shopify data</h2>
+          <p>Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
+          <div style="margin-top:20px;">
+            <a href="/#pricing" class="btn-primary btn-sm" style="text-decoration:none;">Choose a plan</a>
+            <a href="/tools/" class="btn-ghost btn-sm" style="text-decoration:none;margin-left:8px;">Free health check</a>
+          </div>
+        </div>
+
+        <div class="dash-section" id="reports">
+          <h2>Your Reports</h2>
+          <div class="dash-empty">
+            <div class="empty-icon">📊</div>
+            <h3>No reports yet</h3>
+            <p>Once you upload your Shopify data, your monthly reports will appear here.</p>
+          </div>
+        </div>
+
+        <div class="dash-section" id="settings">
+          <h2>Account Settings</h2>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:var(--text);">${name.charAt(0).toUpperCase()}</div>
+            <div>
+              <div style="font-size:14px;color:var(--text);font-weight:500;">${user.displayName || name}</div>
+              <div style="font-size:12px;color:var(--text-dim);">${user.email}</div>
+            </div>
+          </div>
+          <button onclick="signOut(auth).then(()=>window.location.href='/')" class="btn-ghost btn-sm" style="border-color:rgba(224,80,80,0.3);color:#e05050;">Log out</button>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

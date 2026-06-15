@@ -43,7 +43,10 @@
   <nav>
     <div class="nav-inner">
       <a href="/" class="logo"><img src="/favicon.svg" alt="Klarr"></a>
-      <div class="nav-right"><a href="/" class="nav-cta">Back to Site</a></div>
+      <div class="nav-right" id="nav-auth-area">
+        <a href="/login.html" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
+        <a href="/signup.html" class="nav-cta">Sign up</a>
+      </div>
     </div>
   </nav>
 
@@ -86,6 +89,8 @@
 
   <script type="module">
     import { getAllPartners } from '/partners/firebase-init.js';
+    import { updateNav } from '/auth.js';
+    updateNav();
 
     window.showTab = function(tab) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
