@@ -167,7 +167,7 @@ export async function createPartner(data) {
     role: data.role || '', clients: data.clients || '',
     createdAt: serverTimestamp(), status: 'active'
   });
-  return { id, link: 'https://klarr.space/?ref=' + id, dashboardUrl: '/partners/dashboard.html?id=' + id };
+  return { id, link: 'https://klarr.space/?ref=' + id, dashboardUrl: '/partners/dashboard?id=' + id };
 }
 
 export async function getPartnerStats(partnerId) {

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Dashboard | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
+</head>
+<body>
+<div class="toast-container" id="toast-container"></div>
+
+<div class="dash-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="nav-section">
+      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
+      <a href="/dashboard/reports"><span class="nav-icon">📄</span> Reports</a>
+      <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
+      <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Partner</div>
+      <a href="/dashboard/partner" class="active"><span class="nav-icon">🤝</span> Partner Dashboard</a>
+    </div>
+    <div class="nav-section">
+      <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
+    </div>
+  </div>
+  <div class="dash-main" id="dash-content">
+    <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--text-dim);">
+      <div style="text-align:center;"><div style="font-size:32px;margin-bottom:12px;animation:pulse 1.5s infinite;">⏳</div><p>Loading partner dashboard...</p></div>
+    </div>
+  </div>
+</div>
+
+<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+
+<script type="module">
+  const [{ auth, onAuthStateChanged }, { getFirestore, collection, getDocs, query, where, doc, updateDoc }] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+  ]);
+  const db = getFirestore();
+
+  window.showToast = function(msg, type) {
+    var c = document.getElementById('toast-container');
+    if (!c) { alert(msg); return; }
+    var t = document.createElement('div');
+    t.className = 'toast ' + (type || 'info');
+    t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+    c.appendChild(t);
+    setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
+  };
+
+  onAuthStateChanged(auth, async function(user) {
+    if (!user) return;
+
+    // Find partner data
+    var partnerData = null;
+    try {
+      var snap = await getDocs(query(collection(db, 'partners'), where('email', '==', user.email)));
+      if (!snap.empty) partnerData = snap.docs[0].data();
+    } catch(e) {}
+
+    if (!partnerData) {
+      document.getElementById('dash-content').innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><h3>Not a partner yet</h3><p>Join the Klarr partner program to earn 20% recurring commission on every referral.</p><a href="/partners" class="btn accent" style="margin-top:16px;">Join Partner Program</a></div>';
+      return;
+    }
+
+    // Load partner stats
+    var stats = { clicks: 0, signups: 0, active: 0, earnings: '0.00', referrals: [] };
+    try {
+      var [clicksSnap, refsSnap] = await Promise.all([
+        getDocs(query(collection(db, 'clicks'), where('partnerId', '==', partnerData.id))),
+        getDocs(query(collection(db, 'referrals'), where('partnerId', '==', partnerData.id)))
+      ]);
+      var refs = refsSnap.docs.map(function(d){return d.data();});
+      var active = refs.filter(function(r){return r.status === 'active';});
+      var earnings = active.reduce(function(s,r){return s + (r.commission||0);},0);
+      stats = { clicks: clicksSnap.docs.length, signups: refs.length, active: active.length, earnings: earnings.toFixed(2), referrals: refs };
+    } catch(e) {}
+
+    var refLink = 'https://klarr.space/?ref=' + partnerData.id;
+    var balance = stats.earnings;
+    var canPayout = parseFloat(balance) >= 25;
+
+    var refRows = '';
+    if (stats.referrals.length === 0) {
+      refRows = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-dim);">No signups yet. Share your link to start earning!</td></tr>';
+    } else {
+      refRows = stats.referrals.map(function(r){
+        var d = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString() : '—';
+        var sc = r.status === 'active' ? '#52c878' : (r.status === 'paid' ? '#8b8880' : '#b8860b');
+        return '<tr><td>' + d + '</td><td>' + r.email.split('@')[0] + '</td><td>' + r.plan + '</td><td style="color:' + sc + '">' + r.status + '</td><td style="color:var(--accent)">$' + r.commission.toFixed(2) + '/mo</td></tr>';
+      }).join('');
+    }
+
+    var html = '';
+    html += '<div class="page-header"><div><h1>🤝 Partner Dashboard</h1><p class="page-subtitle">Welcome, ' + partnerData.name + '</p></div></div>';
+
+    html += '<div class="stats-grid">';
+    html += '<div class="stat-card"><div class="label">Clicks</div><div class="value">' + stats.clicks + '</div><div class="sub">Link clicks</div></div>';
+    html += '<div class="stat-card"><div class="label">Signups</div><div class="value">' + stats.signups + '</div><div class="sub">Total referrals</div></div>';
+    html += '<div class="stat-card"><div class="label">Active</div><div class="value">' + stats.active + '</div><div class="sub">Paying customers</div></div>';
+    html += '<div class="stat-card accent"><div class="label">Monthly Earnings</div><div class="value">$' + stats.earnings + '/mo</div><div class="sub">Recurring commission</div></div>';
+    html += '</div>';
+
+    html += '<div class="panel"><div class="panel-header"><h2>🔗 Your Referral Link</h2></div>';
+    html += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">';
+    html += '<input type="text" value="' + refLink + '" readonly id="ref-link-input" class="form-control" style="flex:1;">';
+    html += '<button class="btn sm" onclick="navigator.clipboard.writeText(document.getElementById(\'ref-link-input\').value);showToast(\'Referral link copied!\',\'success\');">📋 Copy</button>';
+    html += '</div>';
+    html += '<p style="font-size:12px;color:var(--text-dim);">Share anywhere. 90-day cookie. 20% recurring on all plans.</p></div>';
+
+    html += '<div class="panel"><div class="panel-header"><h2>💰 Earnings</h2></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    html += '<div><div style="font-size:1.5rem;font-weight:600;color:var(--accent);">$' + balance + '</div><div style="font-size:12px;color:var(--text-dim);">Available Balance</div></div>';
+    html += '<button class="btn accent" id="btn-payout" ' + (canPayout ? '' : 'disabled') + '>Request Payout</button>';
+    html += '</div>';
+    if (!canPayout) html += '<p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Minimum payout is $25. You need $' + (25 - parseFloat(balance)).toFixed(2) + ' more.</p>';
+    html += '</div>';
+
+    html += '<div class="panel"><div class="panel-header"><h2>📊 Your Referrals</h2></div>';
+    html += '<table><thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Status</th><th>You Earn</th></tr></thead><tbody>' + refRows + '</tbody></table></div>';
+
+    document.getElementById('dash-content').innerHTML = html;
+
+    if (canPayout) {
+      document.getElementById('btn-payout').onclick = async function() {
+        if (!confirm('Request $' + balance + ' payout? This will be processed via PayPal or bank transfer within 7 business days.')) return;
+        showToast('Payout request feature coming soon!', 'info');
+      };
+    }
+  });
+</script>
+</body>
+</html>

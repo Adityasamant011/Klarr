@@ -8,11 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=17">
-  <link rel="stylesheet" href="/css/dashboard.css?v=3">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
 </head>
 <body>
-<!-- Toast container -->
 <div class="toast-container" id="toast-container"></div>
 
 <div class="dash-layout">
@@ -25,9 +24,13 @@
       <a href="/dashboard/upload"><span class="nav-icon">📤</span> Upload Data</a>
       <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
     </div>
+    <div class="nav-section" id="partner-nav" style="display:none;">
+      <div class="nav-label">Partner</div>
+      <a href="/dashboard/partner"><span class="nav-icon">🤝</span> Partner Dashboard</a>
+    </div>
     <div class="nav-section">
       <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">🤝</span> Partner Program</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main" id="dash-content">
@@ -43,22 +46,20 @@
 <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
 
 <script type="module">
-  const { auth, onAuthStateChanged, signOut, getCustomerProfile } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-  import { getFirestore, doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-  
+  const [{ auth, onAuthStateChanged, getCustomerProfile }, { getFirestore, doc, updateDoc, serverTimestamp, collection, getDocs, query, where }] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+  ]);
   const db = getFirestore();
-  updateNav();
-  requireAuth('/login');
 
-  // Toast notification system
   window.showToast = function(msg, type) {
-    var container = document.getElementById('toast-container');
-    if (!container) { alert(msg); return; }
-    var toast = document.createElement('div');
-    toast.className = 'toast ' + (type || 'info');
-    toast.innerHTML = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
-    container.appendChild(toast);
-    setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 300); }, 4000);
+    var c = document.getElementById('toast-container');
+    if (!c) { alert(msg); return; }
+    var t = document.createElement('div');
+    t.className = 'toast ' + (type || 'info');
+    t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+    c.appendChild(t);
+    setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
   };
 
   onAuthStateChanged(auth, async function(user) {
@@ -68,99 +69,89 @@
     var params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success' && params.get('plan')) {
       try {
-        await updateDoc(doc(db, 'customers', user.uid), {
-          plan: params.get('plan'), planStartedAt: serverTimestamp(), status: 'active'
-        });
+        await updateDoc(doc(db, 'customers', user.uid), { plan: params.get('plan'), planStartedAt: serverTimestamp(), status: 'active' });
         window.history.replaceState({}, '', '/dashboard');
         showToast('🎉 Payment successful! Your ' + params.get('plan') + ' plan is now active.', 'success');
-      } catch (e) {
-        showToast('Error updating plan: ' + e.message, 'error');
-      }
+      } catch (e) { showToast('Error updating plan: ' + e.message, 'error'); }
     }
 
     // Load profile
     var profile = { name: 'there', plan: 'none', email: user.email, status: 'active' };
+    try { var p = await getCustomerProfile(user.uid); if (p) Object.assign(profile, p); } catch(e) {}
+
+    // Check if user is also a partner
+    var isPartner = false;
+    var partnerData = null;
     try {
-      var p = await getCustomerProfile(user.uid);
-      if (p) profile = Object.assign(profile, p);
-    } catch (e) {}
+      var partnersSnap = await getDocs(query(collection(db, 'partners'), where('email', '==', user.email)));
+      if (!partnersSnap.empty) {
+        isPartner = true;
+        partnerData = partnersSnap.docs[0].data();
+        document.getElementById('partner-nav').style.display = 'block';
+      }
+    } catch(e) {}
 
     var isActive = profile.plan && profile.plan !== 'none';
     var planLabel = isActive ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) + ' Plan' : 'No active plan';
     var planValue = isActive ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) : '—';
     var initials = profile.name.split(' ').map(function(n){return n[0];}).join('').toUpperCase().substring(0,2);
 
-    document.getElementById('dash-content').innerHTML = `
-      <div class="page-header">
-        <div><h1>Welcome, ${profile.name.split(' ')[0]} 👋</h1><p class="page-subtitle">Here's your bookkeeping overview.</p></div>
-        <span class="badge ${isActive ? 'active' : 'pending'}">${isActive ? '● Active' : '○ Get started'}</span>
-      </div>
+    var html = '';
+    html += '<div class="page-header"><div><h1>Welcome, ' + profile.name.split(' ')[0] + ' 👋</h1><p class="page-subtitle">Here\'s your bookkeeping overview.</p></div><span class="badge ' + (isActive ? 'active' : 'pending') + '">' + (isActive ? '● Active' : '○ Get started') + '</span></div>';
 
-      <div class="stats-grid">
-        <div class="stat-card accent">
-          <div class="label">Current Plan</div>
-          <div class="value">${planValue}</div>
-          <div class="sub">${planLabel}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Reports This Month</div>
-          <div class="value">0</div>
-          <div class="sub">${isActive ? 'Upload your first data' : 'Upgrade to get started'}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Health Score</div>
-          <div class="value">—</div>
-          <div class="sub">Complete setup to see score</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Next Delivery</div>
-          <div class="value">—</div>
-          <div class="sub">After first upload</div>
-        </div>
-      </div>
+    // Stats grid
+    html += '<div class="stats-grid">';
+    html += '<div class="stat-card accent"><div class="label">Current Plan</div><div class="value">' + planValue + '</div><div class="sub">' + planLabel + '</div></div>';
+    html += '<div class="stat-card"><div class="label">Reports This Month</div><div class="value">0</div><div class="sub">' + (isActive ? 'Upload your first data' : 'Upgrade to get started') + '</div></div>';
+    if (isPartner) {
+      html += '<div class="stat-card"><div class="label">Referral Earnings</div><div class="value">$' + (partnerData ? '0.00' : '0.00') + '/mo</div><div class="sub"><a href="/dashboard/partner" style="color:var(--accent);">View partner dashboard →</a></div></div>';
+    }
+    html += '<div class="stat-card"><div class="label">Next Delivery</div><div class="value">—</div><div class="sub">After first upload</div></div>';
+    html += '</div>';
 
-      <div class="panel">
-        <div class="panel-header"><h2>🚀 Get Started</h2></div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">Export your orders, payouts, and fees from Shopify and upload them here. We'll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="/dashboard/upload" class="btn primary">📤 Upload Data</a>
-          <a href="/tools" class="btn">🏥 Free Health Check</a>
-          ${!isActive ? '<a href="/#pricing" class="btn accent">💎 Upgrade Plan</a>' : ''}
-        </div>
-      </div>
+    // Get started panel
+    html += '<div class="panel"><div class="panel-header"><h2>🚀 Get Started</h2></div>';
+    html += '<p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">Export your orders, payouts, and fees from Shopify and upload them here. We\'ll deliver your P&L, Balance Sheet, and Cash Flow within 24 hours.</p>';
+    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    html += '<a href="/dashboard/upload" class="btn primary">📤 Upload Data</a>';
+    html += '<a href="/tools" class="btn">🏥 Free Health Check</a>';
+    if (!isActive) html += '<a href="/#pricing" class="btn accent">💎 Upgrade Plan</a>';
+    html += '</div></div>';
 
-      <div class="panel">
-        <div class="panel-header"><h2>📄 Your Reports</h2></div>
-        <div class="empty-state">
-          <div class="empty-icon">📊</div>
-          <h3>No reports yet</h3>
-          <p>Once you upload your Shopify data, your monthly reports will appear here. We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>
-          <a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Your First Data</a>
-        </div>
-      </div>
+    // Partner quick access (if partner)
+    if (isPartner) {
+      html += '<div class="panel" style="border-color:rgba(192,133,50,0.2);"><div class="panel-header"><h2>🤝 Partner Program</h2></div>';
+      html += '<p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">You\'re a Klarr partner! Share your referral link and earn 20% recurring commission.</p>';
+      html += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">';
+      html += '<input type="text" value="https://klarr.space/?ref=' + partnerData.id + '" readonly class="form-control" style="flex:1;font-size:12px;" id="ref-link">';
+      html += '<button class="btn sm" onclick="navigator.clipboard.writeText(document.getElementById(\'ref-link\').value);showToast(\'Referral link copied!\',\'success\');">📋 Copy</button>';
+      html += '</div>';
+      html += '<a href="/dashboard/partner" class="btn accent sm">Open Partner Dashboard →</a>';
+      html += '</div>';
+    }
 
-      <div class="panel">
-        <div class="panel-header"><h2>📬 How You Receive Your Work</h2></div>
-        <div class="grid-3">
-          <div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized. Know exactly where your money goes.</p></div>
-          <div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date. Ready for your CPA.</p></div>
-          <div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See why cash is tight even when sales are up. All payouts reconciled.</p></div>
-        </div>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:16px;text-align:center;">All reports delivered as clean Google Sheets within 24 hours of upload</p>
-      </div>
+    // Reports section
+    html += '<div class="panel"><div class="panel-header"><h2>📄 Your Reports</h2></div>';
+    html += '<div class="empty-state"><div class="empty-icon">📊</div><h3>No reports yet</h3><p>Once you upload your Shopify data, your monthly reports will appear here. We deliver P&L, Balance Sheet, and Cash Flow within 24 hours.</p>';
+    html += '<a href="/dashboard/upload" class="btn primary" style="margin-top:16px;">Upload Your First Data</a></div></div>';
 
-      <div class="panel">
-        <div class="panel-header"><h2>👤 Account</h2></div>
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a06828);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--bg);">${initials}</div>
-          <div>
-            <div style="font-size:14px;color:var(--text);font-weight:500;">${profile.name}</div>
-            <div style="font-size:12px;color:var(--text-dim);">${profile.email}</div>
-          </div>
-        </div>
-        <a href="/dashboard/settings" class="btn sm">✏️ Edit Profile</a>
-      </div>
-    `;
+    // How you receive your work
+    html += '<div class="panel"><div class="panel-header"><h2>📬 How You Receive Your Work</h2></div>';
+    html += '<div class="grid-3">';
+    html += '<div class="info-card"><div class="info-icon">📊</div><h3>Profit & Loss</h3><p>Monthly P&L with every transaction categorized</p></div>';
+    html += '<div class="info-card"><div class="info-icon">📋</div><h3>Balance Sheet</h3><p>Assets, liabilities, and equity — always up to date</p></div>';
+    html += '<div class="info-card"><div class="info-icon">💵</div><h3>Cash Flow</h3><p>See why cash is tight even when sales are up</p></div>';
+    html += '</div><p style="font-size:12px;color:var(--text-dim);margin-top:16px;text-align:center;">All reports delivered as clean Google Sheets within 24 hours of upload</p></div>';
+
+    // Account section
+    html += '<div class="panel"><div class="panel-header"><h2>👤 Account</h2></div>';
+    html += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">';
+    html += '<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a06828);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--bg);">' + initials + '</div>';
+    html += '<div><div style="font-size:14px;color:var(--text);font-weight:500;">' + profile.name + '</div><div style="font-size:12px;color:var(--text-dim);">' + profile.email + '</div></div>';
+    html += '</div>';
+    html += '<a href="/dashboard/settings" class="btn sm">✏️ Edit Profile</a></div>';
+
+    document.getElementById('dash-content').innerHTML = html;
   });
 </script>
 </body>

@@ -94,10 +94,10 @@
     import { updateNav, setupSignupForm, redirectIfAuthed } from '/auth.js';
     import { handleGoogleRedirect } from '/partners/firebase-init.js';
     updateNav();
-    redirectIfAuthed('/dashboard.html');
+    redirectIfAuthed('/dashboard');
     setupSignupForm();
     handleGoogleRedirect().then(user => {
-      if (user) window.location.href = '/dashboard.html';
+      if (user) window.location.href = '/dashboard';
     });
   </script>
 </body>

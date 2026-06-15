@@ -89,8 +89,8 @@
       if (user) {
         const data = await getAllPartners();
         const partner = data.partners.find(p => p.email === user.email);
-        if (partner) window.location.href = '/partners/dashboard.html?id=' + partner.id;
-        else window.location.href = '/dashboard.html';
+        if (partner) window.location.href = '/partners/dashboard?id=' + partner.id;
+        else window.location.href = '/dashboard';
       }
     });
 
@@ -126,7 +126,7 @@
           if (err.code === 'auth/user-not-found') { showStep('step-setup'); document.getElementById('partner-found-info').innerHTML = `<div class="p-name">${partner.name}</div><div class="p-email">${partner.email}</div><div class="p-link">Referral: klarr.space/?ref=${partner.id}</div>`; btn.disabled = false; btn.textContent = 'Continue'; return; }
           else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') { showStep('step-login'); document.getElementById('partner-login-info').innerHTML = `<div class="p-name">${partner.name}</div><div class="p-email">${partner.email}</div>`; btn.disabled = false; btn.textContent = 'Continue'; return; }
         }
-        window.location.href = '/partners/dashboard.html?id=' + partner.id;
+        window.location.href = '/partners/dashboard?id=' + partner.id;
       } catch (err) { showError('find-error', 'Error. Try again.'); btn.disabled = false; btn.textContent = 'Continue'; }
     };
 
@@ -142,7 +142,7 @@
         const user = await signUpWithEmail(window._foundPartner.email, password, window._foundPartner.name);
         document.getElementById('setup-success').textContent = 'Account created! Redirecting...';
         document.getElementById('setup-success').style.display = 'block';
-        setTimeout(() => { window.location.href = '/partners/dashboard.html?id=' + window._foundPartner.id; }, 1500);
+        setTimeout(() => { window.location.href = '/partners/dashboard?id=' + window._foundPartner.id; }, 1500);
       } catch (err) { showError('setup-error', err.message); btn.disabled = false; btn.textContent = 'Create account & access dashboard'; }
     };
 
@@ -153,7 +153,7 @@
       btn.disabled = true; btn.textContent = 'Logging in...';
       try {
         await signInWithEmail(window._foundPartner.email, password);
-        window.location.href = '/partners/dashboard.html?id=' + window._foundPartner.id;
+        window.location.href = '/partners/dashboard?id=' + window._foundPartner.id;
       } catch (err) { showError('login-error', 'Incorrect password. Try again or reset.'); btn.disabled = false; btn.textContent = 'Log in'; }
     };
 

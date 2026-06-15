@@ -95,6 +95,14 @@
 
   <div id="signup" style="padding: 0 24px;">
     <div class="signup-card">
+      <!-- Show this if already a partner -->
+      <div id="partner-already" style="display:none;text-align:center;padding:20px 0;">
+        <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+        <h3 style="font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:8px;">You're already a partner!</h3>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px;">Welcome back, <strong id="partner-name" style="color:var(--text);">Partner</strong>! Access your partner dashboard to track referrals and earnings.</p>
+        <a href="/dashboard/partner" id="partner-dashboard-link" class="btn accent" style="text-decoration:none;display:inline-block;">Open Partner Dashboard →</a>
+      </div>
+      <!-- Signup form -->
       <div id="signup-form">
         <h2>Sign up — it's free</h2>
         <div class="field">
@@ -141,7 +149,7 @@
           <input type="text" id="ref-link" readonly>
           <button class="btn-copy" onclick="copyLink()">Copy</button>
         </div>
-        <p style="font-size:12px;color:var(--text-dim);">Save this link. Access your dashboard anytime at:<br><strong id="dash-url-display">klarr.space/partners/dashboard.html?id=...</strong></p>
+        <p style="font-size:12px;color:var(--text-dim);">Save this link. Access your dashboard anytime at:<br><strong id="dash-url-display">klarr.space/partners/dashboard?id=...</strong></p>
         <a href="#" id="dashboard-link" class="btn-primary" style="text-decoration:none;display:inline-block;margin-top:16px;">Open Your Dashboard →</a>
       </div>
     </div>
@@ -159,9 +167,29 @@
   <footer><div class="container"><span>© 2026 Klarr</span><span>·</span><span>klarr.space@gmail.com</span><span>·</span><a href="/partners/" style="color:var(--accent);">Partner Program</a></div></footer>
 
   <script type="module">
-    import { createPartner } from 'https://klarr.space/partners/firebase-init.js';
-    import { updateNav } from 'https://klarr.space/auth.js';
-    updateNav();
+    const [{ auth, onAuthStateChanged }, { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+    const db = getFirestore();
+
+    // Check if already logged in as partner
+    onAuthStateChanged(auth, async function(user) {
+      if (user) {
+        try {
+          var snap = await getDocs(query(collection(db, 'partners'), where('email', '==', user.email)));
+          if (!snap.empty) {
+            var partner = snap.docs[0].data();
+            // Already a partner — show dashboard link instead of signup form
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('partner-already').style.display = 'block';
+            document.getElementById('partner-name').textContent = partner.name;
+            document.getElementById('partner-dashboard-link').href = '/dashboard/partner';
+            return;
+          }
+        } catch(e) {}
+      }
+    });
 
     function showError(id, msg) {
       var el = document.getElementById(id);
@@ -193,18 +221,20 @@
       btn.textContent = 'Creating...';
 
       try {
-        var result = await createPartner({
-          name: name,
-          email: email,
-          role: role,
-          clients: document.getElementById('p_clients').value
+        var id = 'klarr_' + Math.random().toString(36).substring(2,10) + Date.now().toString(36);
+        await addDoc(collection(db, 'partners'), {
+          id: id, name: name, email: email, role: role || '',
+          clients: document.getElementById('p_clients').value,
+          createdAt: serverTimestamp(), status: 'active'
         });
+        var link = 'https://klarr.space/?ref=' + id;
+        var dashUrl = '/dashboard/partner';
 
         document.getElementById('signup-form').style.display = 'none';
         document.getElementById('success-box').style.display = 'block';
-        document.getElementById('ref-link').value = result.link;
-        document.getElementById('dash-url-display').textContent = result.dashboardUrl;
-        document.getElementById('dashboard-link').href = result.dashboardUrl;
+        document.getElementById('ref-link').value = link;
+        document.getElementById('dash-url-display').textContent = 'klarr.space/dashboard/partner';
+        document.getElementById('dashboard-link').href = dashUrl;
       } catch (e) {
         alert('Error: ' + e.message);
         btn.disabled = false;

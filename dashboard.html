@@ -72,7 +72,7 @@
 
   const db = getFirestore();
   updateNav();
-  requireAuth('/login.html');
+  requireAuth('/login');
 
   // Mobile menu
   document.querySelector('.mobile-menu-btn')?.addEventListener('click', () => {
@@ -94,7 +94,7 @@
         await updateDoc(doc(db, 'customers', user.uid), {
           plan: params.get('plan'), planStartedAt: serverTimestamp(), status: 'active'
         });
-        window.history.replaceState({}, '', '/dashboard.html');
+        window.history.replaceState({}, '', '/dashboard');
       } catch (e) { console.error('Plan update failed:', e); }
     }
 
