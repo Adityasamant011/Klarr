@@ -21,7 +21,7 @@ export async function isAdmin() {
 export function requireAuth(redirectUrl) {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      window.location.href = redirectUrl || '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+      window.location.href = redirectUrl || '/login?redirect=' + encodeURIComponent(window.location.pathname);
     }
   });
 }
@@ -30,12 +30,12 @@ export function requireAuth(redirectUrl) {
 export function requireAdmin() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+      window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
       return;
     }
     const profile = await getCustomerProfile(user.uid);
     if (!profile || profile.role !== 'admin') {
-      window.location.href = '/dashboard.html';
+      window.location.href = '/dashboard';
     }
   });
 }
@@ -49,7 +49,7 @@ export function redirectIfAuthed(dashboardUrl) {
       if (profile && profile.role === 'admin') {
         window.location.href = params.get('redirect') || '/admin/';
       } else {
-        window.location.href = params.get('redirect') || dashboardUrl || '/dashboard.html';
+        window.location.href = params.get('redirect') || dashboardUrl || '/dashboard';
       }
     }
   });
@@ -76,12 +76,12 @@ export function updateNav() {
       if (isAdminUser) {
         html += '<a href="/admin/" class="nav-ghost-btn nav-admin-link">Admin</a>';
       }
-      html += '<a href="/dashboard.html" class="nav-ghost-btn">Dashboard</a>';
+      html += '<a href="/dashboard" class="nav-ghost-btn">Dashboard</a>';
       html += '<button id="nav-logout-btn" class="nav-cta">Log out</button>';
       navRight.innerHTML = html;
       document.getElementById('nav-logout-btn').addEventListener('click', doLogout);
     } else {
-      navRight.innerHTML = '<a href="/login.html" class="nav-login-link">Log in</a><a href="/signup.html" class="nav-cta">Sign up</a>';
+      navRight.innerHTML = '<a href="/login" class="nav-login-link">Log in</a><a href="/signup" class="nav-cta">Sign up</a>';
     }
   });
 }
@@ -120,7 +120,7 @@ export function setupLoginForm() {
       const user = await signInWithEmail(email, password);
       const profile = await getCustomerProfile(user.uid);
       const params = new URLSearchParams(window.location.search);
-      window.location.href = (profile && profile.role === 'admin') ? (params.get('redirect') || '/admin/') : (params.get('redirect') || '/dashboard.html');
+      window.location.href = (profile && profile.role === 'admin') ? (params.get('redirect') || '/admin/') : (params.get('redirect') || '/dashboard');
     } catch (err) {
       errorEl.textContent = getAuthErrorMessage(err.code); errorEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Log in';
     }
@@ -167,7 +167,7 @@ export function setupSignupForm() {
       await signUpWithEmail(email, password, name);
       const { recordReferredSignup } = await import('/partners/firebase-init.js');
       await recordReferredSignup(email, 'growth');
-      window.location.href = '/dashboard.html';
+      window.location.href = '/dashboard';
     } catch (err) { errorEl.textContent = getAuthErrorMessage(err.code); errorEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Create Account'; }
   });
 
