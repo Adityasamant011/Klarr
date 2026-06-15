@@ -88,9 +88,14 @@
 
   <script type="module">
     import { updateNav, setupLoginForm, redirectIfAuthed } from '/auth.js';
+    import { handleGoogleRedirect } from '/partners/firebase-init.js';
     updateNav();
     redirectIfAuthed('/dashboard.html');
     setupLoginForm();
+    // Handle Google redirect result
+    handleGoogleRedirect().then(user => {
+      if (user) window.location.href = '/dashboard.html';
+    });
   </script>
 </body>
 </html>
