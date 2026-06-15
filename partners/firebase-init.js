@@ -1,5 +1,5 @@
-// Klarr — Firebase Backend v2
-// Auth + Firestore for customers, partners, referrals
+// Klarr — Firebase Backend v3
+// Auth (redirect for Google) + Firestore for customers, partners, referrals
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
@@ -7,7 +7,7 @@ import {
   doc, getDoc, updateDoc, serverTimestamp, orderBy, limit, setDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup,
+  getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   onAuthStateChanged, signOut, sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -38,17 +38,37 @@ try {
 
 export { auth, googleProvider, onAuthStateChanged, signOut };
 
+// Handle Google redirect result (call on every page load)
+export async function handleGoogleRedirect() {
+  if (!auth) return null;
+  try {
+    const result = await getRedirectResult(auth);
+    if (result && result.user) {
+      const profileRef = doc(db, 'customers', result.user.uid);
+      const profileSnap = await getDoc(profileRef);
+      if (!profileSnap.exists()) {
+        await setDoc(profileRef, {
+          name: result.user.displayName || '',
+          email: result.user.email,
+          plan: 'none',
+          status: 'active',
+          createdAt: serverTimestamp()
+        });
+      }
+      return result.user;
+    }
+  } catch (e) {
+    console.error('Google redirect error:', e);
+  }
+  return null;
+}
+
 // Sign up with email/password
 export async function signUpWithEmail(email, password, name) {
   if (!auth) throw new Error('Auth not initialized');
   const cred = await createUserWithEmailAndPassword(auth, email, password);
-  // Save customer profile
   await setDoc(doc(db, 'customers', cred.user.uid), {
-    name: name,
-    email: email,
-    plan: 'none',
-    status: 'active',
-    createdAt: serverTimestamp()
+    name: name, email: email, plan: 'none', status: 'active', createdAt: serverTimestamp()
   });
   return cred.user;
 }
@@ -60,23 +80,10 @@ export async function signInWithEmail(email, password) {
   return cred.user;
 }
 
-// Sign in with Google
+// Sign in with Google (uses redirect — works everywhere)
 export async function signInWithGoogle() {
   if (!auth) throw new Error('Auth not initialized');
-  const cred = await signInWithPopup(auth, googleProvider);
-  // Check if customer profile exists, if not create it
-  const profileRef = doc(db, 'customers', cred.user.uid);
-  const profileSnap = await getDoc(profileRef);
-  if (!profileSnap.exists()) {
-    await setDoc(profileRef, {
-      name: cred.user.displayName || '',
-      email: cred.user.email,
-      plan: 'none',
-      status: 'active',
-      createdAt: serverTimestamp()
-    });
-  }
-  return cred.user;
+  await signInWithRedirect(auth, googleProvider);
 }
 
 // Password reset
@@ -101,10 +108,8 @@ export async function trackReferralClick() {
   if (!ref) return;
   try {
     await addDoc(collection(db, 'clicks'), {
-      partnerId: ref,
-      timestamp: serverTimestamp(),
-      page: window.location.pathname,
-      referrer: document.referrer || 'direct'
+      partnerId: ref, timestamp: serverTimestamp(),
+      page: window.location.pathname, referrer: document.referrer || 'direct'
     });
   } catch (e) { console.error('Click tracking failed:', e); }
   document.cookie = `klarr_ref=${ref}; max-age=7776000; path=/; SameSite=Lax`;
@@ -129,8 +134,7 @@ export async function recordReferredSignup(email, plan) {
     const existing = await getDocs(query(collection(db, 'referrals'), where('email', '==', email)));
     if (!existing.empty) return;
     await addDoc(collection(db, 'referrals'), {
-      partnerId: refId, email, plan, commission,
-      status: 'active', createdAt: serverTimestamp()
+      partnerId: refId, email, plan, commission, status: 'active', createdAt: serverTimestamp()
     });
   } catch (e) { console.error('Signup recording failed:', e); }
 }
@@ -145,11 +149,7 @@ export async function createPartner(data) {
     role: data.role || '', clients: data.clients || '',
     createdAt: serverTimestamp(), status: 'active'
   });
-  return {
-    id,
-    link: 'https://klarr.space/?ref=' + id,
-    dashboardUrl: '/partners/dashboard.html?id=' + id
-  };
+  return { id, link: 'https://klarr.space/?ref=' + id, dashboardUrl: '/partners/dashboard.html?id=' + id };
 }
 
 export async function getPartnerStats(partnerId) {
@@ -161,45 +161,31 @@ export async function getPartnerStats(partnerId) {
   const active = referrals.filter(r => r.status === 'active');
   const earnings = active.reduce((sum, r) => sum + r.commission, 0);
   return {
-    clicks: clicks.length, signups: referrals.length,
-    active: active.length, earnings: earnings.toFixed(2),
-    referrals: referrals.sort((a, b) => {
-      const ta = a.createdAt?.toDate?.() || new Date(0);
-      const tb = b.createdAt?.toDate?.() || new Date(0);
-      return tb - ta;
-    }),
-    recentClicks: clicks.sort((a, b) => {
-      const ta = a.timestamp?.toDate?.() || new Date(0);
-      const tb = b.timestamp?.toDate?.() || new Date(0);
-      return tb - ta;
-    }).slice(0, 20)
+    clicks: clicks.length, signups: referrals.length, active: active.length, earnings: earnings.toFixed(2),
+    referrals: referrals.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0)),
+    recentClicks: clicks.sort((a, b) => (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0)).slice(0, 20)
   };
 }
 
 export async function getAllPartners() {
   if (!db) return { partners: [], clicks: [], referrals: [], payouts: [] };
-  const [partnersSnap, clicksSnap, referralsSnap, payoutsSnap] = await Promise.all([
+  const [ps, cs, rs, pays] = await Promise.all([
     getDocs(query(collection(db, 'partners'), orderBy('createdAt', 'desc'))),
     getDocs(collection(db, 'clicks')),
     getDocs(collection(db, 'referrals')),
     getDocs(query(collection(db, 'payouts'), orderBy('createdAt', 'desc')))
   ]);
   return {
-    partners: partnersSnap.docs.map(d => ({ ...d.data(), _id: d.id })),
-    clicks: clicksSnap.docs.map(d => d.data()),
-    referrals: referralsSnap.docs.map(d => d.data()),
-    payouts: payoutsSnap.docs.map(d => ({ ...d.data(), _id: d.id }))
+    partners: ps.docs.map(d => ({ ...d.data(), _id: d.id })),
+    clicks: cs.docs.map(d => d.data()),
+    referrals: rs.docs.map(d => d.data()),
+    payouts: pays.docs.map(d => ({ ...d.data(), _id: d.id }))
   };
 }
 
 export async function createPayoutRequest(partnerId, amount) {
   if (!db) throw new Error('Firebase not initialized');
-  await addDoc(collection(db, 'payouts'), {
-    partnerId, amount, status: 'pending', createdAt: serverTimestamp()
-  });
-  const refs = await getDocs(query(collection(db, 'referrals'),
-    where('partnerId', '==', partnerId), where('status', '==', 'active')));
-  for (const r of refs.docs) {
-    await updateDoc(doc(db, 'referrals', r.id), { status: 'paid' });
-  }
+  await addDoc(collection(db, 'payouts'), { partnerId, amount, status: 'pending', createdAt: serverTimestamp() });
+  const refs = await getDocs(query(collection(db, 'referrals'), where('partnerId', '==', partnerId), where('status', '==', 'active')));
+  for (const r of refs.docs) { await updateDoc(doc(db, 'referrals', r.id), { status: 'paid' }); }
 }

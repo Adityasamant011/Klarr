@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=14">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.5; }
+    .layout { display:flex; min-height:100vh; }
+    .sidebar { width:240px; background:var(--bg-alt); border-right:1px solid var(--border); padding:20px 0; position:fixed; top:0; bottom:0; left:0; overflow-y:auto; z-index:50; }
+    .sidebar .brand { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+    .sidebar .brand a { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--text); text-decoration:none; }
+    .sidebar .brand img { height:24px; }
+    .sidebar .section-label { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); padding:12px 20px 6px; }
+    .sidebar a { display:flex; align-items:center; gap:10px; padding:8px 20px; font-size:13px; color:var(--text-muted); text-decoration:none; transition:all 0.15s; }
+    .sidebar a:hover { color:var(--text); background:rgba(255,255,255,0.02); }
+    .sidebar a.active { color:var(--text); background:rgba(255,255,255,0.04); border-right:2px solid var(--accent); }
+    .sidebar a .icon { font-size:15px; width:20px; text-align:center; }
+    .main { margin-left:240px; padding:32px; width:calc(100% - 240px); }
+    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; }
+    .page-header h1 { font-size:1.3rem; font-weight:600; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+    .stat-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:20px; }
+    .stat-card .label { font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-dim); margin-bottom:8px; }
+    .stat-card .value { font-size:1.8rem; font-weight:600; letter-spacing:-0.02em; }
+    .stat-card .sub { font-size:12px; color:var(--text-muted); margin-top:4px; }
+    .stat-card.highlight .value { color:var(--accent); }
+    .panel { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:24px; margin-bottom:24px; }
+    .panel-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .panel h2 { font-size:14px; font-weight:600; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; padding:10px 12px; border-bottom:2px solid var(--border); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-dim); }
+    td { padding:10px 12px; border-bottom:1px solid var(--border); font-size:13px; color:var(--text-muted); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(255,255,255,0.01); }
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:9999px; font-size:11px; font-weight:500; }
+    .badge.active { background:rgba(82,200,120,0.1); color:#52c878; }
+    .badge.pending { background:rgba(184,134,11,0.1); color:#b8860b; }
+    .badge.cancelled { background:rgba(224,80,80,0.1); color:#e05050; }
+    .btn-sm { padding:6px 12px; font-size:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:4px; color:var(--text); cursor:pointer; font-family:inherit; }
+    .btn-sm:hover { border-color:var(--text-dim); }
+    .btn-sm.accent { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+    .btn-sm.danger { border-color:rgba(224,80,80,0.3); color:#e05050; }
+    .search-box { padding:8px 12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:4px; color:var(--text); font-size:13px; font-family:inherit; width:240px; }
+    .search-box:focus { outline:none; border-color:var(--accent); }
+    .tabs { display:flex; gap:4px; margin-bottom:20px; }
+    .tab { padding:8px 16px; background:transparent; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); font-size:13px; cursor:pointer; font-family:inherit; }
+    .tab.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+    .empty-state { text-align:center; padding:48px 24px; color:var(--text-dim); }
+    .empty-state .icon { font-size:32px; margin-bottom:12px; opacity:0.4; }
+    @media(max-width:768px) { .sidebar { display:none; } .main { margin-left:0; padding:16px; width:100%; } .stats-grid { grid-template-columns:repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
+    <div class="section-label">Main</div>
+    <a href="/admin/" class="active" id="nav-overview"><span class="icon">📊</span> Overview</a>
+    <a href="/admin/users.html" id="nav-users"><span class="icon">👥</span> Users</a>
+    <a href="/admin/partners.html" id="nav-partners"><span class="icon">🤝</span> Partners</a>
+    <a href="/admin/payouts.html" id="nav-payouts"><span class="icon">💸</span> Payouts</a>
+    <div class="section-label">Settings</div>
+    <a href="/admin/settings.html" id="nav-settings"><span class="icon">⚙️</span> Settings</a>
+    <a href="/"><span class="icon">🏠</span> Back to Site</a>
+  </div>
+
+  <div class="main" id="main-content">
+    <div style="text-align:center;padding:60px;color:var(--text-dim);">Loading dashboard...</div>
+  </div>
+</div>
+
+<script type="module">
+  import { auth, onAuthStateChanged, signOut, getCustomerProfile } from '/partners/firebase-init.js';
+  import { updateNav, requireAdmin } from '/auth.js';
+  import { getAllPartners, createPayoutRequest } from '/partners/firebase-init.js';
+  import { getFirestore, collection, getDocs, query, where, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+  const db = getFirestore();
+  updateNav();
+  requireAdmin();
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    await loadDashboard();
+  });
+
+  async function loadDashboard() {
+    try {
+      const [partnersData, customersSnap, clicksSnap] = await Promise.all([
+        getAllPartners(),
+        getDocs(collection(db, 'customers')),
+        getDocs(collection(db, 'clicks'))
+      ]);
+
+      const customers = customersSnap.docs.map(d => ({ uid: d.id, ...d.data() }));
+      const clicks = clicksSnap.docs.length;
+      const totalPartners = partnersData.partners.length;
+      const totalReferrals = partnersData.referrals.length;
+      const totalCustomers = customers.filter(c => c.role !== 'admin').length;
+      const activeSubscriptions = customers.filter(c => c.plan && c.plan !== 'none' && c.plan !== 'admin').length;
+      const totalEarnings = partnersData.referrals.reduce((s, r) => s + (r.commission || 0), 0);
+      const pendingPayouts = partnersData.payouts ? partnersData.payouts.filter(p => p.status === 'pending').length : 0;
+
+      document.getElementById('main-content').innerHTML = `
+        <div class="page-header">
+          <div><h1>Dashboard</h1><p style="font-size:13px;color:var(--text-muted);margin-top:4px;">Welcome back. Here's what's happening.</p></div>
+          <span style="font-size:12px;color:var(--text-dim);">${new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">Total Users</div><div class="value">${totalCustomers}</div><div class="sub">Registered accounts</div></div>
+          <div class="stat-card"><div class="label">Active Subscriptions</div><div class="value">${activeSubscriptions}</div><div class="sub">Paying customers</div></div>
+          <div class="stat-card"><div class="label">Partners</div><div class="value">${totalPartners}</div><div class="sub">${totalReferrals} referrals</div></div>
+          <div class="stat-card highlight"><div class="label">Total Commissions</div><div class="value">$${totalEarnings.toFixed(0)}</div><div class="sub">${pendingPayouts} pending payouts</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Recent Users</h2><a href="/admin/users.html" class="btn-sm">View All</a></div>
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${customers.filter(c => c.role !== 'admin').slice(0, 5).map(c => `
+                <tr>
+                  <td><strong>${c.name || '—'}</strong></td>
+                  <td>${c.email}</td>
+                  <td><span class="badge ${c.plan && c.plan !== 'none' ? 'active' : 'pending'}">${c.plan === 'none' || !c.plan ? 'Free' : c.plan}</span></td>
+                  <td>${c.createdAt?.toDate ? c.createdAt.toDate().toLocaleDateString() : '—'}</td>
+                  <td><a href="/admin/users.html?uid=${c.uid}" class="btn-sm">Edit</a></td>
+                </tr>
+              `).join('') || '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-dim);">No users yet</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Recent Partners</h2><a href="/admin/partners.html" class="btn-sm">View All</a></div>
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Referrals</th><th>Earnings</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${partnersData.partners.slice(0, 5).map(p => {
+                const refs = partnersData.referrals.filter(r => r.partnerId === p.id);
+                const earnings = refs.reduce((s, r) => s + (r.commission || 0), 0);
+                return `<tr>
+                  <td><strong>${p.name}</strong></td>
+                  <td>${p.email}</td>
+                  <td>${p.role || '—'}</td>
+                  <td>${refs.length}</td>
+                  <td style="color:var(--accent)">$${earnings.toFixed(2)}/mo</td>
+                  <td><a href="/admin/partners.html?id=${p.id}" class="btn-sm">Edit</a></td>
+                </tr>`;
+              }).join('') || '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-dim);">No partners yet</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch (e) {
+      document.getElementById('main-content').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Error loading dashboard: ${e.message}</p></div>`;
+      console.error(e);
+    }
+  }
+</script>
+</body>
+</html>
