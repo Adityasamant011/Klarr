@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -97,10 +97,60 @@
           <span class="sp-stat-num">100%</span>
           <span class="sp-stat-label">money-back guarantee</span>
         </div>
+        <div class="sp-stat">
+          <span class="sp-stat-num">15+</span>
+          <span class="sp-stat-label">avg margin points saved</span>
+        </div>
+      </div>
+      <div class="sp-logos fade-in">
+        <span class="sp-logo">Shopify</span>
+        <span class="sp-logo">Stripe</span>
+        <span class="sp-logo">Google Sheets</span>
+        <span class="sp-logo">PayPal</span>
       </div>
       <div class="sp-testimonial fade-in">
         <p class="sp-testimonial-text">"I was spending 15 hours a month on bookkeeping. Klarr does it in 24 hours for $149. My margin was 12 points lower than I thought."</p>
         <p class="sp-testimonial-author">— Early Klarr user, DTC brand doing $200K/yr</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform features -->
+  <section class="platform-features">
+    <div class="container">
+      <p class="section-label">Platform</p>
+      <h2>Everything in one place</h2>
+      <div class="pf-grid">
+        <div class="pf-card">
+          <div class="pf-icon">📊</div>
+          <h3>Real-time Dashboard</h3>
+          <p>See your profit margin, cash flow, and financial health at a glance. Updated every time we deliver your books.</p>
+        </div>
+        <div class="pf-card">
+          <div class="pf-icon">💬</div>
+          <h3>Direct Communication</h3>
+          <p>Message your bookkeeping team anytime. Ask questions, flag transactions, get clarity on your numbers.</p>
+        </div>
+        <div class="pf-card">
+          <div class="pf-icon">📤</div>
+          <h3>Easy Document Upload</h3>
+          <p>Export from Shopify, send us the CSV. Takes 2 minutes. We handle categorization, reconciliation, and reporting.</p>
+        </div>
+        <div class="pf-card">
+          <div class="pf-icon">🔗</div>
+          <h3>Shopify-native</h3>
+          <p>Built specifically for Shopify. We understand payout timing, fees, refunds, and ecommerce bookkeeping.</p>
+        </div>
+        <div class="pf-card">
+          <div class="pf-icon">🔒</div>
+          <h3>Your Data, Your Control</h3>
+          <p>Everything is processed through your own Google Sheet. We never store your data. You own it 100%.</p>
+        </div>
+        <div class="pf-card">
+          <div class="pf-icon">⚡</div>
+          <h3>24-hour Delivery</h3>
+          <p>While others take days, we deliver in 24 hours. AI does the heavy lifting, human reviews the output.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -123,7 +173,7 @@
     </div>
   </section>
 
-  <!-- Features — 2x2 grid + 1 centered below -->
+  <!-- Features -->
   <section class="features" id="features">
     <div class="container">
       <p class="section-label">What you get</p>
@@ -390,24 +440,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Pricing grid styles -->
-  <style>
-    .final-cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
-    .btn-large { padding: 14px 32px; font-size: 16px; }
-    /* Pricing grid */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; align-items: stretch; }
-    .price-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem 1.5rem; text-align: center; transition: transform 0.2s ease, border-color 0.2s ease; position: relative; display: flex; flex-direction: column; height: 100%; }
-    .price-card:hover { transform: translateY(-4px); border-color: var(--text-dim); }
-    .price-card .price-features { flex: 1; }
-    .price-card .btn-full { margin-top: auto; align-self: center; width: 100%; }
-    .btn-ghost { border: 1px solid var(--border); background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center; }
-    .btn-ghost:hover { border-color: var(--text-dim); background: transparent; }
-    .price-card-popular { border-color: var(--accent); transform: scale(1.03); }
-    .price-card-popular:hover { transform: scale(1.03) translateY(-4px); border-color: var(--accent); }
-    .price-popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 4px 16px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
-    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; max-width: 400px; } .price-card-popular { transform: none; } .price-card-popular:hover { transform: translateY(-4px); } }
-  </style>
 
   <!-- Footer -->
   <footer>

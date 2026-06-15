@@ -476,6 +476,16 @@ section h2 {
   font-weight: 400;
 }
 
+/* ---- Platform features ---- */
+.platform-features { background: var(--bg-alt); }
+.pf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 2rem; }
+.pf-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; transition: background var(--transition), transform 0.2s ease; }
+.pf-card:hover { background: var(--bg-card-h); transform: translateY(-2px); }
+.pf-icon { font-size: 20px; margin-bottom: 12px; display: block; }
+.pf-card h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.pf-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+@media (max-width: 768px) { .pf-grid { grid-template-columns: 1fr; } }
+
 /* ---- How it works ---- */
 .how { background: var(--bg-alt); }
 
