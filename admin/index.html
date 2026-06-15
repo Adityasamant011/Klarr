@@ -87,10 +87,11 @@
 
   const db = getFirestore();
   updateNav();
-  requireAdmin();
 
   onAuthStateChanged(auth, async (user) => {
-    if (!user) return;
+    if (!user) { window.location.href = '/login.html?redirect=/admin/'; return; }
+    const profile = await getCustomerProfile(user.uid);
+    if (!profile || profile.role !== 'admin') { window.location.href = '/dashboard.html'; return; }
     await loadDashboard();
   });
 

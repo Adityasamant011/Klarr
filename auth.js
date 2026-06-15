@@ -188,7 +188,7 @@ function getAuthErrorMessage(code) {
     'auth/wrong-password': 'Incorrect password.', 'auth/email-already-in-use': 'An account with this email already exists.',
     'auth/weak-password': 'Password must be at least 6 characters.', 'auth/popup-closed-by-user': 'Sign-in was closed. Try again.',
     'auth/invalid-credential': 'Invalid email or password.', 'auth/too-many-requests': 'Too many attempts. Try again later.',
-    'auth/unauthorized-domain': 'This domain is not authorized. Contact support.',
+    'auth/unauthorized-domain': 'Google sign-in is not configured for this domain yet. Please contact support or use email/password sign-in.',
     'auth/network-request-failed': 'Network error. Check your connection.',
   };
   return m[code] || 'Something went wrong. Please try again.';
