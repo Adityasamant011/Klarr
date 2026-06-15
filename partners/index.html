@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css?v=18">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
     .partner-hero { padding: 120px 24px 60px; text-align: center; max-width: 640px; margin: 0 auto; }
     .partner-hero h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 600; line-height: 1.2; margin-bottom: 16px; color: var(--text); letter-spacing: -0.02em; }
@@ -170,89 +173,79 @@
 
   <footer><div class="container"><span>© 2026 Klarr</span><span>·</span><span>klarr.space@gmail.com</span><span>·</span><a href="/partners/" style="color:var(--accent);">Partner Program</a></div></footer>
 
-  <script type="module">
-    const [{ auth, onAuthStateChanged }, { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs }] = await Promise.all([
-      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
-      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
-    ]);
-    const db = getFirestore();
+  <script>
+  var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a",measurementId:"G-JEDM340TC4"};
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  var auth = firebase.auth();
+  var db = firebase.firestore();
 
-    // Check if already logged in as partner
-    onAuthStateChanged(auth, async function(user) {
-      if (user) {
-        try {
-          var snap = await getDocs(query(collection(db, 'partners'), where('email', '==', user.email)));
-          if (!snap.empty) {
-            var partner = snap.docs[0].data();
-            // Already a partner — show dashboard link instead of signup form
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('partner-already').style.display = 'block';
-            document.getElementById('partner-name').textContent = partner.name;
-            document.getElementById('partner-dashboard-link').href = '/dashboard/partner';
-            return;
-          }
-        } catch(e) {}
-      }
-    });
-
-    function showError(id, msg) {
-      var el = document.getElementById(id);
-      var err = document.getElementById('err-' + id.replace('p_', ''));
-      if (el) { el.classList.add('error'); el.focus(); }
-      if (err) { err.textContent = msg; err.style.display = 'block'; }
-    }
-    function clearErrors() {
-      document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
-      document.querySelectorAll('.error-msg').forEach(e => e.style.display = 'none');
-    }
-
-    window.handleSignup = async function() {
-      clearErrors();
-      var name = document.getElementById('p_name').value.trim();
-      var email = document.getElementById('p_email').value.trim();
-      var role = document.getElementById('p_role').value;
-      var valid = true;
-
-      if (!name) { showError('p_name', 'Name is required'); valid = false; }
-      if (!email) { showError('p_email', 'Email is required'); valid = false; }
-      else if (!email.includes('@') || !email.includes('.')) { showError('p_email', 'Enter a valid email'); valid = false; }
-      if (!role) { showError('p_role', 'Please select your role'); valid = false; }
-
-      if (!valid) return;
-
-      var btn = document.getElementById('btn-signup');
-      btn.disabled = true;
-      btn.textContent = 'Creating...';
-
+  // Check if already logged in as partner
+  auth.onAuthStateChanged(async function(user) {
+    if (user) {
       try {
-        var id = 'klarr_' + Math.random().toString(36).substring(2,10) + Date.now().toString(36);
-        await addDoc(collection(db, 'partners'), {
-          id: id, name: name, email: email, role: role || '',
-          clients: document.getElementById('p_clients').value,
-          createdAt: serverTimestamp(), status: 'active'
-        });
-        var link = 'https://klarr.space/?ref=' + id;
-        var dashUrl = '/dashboard/partner';
+        var snap = await db.collection('partners').where('email','==',user.email).get();
+        if (!snap.empty) {
+          var partner = snap.docs[0].data();
+          document.getElementById('signup-form').style.display = 'none';
+          document.getElementById('partner-already').style.display = 'block';
+          document.getElementById('partner-name').textContent = partner.name;
+          document.getElementById('partner-dashboard-link').href = '/dashboard/partner';
+          return;
+        }
+      } catch(e) {}
+    }
+  });
 
-        document.getElementById('signup-form').style.display = 'none';
-        document.getElementById('success-box').style.display = 'block';
-        document.getElementById('ref-link').value = link;
-        document.getElementById('dash-url-display').textContent = 'klarr.space/dashboard/partner';
-        document.getElementById('dashboard-link').href = dashUrl;
-      } catch (e) {
-        alert('Error: ' + e.message);
-        btn.disabled = false;
-        btn.textContent = 'Create My Partner Account';
-      }
-    };
+  function showError(id, msg) {
+    var el = document.getElementById(id);
+    var err = document.getElementById('err-' + id.replace('p_', ''));
+    if (el) { el.classList.add('error'); el.focus(); }
+    if (err) { err.textContent = msg; err.style.display = 'block'; }
+  }
+  function clearErrors() {
+    document.querySelectorAll('.error').forEach(function(e){e.classList.remove('error');});
+    document.querySelectorAll('.error-msg').forEach(function(e){e.style.display='none';});
+  }
 
-    window.copyLink = function() {
-      var input = document.getElementById('ref-link');
-      navigator.clipboard.writeText(input.value);
-      var btn = document.querySelector('.btn-copy');
-      btn.textContent = 'Copied!';
-      setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
-    };
+  window.handleSignup = async function() {
+    clearErrors();
+    var name = document.getElementById('p_name').value.trim();
+    var email = document.getElementById('p_email').value.trim();
+    var role = document.getElementById('p_role').value;
+    var valid = true;
+    if (!name) { showError('p_name', 'Name is required'); valid = false; }
+    if (!email) { showError('p_email', 'Email is required'); valid = false; }
+    else if (!email.includes('@') || !email.includes('.')) { showError('p_email', 'Enter a valid email'); valid = false; }
+    if (!role) { showError('p_role', 'Please select your role'); valid = false; }
+    if (!valid) return;
+    var btn = document.getElementById('btn-signup');
+    btn.disabled = true; btn.textContent = 'Creating...';
+    try {
+      var id = 'klarr_' + Math.random().toString(36).substring(2,10) + Date.now().toString(36);
+      await db.collection('partners').add({
+        id: id, name: name, email: email, role: role || '',
+        clients: document.getElementById('p_clients').value,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(), status: 'active'
+      });
+      var link = 'https://klarr.space/?ref=' + id;
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('success-box').style.display = 'block';
+      document.getElementById('ref-link').value = link;
+      document.getElementById('dash-url-display').textContent = 'klarr.space/dashboard/partner';
+      document.getElementById('dashboard-link').href = '/dashboard/partner';
+    } catch (e) {
+      alert('Error: ' + e.message);
+      btn.disabled = false; btn.textContent = 'Create My Partner Account';
+    }
+  };
+
+  window.copyLink = function() {
+    var input = document.getElementById('ref-link');
+    navigator.clipboard.writeText(input.value);
+    var btn = document.querySelector('.btn-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+  };
   </script>
 </body>
 </html>
