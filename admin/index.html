@@ -13,7 +13,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
@@ -84,7 +83,6 @@ var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomai
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
-var storage = firebase.storage();
 var filterStatus = 'received';
 
 function showToast(msg, type) {
@@ -133,15 +131,16 @@ function loadUploads() {
 
       if(r.status === 'received') {
         html += '<button class="btn primary sm" onclick="updateStatus(\''+r._id+'\',\'processing\')">Start</button> ';
-        html += '<button class="btn sm" onclick="downloadFile(\''+r.fileUrl+'\',\''+r.fileName+'\')">📥 CSV</button>';
+        html += '<button class="btn sm" onclick="downloadFile(\''+r.fileData+'\',\''+r.fileName+'\')">\uD83D\uDCE5 CSV</button>';
       } else if(r.status === 'processing') {
-        html += '<button class="btn accent sm" onclick="markComplete(\''+r._id+'\',\''+(r.userEmail||'')+'\',\''+(r.fileName||'')+'\',\''+(r.userName||'')+'\')">✅ Complete</button> ';
-        html += '<button class="btn sm" onclick="downloadFile(\''+r.fileUrl+'\',\''+r.fileName+'\')">📥 CSV</button>';
+        html += '<button class="btn accent sm" onclick="markComplete(\''+r._id+'\',\''+(r.userEmail||'')+'\',\''+(r.fileName||'')+'\',\''+(r.userName||'')+'\')">\u2705 Complete</button> ';
+        html += '<button class="btn sm" onclick="downloadFile(\''+r.fileData+'\',\''+r.fileName+'\')">\uD83D\uDCE5 CSV</button>';
       } else {
         var links = [];
-        if(r.reportUrl) links.push('<a href="'+r.reportUrl+'" target="_blank" class="btn sm">📊 Sheet</a>');
-        if(r.reportFileUrl) links.push('<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">📥 File</a>');
-        html += links.length > 0 ? links.join(' ') : '<span style="color:var(--text-dim);">—</span>';
+        if(r.reportUrl) links.push('<a href="'+r.reportUrl+'" target="_blank" class="btn sm">\uD83D\uDCCA Sheet</a>');
+        if(r.reportFileData) links.push('<a href="'+r.reportFileData+'" download="'+(r.reportFileName||'report')+'" class="btn sm">\uD83D\uDCE5 File</a>');
+        else if(r.reportFileUrl) links.push('<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">\uD83D\uDCE5 File</a>');
+        html += links.length > 0 ? links.join(' ') : '<span style="color:var(--text-dim);">\u2014</span>';
       }
       html += '</td></tr>';
     });
@@ -160,12 +159,11 @@ function updateStatus(id, status) {
   }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
 }
 
-function downloadFile(url, fileName) {
-  if(!url) { showToast('File URL not available', 'error'); return; }
+function downloadFile(fileData, fileName) {
+  if(!fileData) { showToast('File data not available', 'error'); return; }
   var a = document.createElement('a');
-  a.href = url;
+  a.href = fileData;
   a.download = fileName;
-  a.target = '_blank';
   a.click();
   showToast('Downloading ' + fileName, 'info');
 }
@@ -220,33 +218,22 @@ function submitComplete() {
   };
   if(sheetUrl) updateData.reportUrl = sheetUrl;
 
-  // If file uploaded, upload to Storage first
+  // If file uploaded, read as base64 and save to Firestore
   if(fileInput.files && fileInput.files.length > 0) {
     var file = fileInput.files[0];
-    var filePath = 'reports/' + id + '/' + file.name;
-    var fileRef = storage.ref(filePath);
-    var uploadTask = fileRef.put(file);
-
     document.getElementById('upload-progress').style.display = 'block';
-    document.getElementById('upload-status-text').textContent = 'Uploading ' + file.name + '...';
+    document.getElementById('upload-status-text').textContent = 'Reading ' + file.name + '...';
 
-    uploadTask.on('state_changed',
-      function(snapshot) {
-        var pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-        document.getElementById('upload-bar').style.width = pct + '%';
-      },
-      function(error) {
-        console.error('File upload error:', error);
-        showToast('File upload error: ' + error.message, 'error');
-      },
-      function() {
-        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadUrl) {
-          updateData.reportFileUrl = downloadUrl;
-          updateData.reportFilePath = filePath;
-          finishComplete(id, updateData, sendEmail);
-        });
-      }
-    );
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      updateData.reportFileData = e.target.result;
+      updateData.reportFileName = file.name;
+      finishComplete(id, updateData, sendEmail);
+    };
+    reader.onerror = function() {
+      showToast('Error reading file', 'error');
+    };
+    reader.readAsDataURL(file);
   } else {
     finishComplete(id, updateData, sendEmail);
   }
@@ -269,20 +256,19 @@ function finishComplete(id, updateData, sendEmail) {
 }
 
 function sendCompletionEmail(data) {
-  // Call Gmail API via a simple backend endpoint
-  // For now, open a mailto link as fallback
-  var subject = encodeURIComponent('Your Klarr Report is Ready!');
+  var subject = encodeURIComponent('Your Klarr Report is Ready \u2014 Klarr');
   var body = encodeURIComponent(
     'Hi ' + (data.userName || 'there') + ',\n\n' +
-    'Your bookkeeping report for "' + data.fileName + '" is ready!\n\n' +
+    'Great news! Your bookkeeping report is ready.\n\n' +
+    'File: ' + data.fileName + '\n' +
     (data.reportUrl ? 'Google Sheet: ' + data.reportUrl + '\n' : '') +
-    (data.reportFileUrl ? 'Report File: ' + data.reportFileUrl + '\n' : '') +
-    '\nYou can also access it from your dashboard at https://klarr.space/dashboard/upload\n\n' +
+    '\nYou can also access everything from your dashboard:\nhttps://klarr.space/dashboard/upload\n\n' +
     'This report will be available for 30 days.\n\n' +
-    '— The Klarr Team'
+    'Questions? Just reply to this email.\n\n' +
+    '\u2014 The Klarr Team\nklarr.space'
   );
-  window.open('mailto:' + data.userEmail + '?subject=' + subject + '&body=' + body, '_blank');
-  showToast('Email client opened for ' + data.userEmail, 'info');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + data.userEmail + '&su=' + subject + '&body=' + body, '_blank');
+  showToast('Gmail compose opened for ' + data.userEmail, 'info');
 }
 </script>
 </body>

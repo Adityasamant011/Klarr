@@ -13,7 +13,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
@@ -22,27 +21,27 @@
   <div class="dash-sidebar" id="sidebar">
     <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
     <div class="nav-section">
-      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
-      <a href="/dashboard/reports"><span class="nav-icon">📄</span> Reports</a>
-      <a href="/dashboard/upload" class="active"><span class="nav-icon">📤</span> Upload Data</a>
-      <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
+      <a href="/dashboard"><span class="nav-icon">\uD83D\uDCCA</span> Overview</a>
+      <a href="/dashboard/reports"><span class="nav-icon">\uD83D\uDCC4</span> Reports</a>
+      <a href="/dashboard/upload" class="active"><span class="nav-icon">\uD83D\uDCE4</span> Upload Data</a>
+      <a href="/dashboard/billing"><span class="nav-icon">\uD83D\uDCB3</span> Billing</a>
     </div>
     <div class="nav-section" id="partner-nav" style="display:none;">
       <div class="nav-label">Partner</div>
-      <a href="/dashboard/partner"><span class="nav-icon">🤝</span> Partner Dashboard</a>
+      <a href="/dashboard/partner"><span class="nav-icon">\uD83E\uDD1D</span> Partner Dashboard</a>
     </div>
     <div class="nav-section">
-      <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
+      <a href="/dashboard/settings"><span class="nav-icon">\u2699\uFE0F</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">\uD83D\uDCE2</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main">
-    <div class="page-header"><div><h1>📤 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div></div>
+    <div class="page-header"><div><h1>\uD83D\uDCE4 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div></div>
 
     <div class="panel">
       <div class="panel-header"><h2>How it works</h2></div>
       <div class="grid-3">
-        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">1</div><h3>Export from Shopify</h3><p>Go to Shopify → Analytics → Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
+        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">1</div><h3>Export from Shopify</h3><p>Go to Shopify \u2192 Analytics \u2192 Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
         <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">2</div><h3>Upload here</h3><p>Drag and drop or select your CSV files. We accept orders, payouts, and fees exports.</p></div>
         <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">3</div><h3>Get your books</h3><p>Within 24 hours, you'll get P&L, Balance Sheet, and Cash Flow in a clean Google Sheet.</p></div>
       </div>
@@ -51,22 +50,22 @@
     <div class="panel" id="upload-panel">
       <div class="panel-header"><h2>Upload files</h2></div>
       <div id="upload-zone" class="upload-zone">
-        <div style="font-size:40px;margin-bottom:12px;color:var(--text-dim);">📤</div>
+        <div style="font-size:40px;margin-bottom:12px;color:var(--text-dim);">\uD83D\uDCE4</div>
         <p style="font-size:14px;color:var(--text);margin-bottom:4px;">Drop your CSV files here</p>
-        <p style="font-size:12px;color:var(--text-dim);">or click to browse — Orders, Payouts, Fees</p>
+        <p style="font-size:12px;color:var(--text-dim);">or click to browse \u2014 Orders, Payouts, Fees</p>
         <input type="file" id="file-input" accept=".csv" multiple style="display:none">
       </div>
       <div id="upload-status" style="margin-top:16px;"></div>
     </div>
 
     <div class="panel" id="active-panel" style="display:none;">
-      <div class="panel-header"><h2>📦 Current Upload</h2></div>
+      <div class="panel-header"><h2>\uD83D\uDCE6 Current Upload</h2></div>
       <div id="active-upload-info"></div>
       <div style="margin-top:16px;" id="report-area"></div>
     </div>
 
     <div class="panel" id="reports-panel">
-      <div class="panel-header"><h2>📄 Your Reports <span style="font-size:11px;color:var(--text-dim);font-weight:400;">(available for 30 days)</span></h2></div>
+      <div class="panel-header"><h2>\uD83D\uDCC4 Your Reports <span style="font-size:11px;color:var(--text-dim);font-weight:400;">(available for 30 days)</span></h2></div>
       <div id="reports-list"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
     </div>
   </div>
@@ -76,14 +75,13 @@ var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomai
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
-var storage = firebase.storage();
 
 function showToast(msg, type) {
   var c = document.getElementById('toast-container');
   if (!c) { alert(msg); return; }
   var t = document.createElement('div');
   t.className = 'toast ' + (type || 'info');
-  t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+  t.innerHTML = (type==='success'?'\u2705 ':type==='error'?'\u274C ':'\u2139\uFE0F ') + msg;
   c.appendChild(t);
   setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
 }
@@ -145,7 +143,7 @@ function loadUploads(uid) {
         var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '\u2014';
         var daysLeft = Math.max(0, Math.floor((thirtyDays - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
         var sheetLink = r.reportUrl ? '<a href="'+r.reportUrl+'" target="_blank" class="btn sm">\uD83D\uDCCA Open Sheet</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>';
-        var fileLink = r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">\uD83D\uDCE5 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>';
+        var fileLink = r.reportFileData ? '<a href="'+r.reportFileData+'" download="'+(r.reportFileName||r.fileName)+'" class="btn sm">\uD83D\uDCE5 Download</a>' : (r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">\uD83D\uDCE5 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>');
         html += '<tr><td>'+m+'</td><td>'+del+'</td><td>'+sheetLink+'</td><td>'+fileLink+' <span style="font-size:10px;color:var(--text-dim);">'+daysLeft+'d left</span></td></tr>';
       });
       html += '</tbody></table>';
@@ -182,88 +180,79 @@ function handleFiles(files) {
   fileList.forEach(function(file, i) {
     statusHtml += '<div class="upload-item" id="upload-item-'+i+'" style="margin-bottom:12px;">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
-      '<span style="font-size:13px;color:var(--text);">\uD83D\uDCC4 ' + file.name + '</span>' +
+      '<span style="font-size:13px;color:var(--text);">\uD83D\uDCC4 ' + file.name + ' <span style="font-size:11px;color:var(--text-dim);">(' + (file.size > 1024 ? Math.round(file.size/1024)+' KB' : file.size+' B') + ')</span></span>' +
       '<span class="upload-pct" style="font-size:11px;color:var(--text-dim);">0%</span></div>' +
       '<div style="background:var(--bg-elevated);border-radius:4px;height:6px;overflow:hidden;">' +
       '<div class="upload-bar" style="background:var(--accent);height:100%;width:0%;transition:width 0.3s;"></div></div>' +
-      '<p class="upload-status-text" style="font-size:11px;color:var(--text-dim);margin-top:2px;">Waiting...</p>' +
-      '</div>';
+      '<p class="upload-status-text" style="font-size:11px;color:var(--text-dim);margin-top:2px;">Reading file...</p></div>';
   });
   statusHtml += '</div>';
   document.getElementById('upload-status').innerHTML = statusHtml;
 
   fileList.forEach(function(file, i) {
-    var filePath = 'uploads/' + user.uid + '/' + Date.now() + '_' + i + '_' + file.name;
-    var storageRef = storage.ref(filePath);
-    var uploadTask = storageRef.put(file);
-
-    uploadTask.on('state_changed',
-      function(snapshot) {
-        var pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    var reader = new FileReader();
+    reader.onprogress = function(e) {
+      if(e.lengthComputable) {
+        var pct = Math.round((e.loaded / e.total) * 50);
         var item = document.getElementById('upload-item-'+i);
         if(item) {
           item.querySelector('.upload-bar').style.width = pct + '%';
           item.querySelector('.upload-pct').textContent = pct + '%';
-          item.querySelector('.upload-status-text').textContent = 'Uploading... ' + pct + '%';
-          item.querySelector('.upload-status-text').style.color = 'var(--text-dim)';
+          item.querySelector('.upload-status-text').textContent = 'Reading... ' + pct + '%';
         }
-      },
-      function(error) {
-        console.error('Upload error:', error);
-        var item = document.getElementById('upload-item-'+i);
+      }
+    };
+    reader.onload = function(e) {
+      var base64 = e.target.result; // data:text/csv;base64,...
+      var item = document.getElementById('upload-item-'+i);
+      if(item) {
+        item.querySelector('.upload-bar').style.width = '60%';
+        item.querySelector('.upload-pct').textContent = '60%';
+        item.querySelector('.upload-status-text').textContent = 'Saving to database...';
+        item.querySelector('.upload-status-text').style.color = '#c08532';
+      }
+
+      db.collection('uploads').add({
+        userId: user.uid,
+        userEmail: user.email,
+        userName: userData.name || user.displayName || 'Unknown',
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type || 'text/csv',
+        fileData: base64,
+        status: 'received',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function() {
+        if(item) {
+          item.querySelector('.upload-bar').style.width = '100%';
+          item.querySelector('.upload-bar').style.background = '#52c878';
+          item.querySelector('.upload-pct').textContent = '100%';
+          item.querySelector('.upload-status-text').textContent = '\u2705 Uploaded!';
+          item.querySelector('.upload-status-text').style.color = '#52c878';
+        }
+        checkAllDone();
+      }).catch(function(err) {
+        console.error('Firestore save error:', err);
         if(item) {
           item.querySelector('.upload-bar').style.background = '#e05050';
-          item.querySelector('.upload-status-text').textContent = 'Failed: ' + error.message;
+          item.querySelector('.upload-status-text').textContent = '\u274C Error: ' + err.message;
           item.querySelector('.upload-status-text').style.color = '#e05050';
         }
-        uploadErrors.push({file: file.name, error: error});
+        uploadErrors.push({file: file.name, error: err});
         checkAllDone();
-      },
-      function() {
-        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadUrl) {
-          db.collection('uploads').add({
-            userId: user.uid,
-            userEmail: user.email,
-            userName: userData.name || user.displayName || 'Unknown',
-            fileName: file.name,
-            fileSize: file.size,
-            fileType: file.type || 'text/csv',
-            fileUrl: downloadUrl,
-            filePath: filePath,
-            status: 'received',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }).then(function() {
-            var item = document.getElementById('upload-item-'+i);
-            if(item) {
-              item.querySelector('.upload-bar').style.width = '100%';
-              item.querySelector('.upload-bar').style.background = '#52c878';
-              item.querySelector('.upload-pct').textContent = '100%';
-              item.querySelector('.upload-status-text').textContent = '\u2705 Uploaded!';
-              item.querySelector('.upload-status-text').style.color = '#52c878';
-            }
-            checkAllDone();
-          }).catch(function(err) {
-            console.error('Firestore save error:', err);
-            var item = document.getElementById('upload-item-'+i);
-            if(item) {
-              item.querySelector('.upload-status-text').textContent = '\u274C Error saving: ' + err.message;
-              item.querySelector('.upload-status-text').style.color = '#e05050';
-            }
-            uploadErrors.push({file: file.name, error: err});
-            checkAllDone();
-          });
-        }).catch(function(err) {
-          console.error('Get URL error:', err);
-          var item = document.getElementById('upload-item-'+i);
-          if(item) {
-            item.querySelector('.upload-status-text').textContent = '\u274C Error: ' + err.message;
-            item.querySelector('.upload-status-text').style.color = '#e05050';
-          }
-          uploadErrors.push({file: file.name, error: err});
-          checkAllDone();
-        });
+      });
+    };
+    reader.onerror = function() {
+      var item = document.getElementById('upload-item-'+i);
+      if(item) {
+        item.querySelector('.upload-bar').style.background = '#e05050';
+        item.querySelector('.upload-status-text').textContent = '\u274C Error reading file';
+        item.querySelector('.upload-status-text').style.color = '#e05050';
       }
-    );
+      uploadErrors.push({file: file.name, error: 'read error'});
+      checkAllDone();
+    };
+    reader.readAsDataURL(file);
   });
 
   function checkAllDone() {
@@ -283,11 +272,7 @@ function cleanupOldUploads(uid) {
   var cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 30);
   db.collection('uploads').where('userId','==',uid).where('createdAt','<',cutoff).get().then(function(snap){
-    snap.docs.forEach(function(doc){
-      var d = doc.data();
-      if(d.filePath) { storage.ref(d.filePath).delete().catch(function(){}); }
-      doc.ref.delete();
-    });
+    snap.docs.forEach(function(doc){ doc.ref.delete(); });
   }).catch(function(){});
 }
 </script>
