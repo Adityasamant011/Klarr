@@ -113,7 +113,6 @@ auth.onAuthStateChanged(function(user){
 function loadUploads(uid) {
   db.collection('uploads')
     .where('userId','==',uid)
-    .orderBy('createdAt','desc')
     .get()
     .then(function(snap){
       var active = [];
@@ -121,9 +120,14 @@ function loadUploads(uid) {
       var now = Date.now();
       var thirtyDays = 30 * 24 * 60 * 60 * 1000;
 
-      snap.docs.forEach(function(doc){
-        var d = doc.data();
-        d._id = doc.id;
+      var allDocs = snap.docs.map(function(doc){ return Object.assign({_id: doc.id}, doc.data()); });
+      allDocs.sort(function(a,b){
+        var ta = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0;
+        var tb = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate().getTime() : 0;
+        return tb - ta;
+      });
+
+      allDocs.forEach(function(d){
         if(d.status === 'completed') {
           // Keep completed reports for 30 days
           var created = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0;

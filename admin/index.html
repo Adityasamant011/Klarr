@@ -72,13 +72,17 @@ auth.onAuthStateChanged(function(user) {
 });
 
 function loadUploads() {
-  var q = db.collection('uploads').orderBy('createdAt','desc');
+  var q = db.collection('uploads');
   q.get().then(function(snap){
-    var docs = snap.docs;
+    var docs = snap.docs.map(function(doc){ return Object.assign({_id: doc.id}, doc.data()); });
+    docs.sort(function(a,b){
+      var ta = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0;
+      var tb = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate().getTime() : 0;
+      return tb - ta;
+    });
     var rows = [];
     docs.forEach(function(doc){
-      var d = doc.data();
-      d._id = doc.id;
+      var d = doc;
       if(filterStatus !== 'all' && d.status !== filterStatus) return;
       rows.push(d);
     });
