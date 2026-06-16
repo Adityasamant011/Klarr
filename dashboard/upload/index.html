@@ -124,11 +124,11 @@ function loadUploads(uid) {
       var a = active[0];
       document.getElementById('upload-panel').style.display = 'none';
       document.getElementById('active-panel').style.display = 'block';
-      var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '—';
-      var statusLabel = a.status==='received' ? '<span style="color:#c08532;">⏳ Received — processing soon</span>' : '<span style="color:#52c878;">🔄 Processing</span>';
+      var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '\u2014';
+      var statusLabel = a.status==='received' ? '<span style="color:#c08532;">\u23F3 Received \u2014 processing soon</span>' : '<span style="color:#52c878;">\uD83D\uDD04 Processing</span>';
       document.getElementById('active-upload-info').innerHTML =
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-        '<div><p style="font-size:14px;color:var(--text);">📄 ' + a.fileName + '</p>' +
+        '<div><p style="font-size:14px;color:var(--text);">\uD83D\uDCC4 ' + a.fileName + '</p>' +
         '<p style="font-size:12px;color:var(--text-dim);margin-top:4px;">Uploaded: ' + dateStr + '</p></div>' +
         '<span style="font-size:12px;">' + statusLabel + '</span></div>';
       document.getElementById('report-area').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Your bookkeeping team has been notified. Reports will be delivered within 24 hours.</p>';
@@ -141,17 +141,17 @@ function loadUploads(uid) {
     if(completed.length > 0) {
       var html = '<table><thead><tr><th>Month</th><th>Delivered</th><th>Google Sheet</th><th>Report File</th></tr></thead><tbody>';
       completed.forEach(function(r){
-        var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '—';
-        var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '—';
+        var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '\u2014';
+        var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '\u2014';
         var daysLeft = Math.max(0, Math.floor((thirtyDays - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
-        var sheetLink = r.reportUrl ? '<a href="'+r.reportUrl+'" target="_blank" class="btn sm">📊 Open Sheet</a>' : '<span style="color:var(--text-dim);font-size:12px;">—</span>';
-        var fileLink = r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">📥 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">—</span>';
+        var sheetLink = r.reportUrl ? '<a href="'+r.reportUrl+'" target="_blank" class="btn sm">\uD83D\uDCCA Open Sheet</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>';
+        var fileLink = r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">\uD83D\uDCE5 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>';
         html += '<tr><td>'+m+'</td><td>'+del+'</td><td>'+sheetLink+'</td><td>'+fileLink+' <span style="font-size:10px;color:var(--text-dim);">'+daysLeft+'d left</span></td></tr>';
       });
       html += '</tbody></table>';
       document.getElementById('reports-list').innerHTML = html;
     } else {
-      document.getElementById('reports-list').innerHTML = '<div class="empty-state" style="padding:24px;"><div class="empty-icon" style="font-size:28px;">📊</div><p style="font-size:13px;">No reports yet. Upload your first CSV to get started.</p></div>';
+      document.getElementById('reports-list').innerHTML = '<div class="empty-state" style="padding:24px;"><div class="empty-icon" style="font-size:28px;">\uD83D\uDCCA</div><p style="font-size:13px;">No reports yet. Upload your first CSV to get started.</p></div>';
     }
   }).catch(function(e){
     console.error(e);
@@ -173,43 +173,110 @@ function handleFiles(files) {
   var user = currentUser;
   var userData = currentUserData || {};
   var fileList = Array.from(files);
-  var done = 0, total = fileList.length, errs = [];
-  document.getElementById('upload-status').innerHTML = '<div class="alert info">⏳ Uploading ' + total + ' file' + (total > 1 ? 's' : '') + '...</div>';
+  var total = fileList.length;
+  var uploadsDone = 0;
+  var uploadErrors = [];
 
-  fileList.forEach(function(file) {
-    var filePath = 'uploads/' + user.uid + '/' + Date.now() + '_' + file.name;
-    var storageRef = storage.ref(filePath);
-    storageRef.put(file).then(function(snapshot) {
-      return snapshot.ref.getDownloadURL();
-    }).then(function(downloadUrl) {
-      return db.collection('uploads').add({
-        userId: user.uid,
-        userEmail: user.email,
-        userName: userData.name || user.displayName || 'Unknown',
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type || 'text/csv',
-        fileUrl: downloadUrl,
-        filePath: filePath,
-        status: 'received',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    }).then(function() {
-      done++;
-      if(done === total && errs.length === 0) {
-        document.getElementById('upload-status').innerHTML = '<div class="alert success">✅ ' + total + ' file' + (total > 1 ? 's' : '') + ' uploaded! We\'ll start processing within 24 hours.</div>';
-        loadUploads(user.uid);
-      } else if(done === total && errs.length > 0) {
-        document.getElementById('upload-status').innerHTML = '<div class="alert error">❌ Some files failed. Please try again.</div>';
-      }
-    }).catch(function(err) {
-      done++; errs.push(err);
-      console.error('Upload error:', err);
-      if(done === total) {
-        document.getElementById('upload-status').innerHTML = '<div class="alert error">❌ Error saving upload. Please try again.</div>';
-      }
-    });
+  // Build progress UI
+  var statusHtml = '<div id="upload-progress-area">';
+  fileList.forEach(function(file, i) {
+    statusHtml += '<div class="upload-item" id="upload-item-'+i+'" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+      '<span style="font-size:13px;color:var(--text);">\uD83D\uDCC4 ' + file.name + '</span>' +
+      '<span class="upload-pct" style="font-size:11px;color:var(--text-dim);">0%</span></div>' +
+      '<div style="background:var(--bg-elevated);border-radius:4px;height:6px;overflow:hidden;">' +
+      '<div class="upload-bar" style="background:var(--accent);height:100%;width:0%;transition:width 0.3s;"></div></div>' +
+      '<p class="upload-status-text" style="font-size:11px;color:var(--text-dim);margin-top:2px;">Waiting...</p>' +
+      '</div>';
   });
+  statusHtml += '</div>';
+  document.getElementById('upload-status').innerHTML = statusHtml;
+
+  fileList.forEach(function(file, i) {
+    var filePath = 'uploads/' + user.uid + '/' + Date.now() + '_' + i + '_' + file.name;
+    var storageRef = storage.ref(filePath);
+    var uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed',
+      function(snapshot) {
+        var pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        var item = document.getElementById('upload-item-'+i);
+        if(item) {
+          item.querySelector('.upload-bar').style.width = pct + '%';
+          item.querySelector('.upload-pct').textContent = pct + '%';
+          item.querySelector('.upload-status-text').textContent = 'Uploading... ' + pct + '%';
+          item.querySelector('.upload-status-text').style.color = 'var(--text-dim)';
+        }
+      },
+      function(error) {
+        console.error('Upload error:', error);
+        var item = document.getElementById('upload-item-'+i);
+        if(item) {
+          item.querySelector('.upload-bar').style.background = '#e05050';
+          item.querySelector('.upload-status-text').textContent = 'Failed: ' + error.message;
+          item.querySelector('.upload-status-text').style.color = '#e05050';
+        }
+        uploadErrors.push({file: file.name, error: error});
+        checkAllDone();
+      },
+      function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadUrl) {
+          db.collection('uploads').add({
+            userId: user.uid,
+            userEmail: user.email,
+            userName: userData.name || user.displayName || 'Unknown',
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type || 'text/csv',
+            fileUrl: downloadUrl,
+            filePath: filePath,
+            status: 'received',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(function() {
+            var item = document.getElementById('upload-item-'+i);
+            if(item) {
+              item.querySelector('.upload-bar').style.width = '100%';
+              item.querySelector('.upload-bar').style.background = '#52c878';
+              item.querySelector('.upload-pct').textContent = '100%';
+              item.querySelector('.upload-status-text').textContent = '\u2705 Uploaded!';
+              item.querySelector('.upload-status-text').style.color = '#52c878';
+            }
+            checkAllDone();
+          }).catch(function(err) {
+            console.error('Firestore save error:', err);
+            var item = document.getElementById('upload-item-'+i);
+            if(item) {
+              item.querySelector('.upload-status-text').textContent = '\u274C Error saving: ' + err.message;
+              item.querySelector('.upload-status-text').style.color = '#e05050';
+            }
+            uploadErrors.push({file: file.name, error: err});
+            checkAllDone();
+          });
+        }).catch(function(err) {
+          console.error('Get URL error:', err);
+          var item = document.getElementById('upload-item-'+i);
+          if(item) {
+            item.querySelector('.upload-status-text').textContent = '\u274C Error: ' + err.message;
+            item.querySelector('.upload-status-text').style.color = '#e05050';
+          }
+          uploadErrors.push({file: file.name, error: err});
+          checkAllDone();
+        });
+      }
+    );
+  });
+
+  function checkAllDone() {
+    uploadsDone++;
+    if(uploadsDone >= total) {
+      if(uploadErrors.length === 0) {
+        showToast('\u2705 All ' + total + ' file' + (total > 1 ? 's' : '') + ' uploaded! We\'ll process within 24 hours.', 'success');
+      } else {
+        showToast('\u274C ' + uploadErrors.length + ' of ' + total + ' files failed.', 'error');
+      }
+      setTimeout(function(){ loadUploads(currentUser.uid); }, 1500);
+    }
+  }
 }
 
 function cleanupOldUploads(uid) {
@@ -221,7 +288,6 @@ function cleanupOldUploads(uid) {
       if(d.filePath) { storage.ref(d.filePath).delete().catch(function(){}); }
       doc.ref.delete();
     });
-    if(snap.size > 0) console.log('Cleaned up ' + snap.size + ' old uploads');
   }).catch(function(){});
 }
 </script>
