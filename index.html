@@ -412,8 +412,8 @@
       <h2 class="fade-in">Your books. Done.<br>24 hours.</h2>
       <p class="fade-in">Take the free health check first. See your real profit margin. Then decide if you want us to handle everything.</p>
       <div class="final-cta-actions fade-in">
-        <a href="/tools/" class="btn-primary btn-large">Take the free health check →</a>
-        <a href="#pricing" class="btn-ghost btn-large">Compare plans</a>
+        <a href="#" class="btn-primary btn-large" id="final-cta-trial">Get your free profit breakdown →</a>
+        <a href="#pricing" class="btn-ghost btn-large">See pricing</a>
       </div>
     </div>
   </section>
@@ -442,14 +442,19 @@
   <div id="trial-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;">
     <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:32px;max-width:420px;width:90%;position:relative;">
       <button id="trial-modal-close" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#888;font-size:20px;cursor:pointer;">&times;</button>
-      <h2 style="font-size:1.4rem;margin-bottom:8px;">Start your free trial</h2>
-      <p style="color:#888;font-size:14px;margin-bottom:20px;">30 days free. $99/month after. Cancel anytime. No credit card required.</p>
+      <h2 style="font-size:1.4rem;margin-bottom:8px;">Get your free profit breakdown</h2>
+      <p style="color:#888;font-size:14px;margin-bottom:20px;">We'll analyze your Shopify store's last 3 months and show you your real profit margin. No strings attached.</p>
       <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Email</label>
+        <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Your email</label>
         <input type="email" id="trial-email" placeholder="you@yourstore.com" style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:#eee;font-size:14px;box-sizing:border-box;">
       </div>
-      <button id="trial-submit" style="width:100%;padding:12px;background:#c08532;color:#111;border:none;border-radius:6px;font-size:15px;font-weight:500;cursor:pointer;">Start free trial</button>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Your Shopify store URL</label>
+        <input type="url" id="trial-store" placeholder="https://yourstore.myshopify.com" style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:#eee;font-size:14px;box-sizing:border-box;">
+      </div>
+      <button id="trial-submit" style="width:100%;padding:12px;background:#c08532;color:#111;border:none;border-radius:6px;font-size:15px;font-weight:500;cursor:pointer;">Get my free profit breakdown</button>
       <p id="trial-error" style="color:#e74c3c;font-size:12px;margin-top:8px;display:none;"></p>
+      <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:12px;">After your breakdown, we'll show you how Klarr automates this monthly. $99/mo, 30-day free trial.</p>
     </div>
   </div>
 
@@ -458,6 +463,7 @@
     var modal = document.getElementById('trial-modal');
     var closeBtn = document.getElementById('trial-modal-close');
     var emailInput = document.getElementById('trial-email');
+    var storeInput = document.getElementById('trial-store');
     var submitBtn = document.getElementById('trial-submit');
     var errorEl = document.getElementById('trial-error');
 
@@ -471,29 +477,36 @@
 
     submitBtn.addEventListener('click', async function() {
       var email = emailInput.value.trim();
+      var store = storeInput.value.trim();
       if (!email || !email.includes('@')) { errorEl.textContent = 'Enter a valid email'; errorEl.style.display = 'block'; return; }
-      submitBtn.textContent = 'Creating trial...';
+      if (!store) { errorEl.textContent = 'Enter your Shopify store URL'; errorEl.style.display = 'block'; return; }
+      submitBtn.textContent = 'Submitting...';
       submitBtn.disabled = true;
       errorEl.style.display = 'none';
       try {
-        var resp = await fetch('/api/create-trial', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ email: email, plan: 'klarr' })
-        });
-        var data = await resp.json();
-        if (data.error) { errorEl.textContent = data.error; errorEl.style.display = 'block'; return; }
-        if (data.url) { window.location.href = data.url; return; }
-        errorEl.textContent = 'Something went wrong. Try again.';
-        errorEl.style.display = 'block';
+        // Store the lead in Firestore for follow-up
+        if (window.firebase && firebase.firestore) {
+          await firebase.firestore().collection('leads').add({
+            email: email,
+            store: store,
+            source: 'homepage_modal',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        // Redirect to Stripe checkout with 30-day trial
+        window.location.href = 'https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01';
       } catch(e) {
-        errorEl.textContent = 'Network error. Try again.';
-        errorEl.style.display = 'block';
+        // Even if Firestore fails, redirect to Stripe
+        window.location.href = 'https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01';
       }
-      submitBtn.textContent = 'Start free trial';
-      submitBtn.disabled = false;
     });
   })();
+
+  // Final CTA button also opens trial modal
+  document.getElementById('final-cta-trial').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('trial-modal').style.display = 'flex';
+  });
   </script>
 </body>
 </html>
