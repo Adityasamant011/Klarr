@@ -10,8 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css?v=18">
   <link rel="stylesheet" href="/css/dashboard.css?v=4">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>emailjs.init("nPr7pMlpwCQGuMXPj");</script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -107,9 +105,9 @@ auth.onAuthStateChanged(function(user){
   }).catch(function(){});
 
   loadUploads(user.uid);
+  cleanupOldUploads(user.uid);
 });
 
-// Load uploads: active (received/processing) and past reports (completed, within 30 days)
 function loadUploads(uid) {
   db.collection('uploads')
     .where('userId','==',uid)
@@ -129,7 +127,6 @@ function loadUploads(uid) {
 
       allDocs.forEach(function(d){
         if(d.status === 'completed') {
-          // Keep completed reports for 30 days
           var created = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0;
           if(now - created < thirtyDays) completed.push(d);
         } else {
@@ -137,9 +134,8 @@ function loadUploads(uid) {
         }
       });
 
-      // Show active upload
       if(active.length > 0) {
-        var a = active[0]; // most recent
+        var a = active[0];
         document.getElementById('upload-panel').style.display = 'none';
         document.getElementById('active-panel').style.display = 'block';
         var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '—';
@@ -156,14 +152,17 @@ function loadUploads(uid) {
         document.getElementById('upload-status').innerHTML = '';
       }
 
-      // Show completed reports
       if(completed.length > 0) {
-        var html = '<table><thead><tr><th>Month</th><th>Delivered</th><th>Status</th><th>Download</th></tr></thead><tbody>';
+        var html = '<table><thead><tr><th>Month</th><th>Delivered</th><th>Report</th></tr></thead><tbody>';
         completed.forEach(function(r){
-          var d = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '—';
-          var delivered = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '—';
-          var daysLeft = Math.max(0, Math.floor((30*24*60*60*1000 - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
-          html += '<tr><td>' + d + '</td><td>' + delivered + '</td><td style="color:#52c878;">✅ Complete</td><td><a href="#" class="btn sm" onclick="showToast(\'Report link sent to ' + r.userEmail + '\',\'success\'); return false;">📥 Download</a> <span style="font-size:10px;color:var(--text-dim);">(' + daysLeft + 'd left)</span>';
+          var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '—';
+          var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '—';
+          var daysLeft = Math.max(0, Math.floor((thirtyDays - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
+          var link = r.reportUrl || '#';
+          var linkBtn = r.reportUrl
+            ? '<a href="' + link + '" target="_blank" class="btn sm">📥 Open Sheet</a>'
+            : '<span style="color:var(--text-dim);font-size:12px;">Pending</span>';
+          html += '<tr><td>' + m + '</td><td>' + del + '</td><td>' + linkBtn + ' <span style="font-size:10px;color:var(--text-dim);">' + daysLeft + 'd left</span></td></tr>';
         });
         html += '</tbody></table>';
         document.getElementById('reports-list').innerHTML = html;
@@ -207,26 +206,8 @@ function handleFiles(files) {
       fileType: file.type || 'text/csv',
       status: 'received',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(function(docRef) {
+    }).then(function() {
       done++;
-
-      // Email notification to klarr.space@gmail.com
-      try {
-        emailjs.send('service_zdg6ond', 'template_gcmns3m', {
-          to_email: 'klarr.space@gmail.com',
-          name: userData.name || user.displayName || 'Unknown',
-          email: user.email,
-          subject: 'New CSV Upload - Klarr',
-          message: 'New CSV upload on Klarr.\n\nUser: ' + (userData.name || user.displayName || 'Unknown') + ' (' + user.email + ')\nFile: ' + file.name + '\nSize: ' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB') + '\nUploaded: ' + new Date().toLocaleString() + '\nUpload ID: ' + docRef.id + '\n\nProcess: klarr.space/dashboard'
-        }).then(function(res) {
-          console.log('Email sent:', res.status);
-        }).catch(function(err) {
-          console.error('EmailJS error:', JSON.stringify(err));
-        });
-      } catch(e) {
-        console.error('EmailJS exception:', e);
-      }
-
       if(done === total && errs.length === 0) {
         document.getElementById('upload-status').innerHTML = '<div class="alert success">✅ ' + total + ' file' + (total > 1 ? 's' : '') + ' uploaded! We\'ll start processing within 24 hours.</div>';
         loadUploads(user.uid);
@@ -244,7 +225,6 @@ function handleFiles(files) {
   });
 }
 
-// Auto-delete uploads older than 30 days (runs on page load for current user)
 function cleanupOldUploads(uid) {
   var cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 30);
@@ -253,15 +233,10 @@ function cleanupOldUploads(uid) {
     .where('createdAt','<',cutoff)
     .get()
     .then(function(snap){
-      snap.docs.forEach(function(doc){
-        doc.ref.delete();
-      });
+      snap.docs.forEach(function(doc){ doc.ref.delete(); });
       if(snap.size > 0) console.log('Cleaned up ' + snap.size + ' old uploads');
     }).catch(function(){});
 }
-
-// Run cleanup
-auth.onAuthStateChanged(function(u){ if(u) cleanupOldUploads(u.uid); });
 </script>
 </body>
 </html>
