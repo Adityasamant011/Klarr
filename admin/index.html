@@ -34,6 +34,7 @@
         <button class="btn" onclick="filterStatus='completed'; loadUploads();">✅ Done</button>
         <button class="btn" onclick="filterStatus='all'; loadUploads();">All</button>
         <button class="btn accent" onclick="downloadAllData();">📥 Download All Data</button>
+        <button class="btn danger" onclick="deleteAllUploads();" style="background:rgba(224,80,80,0.15);border-color:rgba(224,80,80,0.3);color:#e05050;">🗑️ Delete All</button>
       </div>
     </div>
     <div class="panel">
@@ -269,6 +270,19 @@ function sendCompletionEmail(data) {
   );
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + data.userEmail + '&su=' + subject + '&body=' + body, '_blank');
   showToast('Gmail compose opened for ' + data.userEmail, 'info');
+}
+
+function deleteAllUploads() {
+  if(!confirm('Delete ALL upload records? This cannot be undone.')) return;
+  db.collection('uploads').get().then(function(snap){
+    var count = snap.size;
+    var batch = db.batch();
+    snap.docs.forEach(function(doc){ batch.delete(doc.ref); });
+    return batch.commit().then(function(){ return count; });
+  }).then(function(count){
+    showToast('Deleted ' + count + ' upload records', 'success');
+    loadUploads();
+  }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
 }
 </script>
 </body>

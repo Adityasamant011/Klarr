@@ -13,6 +13,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <style>
+    .upload-item { background: var(--bg-alt); border-radius: 6px; padding: 10px 12px; }
+    .upload-bar { border-radius: 3px; }
+    .progress-container { margin-top: 12px; }
+  </style>
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
@@ -21,27 +26,27 @@
   <div class="dash-sidebar" id="sidebar">
     <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr</a></div>
     <div class="nav-section">
-      <a href="/dashboard"><span class="nav-icon">\uD83D\uDCCA</span> Overview</a>
-      <a href="/dashboard/reports"><span class="nav-icon">\uD83D\uDCC4</span> Reports</a>
-      <a href="/dashboard/upload" class="active"><span class="nav-icon">\uD83D\uDCE4</span> Upload Data</a>
-      <a href="/dashboard/billing"><span class="nav-icon">\uD83D\uDCB3</span> Billing</a>
+      <a href="/dashboard"><span class="nav-icon">📊</span> Overview</a>
+      <a href="/dashboard/reports"><span class="nav-icon">📄</span> Reports</a>
+      <a href="/dashboard/upload" class="active"><span class="nav-icon">📤</span> Upload Data</a>
+      <a href="/dashboard/billing"><span class="nav-icon">💳</span> Billing</a>
     </div>
     <div class="nav-section" id="partner-nav" style="display:none;">
       <div class="nav-label">Partner</div>
-      <a href="/dashboard/partner"><span class="nav-icon">\uD83E\uDD1D</span> Partner Dashboard</a>
+      <a href="/dashboard/partner"><span class="nav-icon">🤝</span> Partner Dashboard</a>
     </div>
     <div class="nav-section">
-      <a href="/dashboard/settings"><span class="nav-icon">\u2699\uFE0F</span> Settings</a>
-      <a href="/partners"><span class="nav-icon">\uD83D\uDCE2</span> Partner Program</a>
+      <a href="/dashboard/settings"><span class="nav-icon">⚙️</span> Settings</a>
+      <a href="/partners"><span class="nav-icon">📢</span> Partner Program</a>
     </div>
   </div>
   <div class="dash-main">
-    <div class="page-header"><div><h1>\uD83D\uDCE4 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div></div>
+    <div class="page-header"><div><h1>📤 Upload Data</h1><p class="page-subtitle">Send us your Shopify data. We'll do the rest.</p></div></div>
 
     <div class="panel">
       <div class="panel-header"><h2>How it works</h2></div>
       <div class="grid-3">
-        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">1</div><h3>Export from Shopify</h3><p>Go to Shopify \u2192 Analytics \u2192 Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
+        <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">1</div><h3>Export from Shopify</h3><p>Go to Shopify → Analytics → Reports. Export Orders, Payouts, and Fees as CSV files.</p></div>
         <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">2</div><h3>Upload here</h3><p>Drag and drop or select your CSV files. We accept orders, payouts, and fees exports.</p></div>
         <div class="info-card"><div class="info-icon" style="font-size:24px;font-weight:700;color:var(--accent);">3</div><h3>Get your books</h3><p>Within 24 hours, you'll get P&L, Balance Sheet, and Cash Flow in a clean Google Sheet.</p></div>
       </div>
@@ -50,22 +55,22 @@
     <div class="panel" id="upload-panel">
       <div class="panel-header"><h2>Upload files</h2></div>
       <div id="upload-zone" class="upload-zone">
-        <div style="font-size:40px;margin-bottom:12px;color:var(--text-dim);">\uD83D\uDCE4</div>
+        <div style="font-size:40px;margin-bottom:12px;color:var(--text-dim);">📤</div>
         <p style="font-size:14px;color:var(--text);margin-bottom:4px;">Drop your CSV files here</p>
-        <p style="font-size:12px;color:var(--text-dim);">or click to browse \u2014 Orders, Payouts, Fees</p>
+        <p style="font-size:12px;color:var(--text-dim);">or click to browse — Orders, Payouts, Fees</p>
         <input type="file" id="file-input" accept=".csv" multiple style="display:none">
       </div>
       <div id="upload-status" style="margin-top:16px;"></div>
     </div>
 
     <div class="panel" id="active-panel" style="display:none;">
-      <div class="panel-header"><h2>\uD83D\uDCE6 Current Upload</h2></div>
+      <div class="panel-header"><h2>📦 Current Upload</h2></div>
       <div id="active-upload-info"></div>
       <div style="margin-top:16px;" id="report-area"></div>
     </div>
 
     <div class="panel" id="reports-panel">
-      <div class="panel-header"><h2>\uD83D\uDCC4 Your Reports <span style="font-size:11px;color:var(--text-dim);font-weight:400;">(available for 30 days)</span></h2></div>
+      <div class="panel-header"><h2>📄 Your Reports <span style="font-size:11px;color:var(--text-dim);font-weight:400;">(available for 30 days)</span></h2></div>
       <div id="reports-list"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
     </div>
   </div>
@@ -81,7 +86,7 @@ function showToast(msg, type) {
   if (!c) { alert(msg); return; }
   var t = document.createElement('div');
   t.className = 'toast ' + (type || 'info');
-  t.innerHTML = (type==='success'?'\u2705 ':type==='error'?'\u274C ':'\u2139\uFE0F ') + msg;
+  t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
   c.appendChild(t);
   setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
 }
@@ -122,11 +127,11 @@ function loadUploads(uid) {
       var a = active[0];
       document.getElementById('upload-panel').style.display = 'none';
       document.getElementById('active-panel').style.display = 'block';
-      var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '\u2014';
-      var statusLabel = a.status==='received' ? '<span style="color:#c08532;">\u23F3 Received \u2014 processing soon</span>' : '<span style="color:#52c878;">\uD83D\uDD04 Processing</span>';
+      var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '—';
+      var statusLabel = a.status==='received' ? '<span style="color:#c08532;">⏳ Received — processing soon</span>' : '<span style="color:#52c878;">🔄 Processing</span>';
       document.getElementById('active-upload-info').innerHTML =
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-        '<div><p style="font-size:14px;color:var(--text);">\uD83D\uDCC4 ' + a.fileName + '</p>' +
+        '<div><p style="font-size:14px;color:var(--text);">📄 ' + a.fileName + '</p>' +
         '<p style="font-size:12px;color:var(--text-dim);margin-top:4px;">Uploaded: ' + dateStr + '</p></div>' +
         '<span style="font-size:12px;">' + statusLabel + '</span></div>';
       document.getElementById('report-area').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Your bookkeeping team has been notified. Reports will be delivered within 24 hours.</p>';
@@ -139,17 +144,17 @@ function loadUploads(uid) {
     if(completed.length > 0) {
       var html = '<table><thead><tr><th>Month</th><th>Delivered</th><th>Google Sheet</th><th>Report File</th></tr></thead><tbody>';
       completed.forEach(function(r){
-        var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '\u2014';
-        var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '\u2014';
+        var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '—';
+        var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '—';
         var daysLeft = Math.max(0, Math.floor((thirtyDays - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
-        var sheetLink = r.reportUrl ? '<a href="'+r.reportUrl+'" target="_blank" class="btn sm">\uD83D\uDCCA Open Sheet</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>';
-        var fileLink = r.reportFileData ? '<a href="'+r.reportFileData+'" download="'+(r.reportFileName||r.fileName)+'" class="btn sm">\uD83D\uDCE5 Download</a>' : (r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">\uD83D\uDCE5 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">\u2014</span>');
+        var sheetLink = r.reportUrl ? '<a href="'+r.reportUrl+'" target="_blank" class="btn sm">📊 Open Sheet</a>' : '<span style="color:var(--text-dim);font-size:12px;">—</span>';
+        var fileLink = r.reportFileData ? '<a href="'+r.reportFileData+'" download="'+(r.reportFileName||r.fileName)+'" class="btn sm">📥 Download</a>' : (r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">📥 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">—</span>');
         html += '<tr><td>'+m+'</td><td>'+del+'</td><td>'+sheetLink+'</td><td>'+fileLink+' <span style="font-size:10px;color:var(--text-dim);">'+daysLeft+'d left</span></td></tr>';
       });
       html += '</tbody></table>';
       document.getElementById('reports-list').innerHTML = html;
     } else {
-      document.getElementById('reports-list').innerHTML = '<div class="empty-state" style="padding:24px;"><div class="empty-icon" style="font-size:28px;">\uD83D\uDCCA</div><p style="font-size:13px;">No reports yet. Upload your first CSV to get started.</p></div>';
+      document.getElementById('reports-list').innerHTML = '<div class="empty-state" style="padding:24px;"><div class="empty-icon" style="font-size:28px;">📊</div><p style="font-size:13px;">No reports yet. Upload your first CSV to get started.</p></div>';
     }
   }).catch(function(e){
     console.error(e);
@@ -175,16 +180,15 @@ function handleFiles(files) {
   var uploadsDone = 0;
   var uploadErrors = [];
 
-  // Build progress UI
-  var statusHtml = '<div id="upload-progress-area">';
+  var statusHtml = '<div class="progress-container">';
   fileList.forEach(function(file, i) {
-    statusHtml += '<div class="upload-item" id="upload-item-'+i+'" style="margin-bottom:12px;">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
-      '<span style="font-size:13px;color:var(--text);">\uD83D\uDCC4 ' + file.name + ' <span style="font-size:11px;color:var(--text-dim);">(' + (file.size > 1024 ? Math.round(file.size/1024)+' KB' : file.size+' B') + ')</span></span>' +
+    statusHtml += '<div class="upload-item" id="upload-item-'+i+'">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+      '<span style="font-size:13px;color:var(--text);">📄 ' + file.name + ' <span style="font-size:11px;color:var(--text-dim);">(' + (file.size > 1024 ? Math.round(file.size/1024)+' KB' : file.size+' B') + ')</span></span>' +
       '<span class="upload-pct" style="font-size:11px;color:var(--text-dim);">0%</span></div>' +
       '<div style="background:var(--bg-elevated);border-radius:4px;height:6px;overflow:hidden;">' +
       '<div class="upload-bar" style="background:var(--accent);height:100%;width:0%;transition:width 0.3s;"></div></div>' +
-      '<p class="upload-status-text" style="font-size:11px;color:var(--text-dim);margin-top:2px;">Reading file...</p></div>';
+      '<p class="upload-status-text" style="font-size:11px;color:var(--text-dim);margin-top:4px;">Reading file...</p></div>';
   });
   statusHtml += '</div>';
   document.getElementById('upload-status').innerHTML = statusHtml;
@@ -203,7 +207,7 @@ function handleFiles(files) {
       }
     };
     reader.onload = function(e) {
-      var base64 = e.target.result; // data:text/csv;base64,...
+      var base64 = e.target.result;
       var item = document.getElementById('upload-item-'+i);
       if(item) {
         item.querySelector('.upload-bar').style.width = '60%';
@@ -211,31 +215,23 @@ function handleFiles(files) {
         item.querySelector('.upload-status-text').textContent = 'Saving to database...';
         item.querySelector('.upload-status-text').style.color = '#c08532';
       }
-
       db.collection('uploads').add({
-        userId: user.uid,
-        userEmail: user.email,
-        userName: userData.name || user.displayName || 'Unknown',
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type || 'text/csv',
-        fileData: base64,
-        status: 'received',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        userId: user.uid, userEmail: user.email, userName: userData.name || user.displayName || 'Unknown',
+        fileName: file.name, fileSize: file.size, fileType: file.type || 'text/csv',
+        fileData: base64, status: 'received', createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function() {
         if(item) {
           item.querySelector('.upload-bar').style.width = '100%';
           item.querySelector('.upload-bar').style.background = '#52c878';
           item.querySelector('.upload-pct').textContent = '100%';
-          item.querySelector('.upload-status-text').textContent = '\u2705 Uploaded!';
+          item.querySelector('.upload-status-text').textContent = '✅ Uploaded!';
           item.querySelector('.upload-status-text').style.color = '#52c878';
         }
         checkAllDone();
       }).catch(function(err) {
-        console.error('Firestore save error:', err);
         if(item) {
           item.querySelector('.upload-bar').style.background = '#e05050';
-          item.querySelector('.upload-status-text').textContent = '\u274C Error: ' + err.message;
+          item.querySelector('.upload-status-text').textContent = '❌ Error: ' + err.message;
           item.querySelector('.upload-status-text').style.color = '#e05050';
         }
         uploadErrors.push({file: file.name, error: err});
@@ -246,7 +242,7 @@ function handleFiles(files) {
       var item = document.getElementById('upload-item-'+i);
       if(item) {
         item.querySelector('.upload-bar').style.background = '#e05050';
-        item.querySelector('.upload-status-text').textContent = '\u274C Error reading file';
+        item.querySelector('.upload-status-text').textContent = '❌ Error reading file';
         item.querySelector('.upload-status-text').style.color = '#e05050';
       }
       uploadErrors.push({file: file.name, error: 'read error'});
@@ -259,9 +255,9 @@ function handleFiles(files) {
     uploadsDone++;
     if(uploadsDone >= total) {
       if(uploadErrors.length === 0) {
-        showToast('\u2705 All ' + total + ' file' + (total > 1 ? 's' : '') + ' uploaded! We\'ll process within 24 hours.', 'success');
+        showToast('✅ All ' + total + ' file' + (total > 1 ? 's' : '') + ' uploaded! We\'ll process within 24 hours.', 'success');
       } else {
-        showToast('\u274C ' + uploadErrors.length + ' of ' + total + ' files failed.', 'error');
+        showToast('❌ ' + uploadErrors.length + ' of ' + total + ' files failed.', 'error');
       }
       setTimeout(function(){ loadUploads(currentUser.uid); }, 1500);
     }
