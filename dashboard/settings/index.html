@@ -85,8 +85,12 @@ function initApp() {
         var snap = await db.collection('partners').where('email','==',user.email).get();
         if (!snap.empty) document.getElementById('partner-nav').style.display = 'block';
       } catch(e) {}
+      // Load profile - create doc if it doesn't exist
       var profile = { name: '', email: user.email };
-      try { var doc = await db.collection('customers').doc(user.uid).get(); if (doc.exists) Object.assign(profile, doc.data()); } catch(e) {}
+      try {
+        var doc = await db.collection('customers').doc(user.uid).get();
+        if (doc.exists) Object.assign(profile, doc.data());
+      } catch(e) {}
       document.getElementById('set-name').value = profile.name;
       document.getElementById('set-email').value = user.email;
       document.getElementById('profile-form').addEventListener('submit', async function(e) {
@@ -94,7 +98,8 @@ function initApp() {
         var btn = document.getElementById('btn-save-profile');
         btn.disabled = true; btn.textContent = '⏳ Saving...';
         try {
-          await db.collection('customers').doc(user.uid).update({ name: document.getElementById('set-name').value.trim() });
+          // Use set with merge so it creates the doc if it doesn't exist
+          await db.collection('customers').doc(user.uid).set({ name: document.getElementById('set-name').value.trim() }, { merge: true });
           showToast('Profile updated!', 'success');
         } catch(err) { showToast('Error: ' + err.message, 'error'); }
         btn.disabled = false; btn.textContent = '💾 Save Changes';

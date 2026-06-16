@@ -82,11 +82,11 @@ function initApp() {
       var params = new URLSearchParams(window.location.search);
       if (params.get('payment') === 'success' && params.get('plan')) {
         try {
-          await db.collection('customers').doc(user.uid).update({
+          await db.collection('customers').doc(user.uid).set({
             plan: params.get('plan'),
             planStartedAt: firebase.firestore.FieldValue.serverTimestamp(),
             status: 'active'
-          });
+          }, { merge: true });
           window.history.replaceState({}, '', '/dashboard');
           showToast('🎉 Payment successful! Your ' + params.get('plan') + ' plan is now active.', 'success');
         } catch (e) { showToast('Error: ' + e.message, 'error'); }
