@@ -96,7 +96,20 @@ auth.onAuthStateChanged(async function(user) {
   var prices = {starter:'$99/mo',growth:'$149/mo',pro:'$249/mo',none:'—'};
   var isActive = plan !== 'none';
 
-  document.getElementById('billing-plan').innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:18px;font-weight:600;">' + names[plan] + '</div><div style="font-size:13px;color:var(--text-muted);">' + prices[plan] + '</div></div><span class="badge ' + (isActive?'active':'pending') + '">' + (isActive?'● Active':'○ No subscription') + '</span></div>';
+  // Check if on trial
+  var trialInfo = '';
+  try {
+    var subDoc = await db.collection('customers').doc(user.uid).collection('subscription').doc('current').get();
+    if (subDoc.exists && subDoc.data().trialEnd) {
+      var trialEnd = subDoc.data().trialEnd.toDate();
+      var daysLeft = Math.ceil((trialEnd - new Date()) / (1000 * 60 * 60 * 24));
+      if (daysLeft > 0) {
+        trialInfo = '<div style="margin-top:8px;padding:8px 12px;background:rgba(192,133,50,0.1);border:1px solid rgba(192,133,50,0.2);border-radius:6px;font-size:13px;color:#c08532;">🎁 Free trial: ' + daysLeft + ' days left — <a href="#pricing" style="color:#c08532;text-decoration:underline;">Choose a plan</a></div>';
+      }
+    }
+  } catch(e) {}
+
+  document.getElementById('billing-plan').innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><div style="font-size:18px;font-weight:600;">' + names[plan] + '</div><div style="font-size:13px;color:var(--text-muted);">' + prices[plan] + '</div></div><span class="badge ' + (isActive?'active':'pending') + '">' + (isActive?'● Active':'○ No subscription') + '</span></div>' + trialInfo;
 });
 </script>
 </body>

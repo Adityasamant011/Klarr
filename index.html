@@ -358,8 +358,10 @@
             <li>Balance Sheet</li>
             <li>24-hour delivery</li>
             <li>Human-reviewed</li>
+            <li><strong>30-day free trial</strong></li>
           </ul>
-          <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn-ghost btn-full">Start with Starter</a>
+          <a href="#" class="btn-ghost btn-full trial-btn" data-plan="starter">Start free trial</a>
+          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">No credit card required</p>
         </div>
         <div class="price-card price-card-popular">
           <div class="price-popular-badge">Most Popular</div>
@@ -373,8 +375,10 @@
             <li>Cash Flow Statement</li>
             <li>Quarterly reports</li>
             <li>Free health check (first month)</li>
+            <li><strong>30-day free trial</strong></li>
           </ul>
-          <a href="https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00" class="btn-primary btn-full">Start with Growth</a>
+          <a href="#" class="btn-primary btn-full trial-btn" data-plan="growth">Start free trial</a>
+          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">No credit card required</p>
         </div>
         <div class="price-card">
           <div class="price-tag">
@@ -387,8 +391,10 @@
             <li>Weekly bookkeeping</li>
             <li>Cash flow alerts</li>
             <li>Priority support</li>
+            <li><strong>30-day free trial</strong></li>
           </ul>
-          <a href="https://buy.stripe.com/aFa5kDggNcSu1RGgmIfAc02" class="btn-ghost btn-full">Start with Pro</a>
+          <a href="#" class="btn-ghost btn-full trial-btn" data-plan="pro">Start free trial</a>
+          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">No credit card required</p>
         </div>
       </div>
       <p class="price-note fade-in" style="text-align: center; margin-top: 1.5rem;">Cancel anytime. No long-term contracts. 24-hour delivery guarantee.</p>
@@ -460,6 +466,81 @@
     trackReferralClick();
     updateNav();
     window.klarrReferrerId = getReferrerId();
+  </script>
+
+  <!-- Trial Signup Modal -->
+  <div id="trial-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:32px;max-width:420px;width:90%;position:relative;">
+      <button id="trial-modal-close" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#888;font-size:20px;cursor:pointer;">&times;</button>
+      <h2 style="font-size:1.4rem;margin-bottom:8px;">Start your free trial</h2>
+      <p style="color:#888;font-size:14px;margin-bottom:20px;">30 days free. No credit card required. Cancel anytime.</p>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Plan</label>
+        <select id="trial-plan-select" style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:#eee;font-size:14px;">
+          <option value="starter">Starter — $99/mo after trial</option>
+          <option value="growth" selected>Growth — $149/mo after trial (Most Popular)</option>
+          <option value="pro">Pro — $249/mo after trial</option>
+        </select>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Email</label>
+        <input type="email" id="trial-email" placeholder="you@yourstore.com" style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:#eee;font-size:14px;box-sizing:border-box;">
+      </div>
+      <button id="trial-submit" style="width:100%;padding:12px;background:#c08532;color:#111;border:none;border-radius:6px;font-size:15px;font-weight:500;cursor:pointer;">Start free trial</button>
+      <p id="trial-error" style="color:#e74c3c;font-size:12px;margin-top:8px;display:none;"></p>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var modal = document.getElementById('trial-modal');
+    var closeBtn = document.getElementById('trial-modal-close');
+    var planSelect = document.getElementById('trial-plan-select');
+    var emailInput = document.getElementById('trial-email');
+    var submitBtn = document.getElementById('trial-submit');
+    var errorEl = document.getElementById('trial-error');
+    var selectedPlan = 'starter';
+
+    // Open modal on trial button click
+    document.querySelectorAll('.trial-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectedPlan = this.getAttribute('data-plan');
+        planSelect.value = selectedPlan;
+        modal.style.display = 'flex';
+      });
+    });
+
+    closeBtn.addEventListener('click', function() { modal.style.display = 'none'; });
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.style.display = 'none'; });
+
+    submitBtn.addEventListener('click', async function() {
+      var email = emailInput.value.trim();
+      var plan = planSelect.value;
+      if (!email || !email.includes('@')) { errorEl.textContent = 'Enter a valid email'; errorEl.style.display = 'block'; return; }
+      submitBtn.textContent = 'Creating trial...';
+      submitBtn.disabled = true;
+      errorEl.style.display = 'none';
+      try {
+        // Create Firebase auth account first
+        var resp = await fetch('/api/create-trial', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email: email, plan: plan })
+        });
+        var data = await resp.json();
+        if (data.error) { errorEl.textContent = data.error; errorEl.style.display = 'block'; return; }
+        if (data.url) { window.location.href = data.url; return; }
+        errorEl.textContent = 'Something went wrong. Try again.';
+        errorEl.style.display = 'block';
+      } catch(e) {
+        errorEl.textContent = 'Network error. Try again.';
+        errorEl.style.display = 'block';
+      }
+      submitBtn.textContent = 'Start free trial';
+      submitBtn.disabled = false;
+    });
+  })();
   </script>
 </body>
 </html>
