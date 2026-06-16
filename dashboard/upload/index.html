@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="/style.css?v=18">
   <link rel="stylesheet" href="/css/dashboard.css?v=4">
   
-  
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -58,6 +59,10 @@
       </div>
       <div id="upload-status" style="margin-top:16px;"></div>
     </div>
+    <div class="panel">
+      <div class="panel-header"><h2>📋 Previous Uploads</h2></div>
+      <div id="upload-history"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
+    </div>
   </div>
 </div>
 <script>
@@ -76,12 +81,52 @@ function showToast(msg, type) {
   setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
 }
 
+var currentUser = null;
+var currentUserData = null;
+
 auth.onAuthStateChanged(function(user){
   if(!user) window.location.href='/login';
+  currentUser = user;
+  
+  // Check partner status
   db.collection('partners').where('email','==',user.email).get().then(function(snap){
     if(!snap.empty) document.getElementById('partner-nav').style.display='block';
   }).catch(function(){});
+  
+  // Load user profile
+  db.collection('customers').doc(user.uid).get().then(function(doc){
+    if(doc.exists) currentUserData = doc.data();
+  }).catch(function(){});
+  
+  // Load upload history
+  loadUploadHistory(user.uid);
 });
+
+function loadUploadHistory(uid) {
+  db.collection('uploads')
+    .where('userId','==',uid)
+    .orderBy('createdAt','desc')
+    .limit(10)
+    .get()
+    .then(function(snap){
+      if(snap.empty) {
+        document.getElementById('upload-history').innerHTML = '<p style="font-size:13px;color:var(--text-muted);">No uploads yet. Upload your first CSV above!</p>';
+        return;
+      }
+      var html = '<table><thead><tr><th>File</th><th>Size</th><th>Uploaded</th><th>Status</th></tr></thead><tbody>';
+      snap.docs.forEach(function(doc){
+        var d = doc.data();
+        var date = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '—';
+        var size = d.fileSize ? (d.fileSize > 1024*1024 ? (d.fileSize/1024/1024).toFixed(1)+' MB' : (d.fileSize/1024).toFixed(1)+' KB') : '—';
+        var statusColor = d.status==='completed'?'#52c878':(d.status==='processing'?'#c08532':'#8b8880');
+        html += '<tr><td>📄 '+d.fileName+'</td><td>'+size+'</td><td>'+date+'</td><td style="color:'+statusColor+'">'+d.status+'</td></tr>';
+      });
+      html += '</tbody></table>';
+      document.getElementById('upload-history').innerHTML = html;
+    }).catch(function(e){
+      document.getElementById('upload-history').innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Unable to load history.</p>';
+    });
+}
 
 // File upload
 var zone = document.getElementById('upload-zone');
@@ -94,10 +139,68 @@ input.addEventListener('change', function(e){ handleFiles(e.target.files); });
 
 function handleFiles(files) {
   if (!files.length) return;
-  document.getElementById('upload-status').innerHTML = '<div class="alert info">⏳ Uploading...</div>';
-  setTimeout(function(){
-    document.getElementById('upload-status').innerHTML = '<div class="alert success">✅ Files received! In production, these would be sent to our bookkeeping team for processing.</div>';
-  }, 1500);
+  if (!currentUser) { showToast('Please log in first.', 'error'); return; }
+  
+  var user = currentUser;
+  var userData = currentUserData || {};
+  var fileList = Array.from(files);
+  var uploadedCount = 0;
+  var totalFiles = fileList.length;
+  var errors = [];
+  
+  document.getElementById('upload-status').innerHTML = '<div class="alert info">⏳ Uploading ' + totalFiles + ' file' + (totalFiles > 1 ? 's' : '') + '...</div>';
+  
+  fileList.forEach(function(file) {
+    // Save upload record to Firestore
+    db.collection('uploads').add({
+      userId: user.uid,
+      userEmail: user.email,
+      userName: userData.name || user.displayName || 'Unknown',
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type || 'text/csv',
+      status: 'received',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(docRef) {
+      uploadedCount++;
+      
+      // Send email notification to klarr.space@gmail.com via EmailJS
+      var templateParams = {
+        to_email: 'klarr.space@gmail.com',
+        subject: 'New CSV Upload - Klarr',
+        message: 'A new file has been uploaded to Klarr.\n\n' +
+                 'User: ' + (userData.name || user.displayName || 'Unknown') + ' (' + user.email + ')\n' +
+                 'File: ' + file.name + '\n' +
+                 'Size: ' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB') + '\n' +
+                 'Uploaded: ' + new Date().toLocaleString() + '\n' +
+                 'Upload ID: ' + docRef.id + '\n\n' +
+                 'Log in to the Klarr dashboard to process this upload.'
+      };
+      
+      if (typeof emailjs !== 'undefined') {
+        emailjs.send('EMAILJS_SERVICE_ID', 'EMAILJS_TEMPLATE_ID', templateParams)
+          .then(function(response) {
+            console.log('Email notification sent:', response.status);
+          }, function(error) {
+            console.error('Email notification failed:', error);
+          });
+      }
+      
+      if (uploadedCount === totalFiles && errors.length === 0) {
+        document.getElementById('upload-status').innerHTML = '<div class="alert success">✅ ' + totalFiles + ' file' + (totalFiles > 1 ? 's' : '') + ' uploaded successfully! We\'ll start processing within 24 hours. You\'ll receive a confirmation email.</div>';
+        loadUploadHistory(user.uid);
+      } else if (uploadedCount === totalFiles && errors.length > 0) {
+        document.getElementById('upload-status').innerHTML = '<div class="alert error">❌ Some files failed to upload. Please try again.</div>';
+      }
+    }).catch(function(err) {
+      uploadedCount++;
+      errors.push(err);
+      console.error('Upload save error:', err);
+      if (uploadedCount === totalFiles) {
+        document.getElementById('upload-status').innerHTML = '<div class="alert error">❌ Error saving upload. Please try again or contact support.</div>';
+      }
+    });
+  });
 }
 </script>
 </body>
