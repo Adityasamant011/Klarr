@@ -13,6 +13,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
@@ -47,7 +48,6 @@
       </div>
     </div>
 
-    <!-- Upload zone (shown when no pending upload) -->
     <div class="panel" id="upload-panel">
       <div class="panel-header"><h2>Upload files</h2></div>
       <div id="upload-zone" class="upload-zone">
@@ -59,14 +59,12 @@
       <div id="upload-status" style="margin-top:16px;"></div>
     </div>
 
-    <!-- Active upload status (shown after upload, until report delivered) -->
     <div class="panel" id="active-panel" style="display:none;">
       <div class="panel-header"><h2>📦 Current Upload</h2></div>
       <div id="active-upload-info"></div>
       <div style="margin-top:16px;" id="report-area"></div>
     </div>
 
-    <!-- Past reports (delivered, downloadable for 30 days) -->
     <div class="panel" id="reports-panel">
       <div class="panel-header"><h2>📄 Your Reports <span style="font-size:11px;color:var(--text-dim);font-weight:400;">(available for 30 days)</span></h2></div>
       <div id="reports-list"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
@@ -78,6 +76,7 @@ var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomai
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
+var storage = firebase.storage();
 
 function showToast(msg, type) {
   var c = document.getElementById('toast-container');
@@ -95,84 +94,69 @@ var currentUserData = null;
 auth.onAuthStateChanged(function(user){
   if(!user) { window.location.href='/login'; return; }
   currentUser = user;
-
   db.collection('partners').where('email','==',user.email).get().then(function(snap){
     if(!snap.empty) document.getElementById('partner-nav').style.display='block';
   }).catch(function(){});
-
   db.collection('customers').doc(user.uid).get().then(function(doc){
     if(doc.exists) currentUserData = doc.data();
   }).catch(function(){});
-
   loadUploads(user.uid);
   cleanupOldUploads(user.uid);
 });
 
 function loadUploads(uid) {
-  db.collection('uploads')
-    .where('userId','==',uid)
-    .get()
-    .then(function(snap){
-      var active = [];
-      var completed = [];
-      var now = Date.now();
-      var thirtyDays = 30 * 24 * 60 * 60 * 1000;
-
-      var allDocs = snap.docs.map(function(doc){ return Object.assign({_id: doc.id}, doc.data()); });
-      allDocs.sort(function(a,b){
-        var ta = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0;
-        var tb = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate().getTime() : 0;
-        return tb - ta;
-      });
-
-      allDocs.forEach(function(d){
-        if(d.status === 'completed') {
-          var created = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0;
-          if(now - created < thirtyDays) completed.push(d);
-        } else {
-          active.push(d);
-        }
-      });
-
-      if(active.length > 0) {
-        var a = active[0];
-        document.getElementById('upload-panel').style.display = 'none';
-        document.getElementById('active-panel').style.display = 'block';
-        var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '—';
-        var statusLabel = a.status==='received' ? '<span style="color:#c08532;">⏳ Received — processing soon</span>' : '<span style="color:#52c878;">🔄 Processing</span>';
-        document.getElementById('active-upload-info').innerHTML =
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-          '<div><p style="font-size:14px;color:var(--text);">📄 ' + a.fileName + '</p>' +
-          '<p style="font-size:12px;color:var(--text-dim);margin-top:4px;">Uploaded: ' + dateStr + '</p></div>' +
-          '<span style="font-size:12px;">' + statusLabel + '</span></div>';
-        document.getElementById('report-area').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Your bookkeeping team has been notified. Reports will be delivered within 24 hours.</p>';
-      } else {
-        document.getElementById('upload-panel').style.display = 'block';
-        document.getElementById('active-panel').style.display = 'none';
-        document.getElementById('upload-status').innerHTML = '';
-      }
-
-      if(completed.length > 0) {
-        var html = '<table><thead><tr><th>Month</th><th>Delivered</th><th>Report</th></tr></thead><tbody>';
-        completed.forEach(function(r){
-          var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '—';
-          var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '—';
-          var daysLeft = Math.max(0, Math.floor((thirtyDays - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
-          var link = r.reportUrl || '#';
-          var linkBtn = r.reportUrl
-            ? '<a href="' + link + '" target="_blank" class="btn sm">📥 Open Sheet</a>'
-            : '<span style="color:var(--text-dim);font-size:12px;">Pending</span>';
-          html += '<tr><td>' + m + '</td><td>' + del + '</td><td>' + linkBtn + ' <span style="font-size:10px;color:var(--text-dim);">' + daysLeft + 'd left</span></td></tr>';
-        });
-        html += '</tbody></table>';
-        document.getElementById('reports-list').innerHTML = html;
-      } else {
-        document.getElementById('reports-list').innerHTML = '<div class="empty-state" style="padding:24px;"><div class="empty-icon" style="font-size:28px;">📊</div><p style="font-size:13px;">No reports yet. Upload your first CSV to get started.</p></div>';
-      }
-    }).catch(function(e){
-      console.error(e);
-      document.getElementById('reports-list').innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Unable to load reports.</p>';
+  db.collection('uploads').where('userId','==',uid).get().then(function(snap){
+    var active = [], completed = [], now = Date.now(), thirtyDays = 30*24*60*60*1000;
+    var allDocs = snap.docs.map(function(doc){ return Object.assign({_id: doc.id}, doc.data()); });
+    allDocs.sort(function(a,b){
+      var ta = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0;
+      var tb = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate().getTime() : 0;
+      return tb - ta;
     });
+    allDocs.forEach(function(d){
+      if(d.status === 'completed') {
+        var created = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0;
+        if(now - created < thirtyDays) completed.push(d);
+      } else { active.push(d); }
+    });
+
+    if(active.length > 0) {
+      var a = active[0];
+      document.getElementById('upload-panel').style.display = 'none';
+      document.getElementById('active-panel').style.display = 'block';
+      var dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString() : '—';
+      var statusLabel = a.status==='received' ? '<span style="color:#c08532;">⏳ Received — processing soon</span>' : '<span style="color:#52c878;">🔄 Processing</span>';
+      document.getElementById('active-upload-info').innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+        '<div><p style="font-size:14px;color:var(--text);">📄 ' + a.fileName + '</p>' +
+        '<p style="font-size:12px;color:var(--text-dim);margin-top:4px;">Uploaded: ' + dateStr + '</p></div>' +
+        '<span style="font-size:12px;">' + statusLabel + '</span></div>';
+      document.getElementById('report-area').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Your bookkeeping team has been notified. Reports will be delivered within 24 hours.</p>';
+    } else {
+      document.getElementById('upload-panel').style.display = 'block';
+      document.getElementById('active-panel').style.display = 'none';
+      document.getElementById('upload-status').innerHTML = '';
+    }
+
+    if(completed.length > 0) {
+      var html = '<table><thead><tr><th>Month</th><th>Delivered</th><th>Google Sheet</th><th>Report File</th></tr></thead><tbody>';
+      completed.forEach(function(r){
+        var m = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('en-US',{month:'short',year:'numeric'}) : '—';
+        var del = r.completedAt && r.completedAt.toDate ? r.completedAt.toDate().toLocaleDateString() : '—';
+        var daysLeft = Math.max(0, Math.floor((thirtyDays - (now - r.createdAt.toDate().getTime())) / (24*60*60*1000)));
+        var sheetLink = r.reportUrl ? '<a href="'+r.reportUrl+'" target="_blank" class="btn sm">📊 Open Sheet</a>' : '<span style="color:var(--text-dim);font-size:12px;">—</span>';
+        var fileLink = r.reportFileUrl ? '<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">📥 Download</a>' : '<span style="color:var(--text-dim);font-size:12px;">—</span>';
+        html += '<tr><td>'+m+'</td><td>'+del+'</td><td>'+sheetLink+'</td><td>'+fileLink+' <span style="font-size:10px;color:var(--text-dim);">'+daysLeft+'d left</span></td></tr>';
+      });
+      html += '</tbody></table>';
+      document.getElementById('reports-list').innerHTML = html;
+    } else {
+      document.getElementById('reports-list').innerHTML = '<div class="empty-state" style="padding:24px;"><div class="empty-icon" style="font-size:28px;">📊</div><p style="font-size:13px;">No reports yet. Upload your first CSV to get started.</p></div>';
+    }
+  }).catch(function(e){
+    console.error(e);
+    document.getElementById('reports-list').innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Unable to load reports.</p>';
+  });
 }
 
 var zone = document.getElementById('upload-zone');
@@ -186,26 +170,30 @@ input.addEventListener('change', function(e){ handleFiles(e.target.files); });
 function handleFiles(files) {
   if (!files.length) return;
   if (!currentUser) { showToast('Please log in first.', 'error'); return; }
-
   var user = currentUser;
   var userData = currentUserData || {};
   var fileList = Array.from(files);
-  var done = 0;
-  var total = fileList.length;
-  var errs = [];
-
+  var done = 0, total = fileList.length, errs = [];
   document.getElementById('upload-status').innerHTML = '<div class="alert info">⏳ Uploading ' + total + ' file' + (total > 1 ? 's' : '') + '...</div>';
 
   fileList.forEach(function(file) {
-    db.collection('uploads').add({
-      userId: user.uid,
-      userEmail: user.email,
-      userName: userData.name || user.displayName || 'Unknown',
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type || 'text/csv',
-      status: 'received',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    var filePath = 'uploads/' + user.uid + '/' + Date.now() + '_' + file.name;
+    var storageRef = storage.ref(filePath);
+    storageRef.put(file).then(function(snapshot) {
+      return snapshot.ref.getDownloadURL();
+    }).then(function(downloadUrl) {
+      return db.collection('uploads').add({
+        userId: user.uid,
+        userEmail: user.email,
+        userName: userData.name || user.displayName || 'Unknown',
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type || 'text/csv',
+        fileUrl: downloadUrl,
+        filePath: filePath,
+        status: 'received',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
     }).then(function() {
       done++;
       if(done === total && errs.length === 0) {
@@ -215,8 +203,7 @@ function handleFiles(files) {
         document.getElementById('upload-status').innerHTML = '<div class="alert error">❌ Some files failed. Please try again.</div>';
       }
     }).catch(function(err) {
-      done++;
-      errs.push(err);
+      done++; errs.push(err);
       console.error('Upload error:', err);
       if(done === total) {
         document.getElementById('upload-status').innerHTML = '<div class="alert error">❌ Error saving upload. Please try again.</div>';
@@ -228,14 +215,14 @@ function handleFiles(files) {
 function cleanupOldUploads(uid) {
   var cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 30);
-  db.collection('uploads')
-    .where('userId','==',uid)
-    .where('createdAt','<',cutoff)
-    .get()
-    .then(function(snap){
-      snap.docs.forEach(function(doc){ doc.ref.delete(); });
-      if(snap.size > 0) console.log('Cleaned up ' + snap.size + ' old uploads');
-    }).catch(function(){});
+  db.collection('uploads').where('userId','==',uid).where('createdAt','<',cutoff).get().then(function(snap){
+    snap.docs.forEach(function(doc){
+      var d = doc.data();
+      if(d.filePath) { storage.ref(d.filePath).delete().catch(function(){}); }
+      doc.ref.delete();
+    });
+    if(snap.size > 0) console.log('Cleaned up ' + snap.size + ' old uploads');
+  }).catch(function(){});
 }
 </script>
 </body>

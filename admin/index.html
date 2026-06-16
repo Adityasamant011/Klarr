@@ -13,6 +13,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
@@ -33,7 +34,7 @@
         <button class="btn" onclick="filterStatus='processing'; loadUploads();">🔄 Processing</button>
         <button class="btn" onclick="filterStatus='completed'; loadUploads();">✅ Done</button>
         <button class="btn" onclick="filterStatus='all'; loadUploads();">All</button>
-        <button class="btn accent" onclick="downloadData();">📥 Download Data</button>
+        <button class="btn accent" onclick="downloadAllData();">📥 Download All Data</button>
       </div>
     </div>
     <div class="panel">
@@ -41,11 +42,49 @@
     </div>
   </div>
 </div>
+
+<!-- Mark Complete Modal -->
+<div id="complete-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;">
+    <h3 style="font-size:16px;margin-bottom:4px;">✅ Mark as Complete</h3>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;" id="modal-customer-info"></p>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;">Google Sheet URL</label>
+      <input type="url" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." style="width:100%;padding:10px 14px;background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:14px;font-family:inherit;margin-top:6px;">
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;">Upload Report File (optional backup)</label>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:2px;margin-bottom:6px;">Upload the completed report file (CSV, XLSX, PDF) as a backup for the customer.</p>
+      <input type="file" id="report-file" accept=".csv,.xlsx,.xls,.pdf,.zip" style="width:100%;padding:8px;background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;font-family:inherit;">
+      <div id="upload-progress" style="display:none;margin-top:8px;">
+        <div style="background:var(--bg-elevated);border-radius:4px;height:4px;overflow:hidden;">
+          <div id="upload-bar" style="background:var(--accent);height:100%;width:0%;transition:width 0.3s;"></div>
+        </div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:4px;" id="upload-status-text">Uploading...</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
+        <input type="checkbox" id="send-email" checked> Send email notification to customer
+      </label>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn" onclick="closeModal();" style="background:transparent;border:1px solid var(--border);">Cancel</button>
+      <button class="btn accent" onclick="submitComplete();">Save & Complete</button>
+    </div>
+  </div>
+</div>
+
 <script>
 var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a"};
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
+var storage = firebase.storage();
 var filterStatus = 'received';
 
 function showToast(msg, type) {
@@ -60,21 +99,17 @@ function showToast(msg, type) {
 
 auth.onAuthStateChanged(function(user) {
   if(!user) { window.location.href = '/login?redirect=' + encodeURIComponent('/admin/'); return; }
-  // Check admin
   db.collection('customers').doc(user.uid).get().then(function(doc){
     if(!doc.exists || doc.data().role !== 'admin') {
-      document.getElementById('uploads-table').innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><h3>Admin only</h3><p>You don\'t have admin access.</p></div>';
+      document.getElementById('uploads-table').innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><h3>Admin only</h3></div>';
       return;
     }
     loadUploads();
-  }).catch(function(){
-    document.getElementById('uploads-table').innerHTML = '<p style="color:#e05050;">Error checking admin access.</p>';
   });
 });
 
 function loadUploads() {
-  var q = db.collection('uploads');
-  q.get().then(function(snap){
+  db.collection('uploads').get().then(function(snap){
     var docs = snap.docs.map(function(doc){ return Object.assign({_id: doc.id}, doc.data()); });
     docs.sort(function(a,b){
       var ta = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0;
@@ -82,11 +117,7 @@ function loadUploads() {
       return tb - ta;
     });
     var rows = [];
-    docs.forEach(function(doc){
-      var d = doc;
-      if(filterStatus !== 'all' && d.status !== filterStatus) return;
-      rows.push(d);
-    });
+    docs.forEach(function(d){ if(filterStatus === 'all' || d.status === filterStatus) rows.push(d); });
 
     if(rows.length === 0) {
       document.getElementById('uploads-table').innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No uploads found.</p></div>';
@@ -98,16 +129,21 @@ function loadUploads() {
       var date = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString() : '—';
       var size = r.fileSize ? (r.fileSize > 1048576 ? (r.fileSize/1048576).toFixed(1)+' MB' : (r.fileSize/1024).toFixed(1)+' KB') : '—';
       var statusColor = r.status==='completed'?'#52c878':r.status==='processing'?'#c08832':'#8b8880';
-      html += '<tr><td>' + date + '</td><td>' + (r.userName||'?') + '<br><span style="font-size:11px;color:var(--text-dim);">' + (r.userEmail||'') + '</span></td><td>📄 ' + r.fileName + '</td><td>' + size + '</td><td style="color:' + statusColor + ';">' + r.status + '</td>';
+      html += '<tr><td>'+date+'</td><td>'+(r.userName||'?')+'<br><span style="font-size:11px;color:var(--text-dim);">'+(r.userEmail||'')+'</span></td><td>📄 '+r.fileName+'</td><td>'+size+'</td><td style="color:'+statusColor+';">'+r.status+'</td><td>';
 
       if(r.status === 'received') {
-        html += '<td><button class="btn primary sm" onclick="updateStatus(\'' + r._id + '\',\'processing\')">Start Processing</button></td>';
+        html += '<button class="btn primary sm" onclick="updateStatus(\''+r._id+'\',\'processing\')">Start</button> ';
+        html += '<button class="btn sm" onclick="downloadFile(\''+r.fileUrl+'\',\''+r.fileName+'\')">📥 CSV</button>';
       } else if(r.status === 'processing') {
-        html += '<td><button class="btn accent sm" onclick="markComplete(\'' + r._id + '\',\'' + (r.userEmail||'') + '\',\'' + (r.fileName||'') + '\')">✅ Mark Complete</button></td>';
+        html += '<button class="btn accent sm" onclick="markComplete(\''+r._id+'\',\''+(r.userEmail||'')+'\',\''+(r.fileName||'')+'\',\''+(r.userName||'')+'\')">✅ Complete</button> ';
+        html += '<button class="btn sm" onclick="downloadFile(\''+r.fileUrl+'\',\''+r.fileName+'\')">📥 CSV</button>';
       } else {
-        html += '<td><span style="color:var(--text-dim);">—</span></td>';
+        var links = [];
+        if(r.reportUrl) links.push('<a href="'+r.reportUrl+'" target="_blank" class="btn sm">📊 Sheet</a>');
+        if(r.reportFileUrl) links.push('<a href="'+r.reportFileUrl+'" target="_blank" class="btn sm">📥 File</a>');
+        html += links.length > 0 ? links.join(' ') : '<span style="color:var(--text-dim);">—</span>';
       }
-      html += '</tr>';
+      html += '</td></tr>';
     });
     html += '</tbody></table>';
     document.getElementById('uploads-table').innerHTML = html;
@@ -124,49 +160,23 @@ function updateStatus(id, status) {
   }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
 }
 
-function markComplete(id, userEmail, fileName) {
-  var modal = document.getElementById('complete-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'complete-modal';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
-    modal.innerHTML = '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px;max-width:480px;width:90%;">' +
-      '<h3 style="font-size:16px;margin-bottom:8px;">✅ Mark as Complete</h3>' +
-      '<p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Upload the Google Sheet and paste the shareable link below.</p>' +
-      '<div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;">Google Sheet URL</label><input type="url" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." style="width:100%;padding:10px 14px;background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:14px;font-family:inherit;margin-top:6px;"></div>' +
-      '<div style="display:flex;gap:8px;justify-content:flex-end;">' +
-      '<button class="btn" onclick="document.getElementById(\'complete-modal\').remove();" style="background:transparent;border:1px solid var(--border);">Cancel</button>' +
-      '<button class="btn accent" onclick="submitComplete();">Save & Complete</button>' +
-      '</div></div>';
-    document.body.appendChild(modal);
-  } else {
-    modal.style.display = 'flex';
-  }
-  window._completeId = id;
+function downloadFile(url, fileName) {
+  if(!url) { showToast('File URL not available', 'error'); return; }
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.target = '_blank';
+  a.click();
+  showToast('Downloading ' + fileName, 'info');
 }
 
-function submitComplete() {
-  var sheetUrl = document.getElementById('sheet-url').value.trim();
-  if (!sheetUrl) { alert('Please enter a Google Sheet URL'); return; }
-  var id = window._completeId;
-  db.collection('uploads').doc(id).update({
-    status: 'completed',
-    reportUrl: sheetUrl,
-    completedAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(function(){
-    showToast('Report marked complete! User can now download it.', 'success');
-    document.getElementById('complete-modal').remove();
-    loadUploads();
-  }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
-}
-
-function downloadData() {
+function downloadAllData() {
   db.collection('uploads').get().then(function(snap){
-    var rows = [['Date','Customer','Email','File','Size (KB)','Status','Report URL']];
+    var rows = [['Date','Customer','Email','File','Size (KB)','Status','Sheet URL','File URL']];
     snap.docs.forEach(function(doc){
       var d = doc.data();
       var date = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toISOString() : '';
-      rows.push([date, d.userName||'', d.userEmail||'', d.fileName||'', d.fileSize ? Math.round(d.fileSize/1024) : '', d.status||'', d.reportUrl||'']);
+      rows.push([date, d.userName||'', d.userEmail||'', d.fileName||'', d.fileSize ? Math.round(d.fileSize/1024) : '', d.status||'', d.reportUrl||'', d.reportFileUrl||'']);
     });
     var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
     var blob = new Blob([csv], {type:'text/csv'});
@@ -177,6 +187,102 @@ function downloadData() {
     URL.revokeObjectURL(a.href);
     showToast('Downloaded ' + (rows.length-1) + ' records', 'success');
   }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
+}
+
+function markComplete(id, userEmail, fileName, userName) {
+  window._completeId = id;
+  document.getElementById('modal-customer-info').textContent = (userName||'Customer') + ' (' + userEmail + ') — ' + fileName;
+  document.getElementById('sheet-url').value = '';
+  document.getElementById('report-file').value = '';
+  document.getElementById('send-email').checked = true;
+  document.getElementById('upload-progress').style.display = 'none';
+  document.getElementById('complete-modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('complete-modal').style.display = 'none';
+}
+
+function submitComplete() {
+  var sheetUrl = document.getElementById('sheet-url').value.trim();
+  var fileInput = document.getElementById('report-file');
+  var sendEmail = document.getElementById('send-email').checked;
+  var id = window._completeId;
+
+  if(!sheetUrl && (!fileInput.files || !fileInput.files.length)) {
+    showToast('Please provide a Google Sheet URL or upload a file', 'error');
+    return;
+  }
+
+  var updateData = {
+    status: 'completed',
+    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if(sheetUrl) updateData.reportUrl = sheetUrl;
+
+  // If file uploaded, upload to Storage first
+  if(fileInput.files && fileInput.files.length > 0) {
+    var file = fileInput.files[0];
+    var filePath = 'reports/' + id + '/' + file.name;
+    var fileRef = storage.ref(filePath);
+    var uploadTask = fileRef.put(file);
+
+    document.getElementById('upload-progress').style.display = 'block';
+    document.getElementById('upload-status-text').textContent = 'Uploading ' + file.name + '...';
+
+    uploadTask.on('state_changed',
+      function(snapshot) {
+        var pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        document.getElementById('upload-bar').style.width = pct + '%';
+      },
+      function(error) {
+        console.error('File upload error:', error);
+        showToast('File upload error: ' + error.message, 'error');
+      },
+      function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadUrl) {
+          updateData.reportFileUrl = downloadUrl;
+          updateData.reportFilePath = filePath;
+          finishComplete(id, updateData, sendEmail);
+        });
+      }
+    );
+  } else {
+    finishComplete(id, updateData, sendEmail);
+  }
+}
+
+function finishComplete(id, updateData, sendEmail) {
+  db.collection('uploads').doc(id).update(updateData).then(function(){
+    showToast('Report marked complete!', 'success');
+    closeModal();
+    loadUploads();
+
+    if(sendEmail) {
+      // Get the upload record to send email
+      db.collection('uploads').doc(id).get().then(function(doc){
+        var d = doc.data();
+        sendCompletionEmail(d);
+      });
+    }
+  }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
+}
+
+function sendCompletionEmail(data) {
+  // Call Gmail API via a simple backend endpoint
+  // For now, open a mailto link as fallback
+  var subject = encodeURIComponent('Your Klarr Report is Ready!');
+  var body = encodeURIComponent(
+    'Hi ' + (data.userName || 'there') + ',\n\n' +
+    'Your bookkeeping report for "' + data.fileName + '" is ready!\n\n' +
+    (data.reportUrl ? 'Google Sheet: ' + data.reportUrl + '\n' : '') +
+    (data.reportFileUrl ? 'Report File: ' + data.reportFileUrl + '\n' : '') +
+    '\nYou can also access it from your dashboard at https://klarr.space/dashboard/upload\n\n' +
+    'This report will be available for 30 days.\n\n' +
+    '— The Klarr Team'
+  );
+  window.open('mailto:' + data.userEmail + '?subject=' + subject + '&body=' + body, '_blank');
+  showToast('Email client opened for ' + data.userEmail, 'info');
 }
 </script>
 </body>
