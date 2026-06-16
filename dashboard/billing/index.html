@@ -47,24 +47,11 @@
     <div class="panel">
       <div class="panel-header"><h2>Available Plans</h2></div>
       <div class="pricing-grid">
-        <div class="price-card">
-          <div class="price-tag"><span class="price-amt">$99</span><span class="price-per">/mo</span></div>
-          <p class="price-desc">For small stores doing &lt;$50K/yr</p>
-          <ul class="price-features"><li>Monthly P&L</li><li>Balance Sheet</li><li>24hr delivery</li><li>Human-reviewed</li></ul>
-          <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn btn-block">Choose Starter</a>
-        </div>
         <div class="price-card price-card-popular">
-          <div class="price-popular-badge">Most Popular</div>
-          <div class="price-tag"><span class="price-amt">$149</span><span class="price-per">/mo</span></div>
-          <p class="price-desc">For growing stores doing $50K–500K/yr</p>
-          <ul class="price-features"><li>Everything in Starter</li><li>Cash Flow Statement</li><li>Quarterly reports</li><li>Free health check</li></ul>
-          <a href="https://buy.stripe.com/aFa3cv0hPf0Caoc6M8fAc00" class="btn primary btn-block">Choose Growth</a>
-        </div>
-        <div class="price-card">
-          <div class="price-tag"><span class="price-amt">$249</span><span class="price-per">/mo</span></div>
-          <p class="price-desc">For scaling stores doing $500K+/yr</p>
-          <ul class="price-features"><li>Everything in Growth</li><li>Weekly bookkeeping</li><li>Cash flow alerts</li><li>Priority support</li></ul>
-          <a href="https://buy.stripe.com/aFa5kDggNcSu1RGgmIfAc02" class="btn btn-block">Choose Pro</a>
+          <div class="price-tag"><span class="price-amt">$99</span><span class="price-per">/mo</span></div>
+          <p class="price-desc">Full bookkeeping for Shopify stores</p>
+          <ul class="price-features"><li>Monthly P&L, Balance Sheet, Cash Flow</li><li>24-hour delivery</li><li>AI-powered, human-reviewed</li><li>Tax-ready books</li><li>30-day free trial</li></ul>
+          <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn primary btn-block">Start free trial</a>
         </div>
       </div>
     </div>
@@ -92,8 +79,8 @@ auth.onAuthStateChanged(async function(user) {
     if (doc.exists && doc.data().plan) plan = doc.data().plan;
   } catch(e) {}
 
-  var names = {starter:'Starter',growth:'Growth',pro:'Pro',none:'Free'};
-  var prices = {starter:'$99/mo',growth:'$149/mo',pro:'$249/mo',none:'—'};
+  var names = {klarr:'Klarr',none:'Free'};
+  var prices = {klarr:'$99/mo',none:'—'};
   var isActive = plan !== 'none';
 
   // Check if on trial

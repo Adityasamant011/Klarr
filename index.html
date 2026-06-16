@@ -45,7 +45,7 @@
         Beta testing — limited spots
       </div>
       <h1>Know your real profit margin.<br>Finally.</h1>
-      <p class="hero-sub">Most Shopify founders are off by 15+ points on their margin. We deliver clean books — P&L, Balance Sheet, Cash Flow — in 24 hours. AI-powered, human-reviewed. From $99/month.</p>
+      <p class="hero-sub">Most Shopify founders are off by 15+ points on their margin. We deliver clean books — P&L, Balance Sheet, Cash Flow — in 24 hours. AI-powered, human-reviewed. $99/month. 30-day free trial.</p>
       <div class="hero-actions">
         <a href="/tools/" class="btn-primary">Free Health Check</a>
       </div>
@@ -257,7 +257,7 @@
         </div>
         <div class="compare-row">
           <div class="compare-col">Price</div>
-          <div class="compare-col compare-col-us"><strong>$149/mo</strong></div>
+          <div class="compare-col compare-col-us"><strong>$99/mo</strong></div>
           <div class="compare-col">$245/mo</div>
           <div class="compare-col">$1,000+/mo</div>
           <div class="compare-col">$30-200/mo</div>
@@ -292,7 +292,7 @@
         </div>
         <div class="compare-row">
           <div class="compare-col">Free trial</div>
-          <div class="compare-col compare-col-us"><strong>✓ 7 days</strong></div>
+          <div class="compare-col compare-col-us"><strong>✓ 30 days</strong></div>
           <div class="compare-col">✗ No</div>
           <div class="compare-col">✗ No</div>
           <div class="compare-col">✗ No</div>
@@ -345,59 +345,29 @@
   <section class="pricing" id="pricing">
     <div class="container">
       <p class="section-label">Pricing</p>
-      <h2 class="fade-in">From $99/month. 40% cheaper than alternatives.</h2>
-      <div class="pricing-grid fade-in">
-        <div class="price-card">
+      <h2 class="fade-in">$99/month. 30-day free trial. No contracts.</h2>
+      <div class="pricing-single fade-in">
+        <div class="price-card price-card-popular" style="max-width:480px;margin:0 auto;">
+          <div class="price-popular-badge">Start free trial</div>
           <div class="price-tag">
             <span class="price-amt">$99</span>
             <span class="price-per">/mo</span>
           </div>
-          <p class="price-desc">For small stores doing &lt;$50K/yr</p>
+          <p class="price-desc">Full bookkeeping service for Shopify stores</p>
           <ul class="price-features">
-            <li>Monthly Profit & Loss</li>
+            <li>Monthly Profit & Loss Statement</li>
             <li>Balance Sheet</li>
-            <li>24-hour delivery</li>
-            <li>Human-reviewed</li>
-            <li><strong>30-day free trial</strong></li>
-          </ul>
-          <a href="#" class="btn-ghost btn-full trial-btn" data-plan="starter">Start free trial</a>
-          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">No credit card required</p>
-        </div>
-        <div class="price-card price-card-popular">
-          <div class="price-popular-badge">Most Popular</div>
-          <div class="price-tag">
-            <span class="price-amt">$149</span>
-            <span class="price-per">/mo</span>
-          </div>
-          <p class="price-desc">For growing stores doing $50K–500K/yr</p>
-          <ul class="price-features">
-            <li>Everything in Starter</li>
             <li>Cash Flow Statement</li>
-            <li>Quarterly reports</li>
-            <li>Free health check (first month)</li>
-            <li><strong>30-day free trial</strong></li>
+            <li>24-hour delivery</li>
+            <li>AI-powered, human-reviewed</li>
+            <li>Tax-ready books for your CPA</li>
+            <li>Direct messaging with our team</li>
+            <li><strong>30-day free trial — no credit card required</strong></li>
           </ul>
-          <a href="#" class="btn-primary btn-full trial-btn" data-plan="growth">Start free trial</a>
-          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">No credit card required</p>
-        </div>
-        <div class="price-card">
-          <div class="price-tag">
-            <span class="price-amt">$249</span>
-            <span class="price-per">/mo</span>
-          </div>
-          <p class="price-desc">For scaling stores doing $500K+/yr</p>
-          <ul class="price-features">
-            <li>Everything in Growth</li>
-            <li>Weekly bookkeeping</li>
-            <li>Cash flow alerts</li>
-            <li>Priority support</li>
-            <li><strong>30-day free trial</strong></li>
-          </ul>
-          <a href="#" class="btn-ghost btn-full trial-btn" data-plan="pro">Start free trial</a>
-          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">No credit card required</p>
+          <a href="#" class="btn-primary btn-full" id="start-trial-btn">Start free trial</a>
+          <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">Cancel anytime. No long-term contracts.</p>
         </div>
       </div>
-      <p class="price-note fade-in" style="text-align: center; margin-top: 1.5rem;">Cancel anytime. No long-term contracts. 24-hour delivery guarantee.</p>
     </div>
   </section>
 
@@ -473,15 +443,7 @@
     <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:32px;max-width:420px;width:90%;position:relative;">
       <button id="trial-modal-close" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#888;font-size:20px;cursor:pointer;">&times;</button>
       <h2 style="font-size:1.4rem;margin-bottom:8px;">Start your free trial</h2>
-      <p style="color:#888;font-size:14px;margin-bottom:20px;">30 days free. No credit card required. Cancel anytime.</p>
-      <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Plan</label>
-        <select id="trial-plan-select" style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:#eee;font-size:14px;">
-          <option value="starter">Starter — $99/mo after trial</option>
-          <option value="growth" selected>Growth — $149/mo after trial (Most Popular)</option>
-          <option value="pro">Pro — $249/mo after trial</option>
-        </select>
-      </div>
+      <p style="color:#888;font-size:14px;margin-bottom:20px;">30 days free. $99/month after. Cancel anytime. No credit card required.</p>
       <div style="margin-bottom:16px;">
         <label style="display:block;font-size:13px;color:#888;margin-bottom:4px;">Email</label>
         <input type="email" id="trial-email" placeholder="you@yourstore.com" style="width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:#eee;font-size:14px;box-sizing:border-box;">
@@ -495,20 +457,13 @@
   (function() {
     var modal = document.getElementById('trial-modal');
     var closeBtn = document.getElementById('trial-modal-close');
-    var planSelect = document.getElementById('trial-plan-select');
     var emailInput = document.getElementById('trial-email');
     var submitBtn = document.getElementById('trial-submit');
     var errorEl = document.getElementById('trial-error');
-    var selectedPlan = 'starter';
 
-    // Open modal on trial button click
-    document.querySelectorAll('.trial-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        selectedPlan = this.getAttribute('data-plan');
-        planSelect.value = selectedPlan;
-        modal.style.display = 'flex';
-      });
+    document.getElementById('start-trial-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      modal.style.display = 'flex';
     });
 
     closeBtn.addEventListener('click', function() { modal.style.display = 'none'; });
@@ -516,17 +471,15 @@
 
     submitBtn.addEventListener('click', async function() {
       var email = emailInput.value.trim();
-      var plan = planSelect.value;
       if (!email || !email.includes('@')) { errorEl.textContent = 'Enter a valid email'; errorEl.style.display = 'block'; return; }
       submitBtn.textContent = 'Creating trial...';
       submitBtn.disabled = true;
       errorEl.style.display = 'none';
       try {
-        // Create Firebase auth account first
         var resp = await fetch('/api/create-trial', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ email: email, plan: plan })
+          body: JSON.stringify({ email: email, plan: 'klarr' })
         });
         var data = await resp.json();
         if (data.error) { errorEl.textContent = data.error; errorEl.style.display = 'block'; return; }

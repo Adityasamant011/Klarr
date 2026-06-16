@@ -1,14 +1,7 @@
 // api/create-trial.js — Create Stripe Checkout Session with 30-day free trial
-// Deploy this to Vercel as a serverless function
+// Single plan: $99/mo with 30-day free trial
 
 const Stripe = require('stripe');
-
-// Price IDs — these should match your Stripe price IDs
-const PRICES = {
-  starter: process.env.STRIPE_PRICE_STARTER,
-  growth: process.env.STRIPE_PRICE_GROWTH,
-  pro: process.env.STRIPE_PRICE_PRO,
-};
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -16,30 +9,25 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { plan, email } = JSON.parse(req.body);
+    const { email } = JSON.parse(req.body);
 
-    if (!PRICES[plan]) {
-      return res.status(400).json({ error: 'Invalid plan' });
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Valid email required' });
     }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // Create Stripe checkout session with 30-day free trial
+    // Single plan: $99/mo with 30-day free trial
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer_email: email,
-      line_items: [{ price: PRICES[plan], quantity: 1 }],
+      line_items: [{ price: process.env.STRIPE_PRICE_KLARR, quantity: 1 }],
       subscription_data: {
         trial_period_days: 30,
-        trial_settings: {
-          end_behavior: { missing_payment_method: 'cancel' }
-        }
       },
-      success_url: `https://klarr.space/dashboard?payment=success&plan=${plan}&session_id={CHECKOUT_SESSION_ID}&trial=true`,
+      success_url: `https://klarr.space/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}&trial=true`,
       cancel_url: `https://klarr.space/#pricing`,
-      metadata: { plan, trial: 'true' },
-      // Don't require payment method for trial
-      payment_method_collection: 'if_required',
+      metadata: { plan: 'klarr', trial: 'true' },
     });
 
     return res.status(200).json({ url: session.url });
