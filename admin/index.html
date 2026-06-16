@@ -268,7 +268,11 @@ function sendCompletionEmail(data) {
     'Questions? Just reply to this email.\n\n' +
     '\u2014 The Klarr Team\nklarr.space'
   );
-  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + data.userEmail + '&su=' + subject + '&body=' + body, '_blank');
+  var gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(data.userEmail) + '&su=' + subject + '&body=' + body;
+  var a = document.createElement('a');
+  a.href = gmailUrl;
+  a.target = '_blank';
+  a.click();
   showToast('Gmail compose opened for ' + data.userEmail, 'info');
 }
 
