@@ -211,17 +211,21 @@ function handleFiles(files) {
       done++;
 
       // Email notification to klarr.space@gmail.com
-      emailjs.send('service_zdg6ond', 'template_gcmns3m', {
-        to_email: 'klarr.space@gmail.com',
-        name: userData.name || user.displayName || 'Unknown',
-        email: user.email,
-        subject: 'New CSV Upload - Klarr',
-        message: 'New CSV upload on Klarr.\n\nUser: ' + (userData.name || user.displayName || 'Unknown') + ' (' + user.email + ')\nFile: ' + file.name + '\nSize: ' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB') + '\nUploaded: ' + new Date().toLocaleString() + '\nUpload ID: ' + docRef.id + '\n\nProcess this upload at klarr.space/dashboard'
-      }).then(function(res) {
-        console.log('Email sent:', res.status);
-      }).catch(function(err) {
-        console.error('Email failed:', err);
-      });
+      try {
+        emailjs.send('service_zdg6ond', 'template_gcmns3m', {
+          to_email: 'klarr.space@gmail.com',
+          name: userData.name || user.displayName || 'Unknown',
+          email: user.email,
+          subject: 'New CSV Upload - Klarr',
+          message: 'New CSV upload on Klarr.\n\nUser: ' + (userData.name || user.displayName || 'Unknown') + ' (' + user.email + ')\nFile: ' + file.name + '\nSize: ' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB') + '\nUploaded: ' + new Date().toLocaleString() + '\nUpload ID: ' + docRef.id + '\n\nProcess: klarr.space/dashboard'
+        }).then(function(res) {
+          console.log('Email sent:', res.status);
+        }).catch(function(err) {
+          console.error('EmailJS error:', JSON.stringify(err));
+        });
+      } catch(e) {
+        console.error('EmailJS exception:', e);
+      }
 
       if(done === total && errs.length === 0) {
         document.getElementById('upload-status').innerHTML = '<div class="alert success">✅ ' + total + ' file' + (total > 1 ? 's' : '') + ' uploaded! We\'ll start processing within 24 hours.</div>';
