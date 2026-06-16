@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Klarr</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/css/dashboard.css?v=4">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="toast-container" id="toast-container"></div>
+<div class="dash-layout">
+  <div class="dash-sidebar" id="sidebar">
+    <div class="brand"><a href="/"><img src="/favicon.svg" alt="Klarr"> Klarr Admin</a></div>
+    <div class="nav-section">
+      <a href="/admin/" class="active"><span class="nav-icon">📤</span> Uploads</a>
+      <a href="/admin/customers"><span class="nav-icon">👥</span> Customers</a>
+      <a href="/"><span class="nav-icon">🏠</span> Back to Site</a>
+    </div>
+  </div>
+  <div class="dash-main">
+    <div class="page-header">
+      <div><h1>📤 Customer Uploads</h1><p class="page-subtitle">Process CSV uploads and deliver reports</p></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="filterStatus='received'; loadUploads();">⏳ Pending</button>
+        <button class="btn" onclick="filterStatus='processing'; loadUploads();">🔄 Processing</button>
+        <button class="btn" onclick="filterStatus='completed'; loadUploads();">✅ Done</button>
+        <button class="btn primary" onclick="filterStatus='all'; loadUploads();">All</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div id="uploads-table"><p style="font-size:13px;color:var(--text-muted);">Loading...</p></div>
+    </div>
+  </div>
+</div>
+<script>
+var firebaseConfig = {apiKey:"AIzaSyB65lbtE-2TbfC6XzQ8_zHsu-zh0ch4UR4",authDomain:"klarr-fa508.firebaseapp.com",projectId:"klarr-fa508",storageBucket:"klarr-fa508.firebasestorage.app",messagingSenderId:"1059958349807",appId:"1:1059958349807:web:56a25844725fce7183e01a"};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+var filterStatus = 'received';
+
+function showToast(msg, type) {
+  var c = document.getElementById('toast-container');
+  if (!c) { alert(msg); return; }
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || 'info');
+  t.innerHTML = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
+  c.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},4000);
+}
+
+auth.onAuthStateChanged(function(user) {
+  if(!user) { window.location.href = '/login?redirect=' + encodeURIComponent('/admin/'); return; }
+  // Check admin
+  db.collection('customers').doc(user.uid).get().then(function(doc){
+    if(!doc.exists || doc.data().role !== 'admin') {
+      document.getElementById('uploads-table').innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><h3>Admin only</h3><p>You don\'t have admin access.</p></div>';
+      return;
+    }
+    loadUploads();
+  }).catch(function(){
+    document.getElementById('uploads-table').innerHTML = '<p style="color:#e05050;">Error checking admin access.</p>';
+  });
+});
+
+function loadUploads() {
+  var q = db.collection('uploads').orderBy('createdAt','desc');
+  q.get().then(function(snap){
+    var docs = snap.docs;
+    var rows = [];
+    docs.forEach(function(doc){
+      var d = doc.data();
+      d._id = doc.id;
+      if(filterStatus !== 'all' && d.status !== filterStatus) return;
+      rows.push(d);
+    });
+
+    if(rows.length === 0) {
+      document.getElementById('uploads-table').innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No uploads found.</p></div>';
+      return;
+    }
+
+    var html = '<table><thead><tr><th>Date</th><th>Customer</th><th>File</th><th>Size</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var date = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString() : '—';
+      var size = r.fileSize ? (r.fileSize > 1048576 ? (r.fileSize/1048576).toFixed(1)+' MB' : (r.fileSize/1024).toFixed(1)+' KB') : '—';
+      var statusColor = r.status==='completed'?'#52c878':r.status==='processing'?'#c08832':'#8b8880';
+      html += '<tr><td>' + date + '</td><td>' + (r.userName||'?') + '<br><span style="font-size:11px;color:var(--text-dim);">' + (r.userEmail||'') + '</span></td><td>📄 ' + r.fileName + '</td><td>' + size + '</td><td style="color:' + statusColor + ';">' + r.status + '</td>';
+
+      if(r.status === 'received') {
+        html += '<td><button class="btn primary sm" onclick="updateStatus(\'' + r._id + '\',\'processing\')">Start Processing</button></td>';
+      } else if(r.status === 'processing') {
+        html += '<td><button class="btn accent sm" onclick="markComplete(\'' + r._id + '\',\'' + r.userEmail + '\')">✅ Mark Complete</button></td>';
+      } else {
+        html += '<td><span style="color:var(--text-dim);">—</span></td>';
+      }
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('uploads-table').innerHTML = html;
+  }).catch(function(e){
+    console.error(e);
+    document.getElementById('uploads-table').innerHTML = '<p style="color:#e05050;">Error loading uploads.</p>';
+  });
+}
+
+function updateStatus(id, status) {
+  db.collection('uploads').doc(id).update({status: status}).then(function(){
+    showToast('Status updated to ' + status, 'success');
+    loadUploads();
+  }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
+}
+
+function markComplete(id, userEmail) {
+  var sheetUrl = prompt('Enter the Google Sheet URL for this report:');
+  if(!sheetUrl) return;
+  db.collection('uploads').doc(id).update({
+    status: 'completed',
+    reportUrl: sheetUrl,
+    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
+    showToast('Report marked complete! User will see it in their dashboard.', 'success');
+    loadUploads();
+  }).catch(function(e){ showToast('Error: ' + e.message, 'error'); });
+}
+</script>
+</body>
+</html>
