@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Shopify Financial Health Check | Klarr</title>
-  <meta name="description" content="Find out how much money your Shopify store is losing to hidden fees, bad bookkeeping, and miscalculated margins. Free 2-minute assessment.">
+  <title>Free Shopify Profit Breakdown | Klarr</title>
+  <meta name="description" content="Get your free Shopify profit breakdown. Enter your store URL and email — we'll show you your real profit margin after fees, ads, and hidden costs.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/style.css?v=21">
   <style>
     :root {
       --font: 'Inter', system-ui, -apple-system, sans-serif;
@@ -30,131 +30,67 @@
       --max-w: 1080px;
       --transition: 0.15s ease;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; font-weight: 400; min-height: 100vh; }
     a { color: var(--text); text-decoration: none; }
-
     .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
-
-    /* Nav override for tool pages */
-    .tool-nav { padding: 1rem 0; margin-bottom: 2rem; }
-    .tool-nav a { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); }
-    .tool-nav a:hover { color: var(--text); }
-
-    /* Header */
-    .header { text-align: center; margin-bottom: 3rem; padding-top: 2rem; }
-    .header h1 { font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 400; line-height: 1.2; margin-bottom: 12px; color: var(--text); letter-spacing: -0.02em; }
-    .header p { font-size: 1rem; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.6; }
-    .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem; }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-
-    /* Steps */
-    .steps { display: flex; justify-content: center; gap: 6px; margin-bottom: 2rem; }
-    .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bg-elevated); transition: all 0.3s; }
-    .step-dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
-
-    /* Card */
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; margin-bottom: 1rem; }
-    .card h2 { font-size: 1.1rem; font-weight: 400; margin-bottom: 6px; color: var(--text); letter-spacing: -0.01em; }
-    .card .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
-
-    /* Form */
     .field { margin-bottom: 1.25rem; }
     .field label { display: block; font-size: 11px; font-weight: 400; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .field input, .field select { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; font-family: inherit; transition: border-color var(--transition); }
-    .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
+    .field input { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; font-family: inherit; transition: border-color var(--transition); }
+    .field input:focus { outline: none; border-color: var(--accent); }
     .field input::placeholder { color: var(--text-dim); }
-    .field select option { background: var(--bg-alt); }
-    .field-hint { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
-
-    /* Range */
-    .range-wrap { padding: 8px 0 4px; }
-    .range-value { text-align: center; font-size: 1.5rem; font-weight: 400; color: var(--accent); margin-bottom: 4px; letter-spacing: -0.02em; }
-    .range-wrap input[type="range"] { width: 100%; -webkit-appearance: none; height: 4px; background: var(--bg-elevated); border-radius: 2px; outline: none; }
-    .range-wrap input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; cursor: pointer; }
-    .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-top: 6px; }
-
-    /* Options */
-    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .option { padding: 14px 12px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all var(--transition); text-align: center; }
-    .option:hover { border-color: var(--text-dim); }
-    .option.selected { border-color: var(--accent); background: var(--accent-dim); }
-    .option .emoji { font-size: 1.2rem; margin-bottom: 6px; }
-    .option .label { font-size: 12px; font-weight: 400; color: var(--text-muted); }
-
-    /* Buttons */
-    .btn-row { display: flex; gap: 8px; margin-top: 1.5rem; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1; padding: 10px 18px; border: none; border-radius: var(--radius-pill); font-size: 14px; font-weight: 400; font-family: inherit; cursor: pointer; transition: opacity var(--transition), transform var(--transition); letter-spacing: -0.01em; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 24px; border: none; border-radius: var(--radius-pill); font-size: 14px; font-weight: 400; font-family: inherit; cursor: pointer; transition: opacity var(--transition); letter-spacing: -0.01em; }
     .btn-primary { background: var(--text); color: var(--bg); }
     .btn-primary:hover { opacity: 0.85; }
-    .btn-ghost { background: var(--bg-elevated); color: var(--text); }
-    .btn-ghost:hover { opacity: 0.8; }
-
-    /* Results */
-    .score-wrap { text-align: center; padding: 1rem 0; }
-    .score-circle { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--bg-elevated); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 1rem; }
-    .score-circle .number { font-size: 2rem; font-weight: 400; color: var(--text); letter-spacing: -0.02em; }
-    .score-circle .label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
-    .score-circle.good { border-color: var(--accent); }
-    .score-circle.warn { border-color: #b8860b; }
-    .score-circle.bad { border-color: #8b3a3a; }
-
-    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 1rem 0; }
-    .result-item { background: var(--bg-alt); border-radius: var(--radius); padding: 14px; text-align: center; }
-    .result-item .value { font-size: 1.1rem; font-weight: 400; margin-bottom: 2px; }
-    .result-item .label { font-size: 11px; color: var(--text-dim); }
-    .result-item .value.bad { color: #b8860b; }
-    .result-item .value.good { color: var(--accent); }
-
-    .insight { background: var(--bg-alt); border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 16px; margin: 10px 0; }
-    .insight h3 { font-size: 13px; font-weight: 400; color: var(--accent); margin-bottom: 4px; }
-    .insight p { color: var(--text-muted); line-height: 1.6; font-size: 13px; }
-    .insight.warn { border-left-color: #b8860b; }
-    .insight.warn h3 { color: #b8860b; }
-
-    /* CTA */
+    .btn-full { width: 100%; }
+    .result-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .result-row:last-child { border-bottom: none; }
+    .result-label { color: var(--text-muted); }
+    .result-value { color: var(--text); font-variant-numeric: tabular-nums; }
+    .result-value.good { color: #52c878; }
+    .result-value.bad { color: #b8860b; }
+    .result-value.accent { color: var(--accent); font-weight: 500; }
     .cta-box { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; text-align: center; margin-top: 1.5rem; }
     .cta-box h2 { font-size: 1.1rem; font-weight: 400; color: var(--text); margin-bottom: 8px; }
     .cta-box p { color: var(--text-muted); margin-bottom: 1rem; font-size: 13px; line-height: 1.6; }
-    .cta-box .price { font-size: 1.5rem; font-weight: 400; color: var(--accent); margin-bottom: 2px; }
-    .cta-box .price-label { font-size: 11px; color: var(--text-dim); margin-bottom: 1rem; }
-
-    /* Share */
-    .share-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
-    .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-elevated); border-radius: var(--radius-pill); font-size: 12px; color: var(--text-muted); text-decoration: none; transition: all var(--transition); }
-    .share-btn:hover { color: var(--text); }
-
     .hidden { display: none; }
-
-    @media (max-width: 480px) {
-      .options { grid-template-columns: 1fr; }
-      .result-grid { grid-template-columns: 1fr; }
-      .card { padding: 1.25rem; }
-    }
   </style>
 </head>
 <body>
 
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <img src="/favicon.svg" alt="Klarr">
+        <span>Klarr</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/#how">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/partners/">Partners</a>
+      </div>
+      <div class="nav-right">
+        <a href="/login" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
+        <a href="/signup" class="nav-cta">Sign up</a>
+      </div>
+    </div>
+  </nav>
+
 <div class="container">
 
-  <!-- STEP 1 -->
-  <div id="step1">
-    <div class="tool-nav">
-      <a href="/">← Back to Klarr</a>
+  <!-- STEP 1: Input -->
+  <div id="step1" style="padding-top: 8rem;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem;">Free — No signup required</div>
+      <h1 style="font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 400; line-height: 1.2; margin-bottom: 12px; color: var(--text); letter-spacing: -0.02em;">Get your free Shopify profit breakdown</h1>
+      <p style="font-size: 15px; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.6;">Enter your store URL and email. We'll analyze your numbers and show you your real profit margin — after fees, ads, and hidden costs.</p>
     </div>
 
-    <div class="header">
-      <div class="badge"><span class="badge-dot"></span> Free — No signup required</div>
-      <h1>Shopify Financial Health Check</h1>
-      <p>Find out how much money your store is losing to hidden fees, bad bookkeeping, and miscalculated margins. Takes 2 minutes.</p>
-    </div>
-
-    <div class="card">
-      <h2>Let's check your store</h2>
-      <p class="subtitle">Answer 6 quick questions. Get your free report instantly.</p>
-
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem;">
       <div class="field">
         <label>Your name</label>
         <input type="text" id="q_name" placeholder="First name">
@@ -162,297 +98,126 @@
       <div class="field">
         <label>Your email</label>
         <input type="email" id="q_email" placeholder="you@yourstore.com">
-        <p class="field-hint">We'll send your full report here. No spam, ever.</p>
+        <p style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">We'll send your breakdown here. No spam, ever.</p>
       </div>
       <div class="field">
         <label>Shopify store URL</label>
         <input type="text" id="q_store" placeholder="yourstore.com">
       </div>
 
-      <button class="btn btn-primary" style="width:100%" onclick="goStep(2)">Start the check →</button>
+      <div class="field">
+        <label>Monthly revenue (approximate)</label>
+        <select id="q_revenue">
+          <option value="10000">$5,000 – $10,000</option>
+          <option value="25000" selected>$10,000 – $25,000</option>
+          <option value="50000">$25,000 – $50,000</option>
+          <option value="100000">$50,000 – $100,000</option>
+          <option value="250000">$100,000 – $250,000</option>
+          <option value="500000">$250,000+</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Monthly ad spend</label>
+        <select id="q_adspend">
+          <option value="2000">$0 – $2,000</option>
+          <option value="5000" selected>$2,000 – $5,000</option>
+          <option value="10000">$5,000 – $10,000</option>
+          <option value="25000">$10,000 – $25,000</option>
+          <option value="50000">$25,000 – $50,000</option>
+          <option value="75000">$50,000+</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="calculate()">Get my free profit breakdown →</button>
     </div>
   </div>
 
-  <!-- STEP 2: Revenue -->
-  <div id="step2" class="hidden">
-    <div class="tool-nav"><a href="#" onclick="goStep(1); return false;">← Back</a></div>
-    <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
-    <div class="card">
-      <h2>What's your monthly revenue?</h2>
-      <p class="subtitle">Total sales before any fees or refunds.</p>
-      <div class="range-wrap">
-        <div class="range-value" id="revValue">$25,000</div>
-        <input type="range" id="q_revenue" min="5000" max="500000" step="5000" value="25000" oninput="updateRange('revValue', this.value, '$')">
-        <div class="range-labels"><span>$5K</span><span>$500K</span></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
-        <button class="btn btn-primary" onclick="goStep(3)">Next →</button>
-      </div>
+  <!-- STEP 2: Results -->
+  <div id="results" class="hidden" style="padding-top: 6rem; padding-bottom: 4rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem;">Your free breakdown</div>
+      <h1 style="font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 400; line-height: 1.2; margin-bottom: 12px; color: var(--text); letter-spacing: -0.02em;">Here's what we found for <span id="resName" style="color:var(--accent);">your store</span></h1>
+      <p style="font-size: 13px; color: var(--text-muted);" id="resStore"></p>
     </div>
-  </div>
 
-  <!-- STEP 3: Category -->
-  <div id="step3" class="hidden">
-    <div class="tool-nav"><a href="#" onclick="goStep(2); return false;">← Back</a></div>
-    <div class="steps"><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
-    <div class="card">
-      <h2>What do you sell?</h2>
-      <p class="subtitle">This helps us calculate realistic margins.</p>
-      <div class="options">
-        <div class="option" onclick="selectOption(this,'q_category','skincare')"><div class="emoji">🧴</div><div class="label">Skincare / Beauty</div></div>
-        <div class="option" onclick="selectOption(this,'q_category','supplements')"><div class="emoji">💊</div><div class="label">Supplements</div></div>
-        <div class="option" onclick="selectOption(this,'q_category','apparel')"><div class="emoji">👕</div><div class="label">Apparel / Fashion</div></div>
-        <div class="option" onclick="selectOption(this,'q_category','food')"><div class="emoji">🍫</div><div class="label">Food & Beverage</div></div>
-        <div class="option" onclick="selectOption(this,'q_category','home')"><div class="emoji">🏠</div><div class="label">Home Goods</div></div>
-        <div class="option" onclick="selectOption(this,'q_category','other')"><div class="emoji">📦</div><div class="label">Other</div></div>
+    <div class="result-card">
+      <h3 style="font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">Profit Summary</h3>
+      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 1rem;">Estimated monthly numbers based on your inputs</div>
+      <div class="result-row">
+        <span class="result-label">Monthly Revenue</span>
+        <span class="result-value" id="resRevenue">$25,000</span>
       </div>
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
-        <button class="btn btn-primary" onclick="goStep(4)">Next →</button>
+      <div class="result-row">
+        <span class="result-label">Est. Product Costs (COGS)</span>
+        <span class="result-value" id="resCOGS">-$7,500</span>
       </div>
-    </div>
-  </div>
-
-  <!-- STEP 4: Product cost -->
-  <div id="step4" class="hidden">
-    <div class="tool-nav"><a href="#" onclick="goStep(3); return false;">← Back</a></div>
-    <div class="steps"><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
-    <div class="card">
-      <h2>What's your product cost?</h2>
-      <p class="subtitle">Cost to make/buy one unit, before shipping & packaging.</p>
-      <div class="field"><label>Average selling price per unit</label><input type="number" id="q_price" placeholder="e.g. 45" min="1"></div>
-      <div class="field"><label>Average product cost per unit</label><input type="number" id="q_cogs" placeholder="e.g. 12" min="1"></div>
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
-        <button class="btn btn-primary" onclick="goStep(5)">Next →</button>
+      <div class="result-row">
+        <span class="result-label">Shopify Fees & Payment Processing</span>
+        <span class="result-value" id="resFees">-$970</span>
       </div>
-    </div>
-  </div>
-
-  <!-- STEP 5: Ad spend -->
-  <div id="step5" class="hidden">
-    <div class="tool-nav"><a href="#" onclick="goStep(4); return false;">← Back</a></div>
-    <div class="steps"><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
-    <div class="card">
-      <h2>What's your monthly ad spend?</h2>
-      <p class="subtitle">Meta, Google, TikTok, influencers — all of it.</p>
-      <div class="range-wrap">
-        <div class="range-value" id="adValue">$5,000</div>
-        <input type="range" id="q_adspend" min="0" max="100000" step="1000" value="5000" oninput="updateRange('adValue', this.value, '$')">
-        <div class="range-labels"><span>$0</span><span>$100K</span></div>
+      <div class="result-row">
+        <span class="result-label">App Subscriptions</span>
+        <span class="result-value" id="resApps">-$350</span>
       </div>
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="goStep(4)">← Back</button>
-        <button class="btn btn-primary" onclick="goStep(6)">Next →</button>
+      <div class="result-row">
+        <span class="result-label">Ad Spend</span>
+        <span class="result-value" id="resAds">-$5,000</span>
       </div>
-    </div>
-  </div>
-
-  <!-- STEP 6: Bookkeeping -->
-  <div id="step6" class="hidden">
-    <div class="tool-nav"><a href="#" onclick="goStep(5); return false;">← Back</a></div>
-    <div class="steps"><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
-    <div class="card">
-      <h2>How do you handle bookkeeping?</h2>
-      <p class="subtitle">Be honest — most founders are behind on this.</p>
-      <div class="options">
-        <div class="option" onclick="selectOption(this,'q_bookkeeping','diy')"><div class="emoji">📊</div><div class="label">I do it myself</div></div>
-        <div class="option" onclick="selectOption(this,'q_bookkeeping','software')"><div class="emoji">💻</div><div class="label">QuickBooks / Xero</div></div>
-        <div class="option" onclick="selectOption(this,'q_bookkeeping','accountant')"><div class="emoji">👨‍💼</div><div class="label">I have an accountant</div></div>
-        <div class="option" onclick="selectOption(this,'q_bookkeeping','nothing')"><div class="emoji">😅</div><div class="label">Honestly? Nothing</div></div>
+      <div class="result-row">
+        <span class="result-label">Hidden Costs (returns, chargebacks, etc.)</span>
+        <span class="result-value bad" id="resHidden">-$1,250</span>
       </div>
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="goStep(5)">← Back</button>
-        <button class="btn btn-primary" onclick="calculate()">Get my results →</button>
+      <div class="result-row" style="border-top: 2px solid var(--border); margin-top: 8px; padding-top: 12px;">
+        <span class="result-label" style="color: var(--text); font-weight: 500;">Estimated Net Profit</span>
+        <span class="result-value accent" id="resProfit">$9,930</span>
       </div>
-    </div>
-  </div>
-
-  <!-- RESULTS -->
-  <div id="results" class="hidden">
-    <div class="tool-nav"><a href="#" onclick="resetForm(); return false;">← Start over</a></div>
-    <div class="steps"><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div></div>
-
-    <div class="card">
-      <div class="score-wrap">
-        <h2>Your Financial Health Score</h2>
-        <p class="subtitle" id="resultName">Here's how <span id="resName"></span> is doing</p>
-        <div class="score-circle" id="scoreCircle">
-          <div class="number" id="healthScore">--</div>
-          <div class="label">out of 100</div>
-        </div>
-        <p id="scoreSummary" style="color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; font-size: 13px;"></p>
+      <div class="result-row">
+        <span class="result-label" style="color: var(--text); font-weight: 500;">Net Profit Margin</span>
+        <span class="result-value accent" id="resMargin">39.7%</span>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Your Numbers</h2>
-      <p class="subtitle">Based on your answers</p>
-      <div class="result-grid">
-        <div class="result-item"><div class="value" id="resGrossMargin">--</div><div class="label">Gross Margin</div></div>
-        <div class="result-item"><div class="value" id="resNetMargin">--</div><div class="label">Est. Net Margin</div></div>
-        <div class="result-item"><div class="value bad" id="resHiddenFees">--</div><div class="label">Hidden Fees / Mo</div></div>
-        <div class="result-item"><div class="value" id="resAnnualLoss">--</div><div class="label">Est. Annual Leak</div></div>
+    <div class="result-card">
+      <h3 style="font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">What most founders miss</h3>
+      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 1rem;">These are the costs that silently eat your margins</div>
+      <div class="result-row">
+        <span class="result-label">Transaction Fees (2.9% + 30¢)</span>
+        <span class="result-value" id="resTxFees">$725</span>
       </div>
+      <div class="result-row">
+        <span class="result-label">Refunds & Returns (~2%)</span>
+        <span class="result-value" id="resRefunds">$500</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Chargeback Fees</span>
+        <span class="result-value">$30</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Currency Conversion (~0.5%)</span>
+        <span class="result-values" id="resFx">$63</span>
+      </div>
+      <div class="result-row" style="border-top: 2px solid var(--border); margin-top: 8px; padding-top: 12px;">
+        <span class="result-label" style="color: var(--text); font-weight: 500;">Total Hidden Costs</span>
+        <span class="result-value bad" id="resTotalHidden">$1,318</span>
+      </div>
+      <p style="font-size: 12px; color: var(--text-dim); margin-top: 1rem; line-height: 1.6;">That's <span id="resHiddenPct" style="color: var(--accent);">5.3%</span> of your revenue — money most Shopify founders don't track.</p>
     </div>
-
-    <div id="insights"></div>
 
     <div class="cta-box">
-      <h2>Don't just know your numbers. Fix them.</h2>
-      <p>You just saw where your money is leaking. Now imagine having clean, categorized books every month — without lifting a finger.</p>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:1rem;">Klarr delivers P&L, Balance Sheet, and Cash Flow — every month, in 24 hours, for $99/mo. AI-powered, human-reviewed.</p>
-      <p style="font-size:12px;color:var(--text-dim);margin-bottom:1rem;">🔒 Your data is never stored on our servers. Everything is processed through your own Google Sheet. You own it 100%.</p>
-      <a href="https://klarr.space/#pricing" class="btn btn-primary" style="text-decoration:none;max-width:280px;margin:0 auto;">Start with Growth — $99/mo →</a>
-      <p style="font-size:11px;color:var(--text-dim);margin-top:12px;">Cancel anytime. 24-hour delivery guarantee. 40% cheaper than alternatives.</p>
-      <p style="font-size:11px;color:var(--text-dim);margin-top:4px;">Or take a free 15-min call: <a href="mailto:hello@klarr.space" style="color:var(--accent);text-decoration:underline;">hello@klarr.space</a></p>
-    </div>
-
-    <div class="card" style="text-align:center;">
-      <h2 style="font-size:1rem;">Share this with a founder who needs it</h2>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Most Shopify founders have no idea what their real margin is.</p>
-      <div class="share-row">
-        <a id="shareTwitter" href="#" target="_blank" class="share-btn">𝕏 Twitter</a>
-        <a id="shareLinkedIn" href="#" target="_blank" class="share-btn">💼 LinkedIn</a>
-        <a id="shareEmail" href="#" target="_blank" class="share-btn">📧 Email</a>
-      </div>
+      <h2>Want us to do this for real?</h2>
+      <p>This is an estimate. We can analyze your actual Shopify data and deliver a precise P&L, Balance Sheet, and Cash Flow — every month, within 24 hours.</p>
+      <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn btn-primary" style="text-decoration:none;max-width:280px;margin:0 auto;display:block;">Start free trial — $99/mo →</a>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:12px;">30 days free. No credit card required. Cancel anytime.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">Questions? <a href="mailto:klarr.space@gmail.com" style="color:var(--accent);text-decoration:underline;">klarr.space@gmail.com</a> · +45 42208135</p>
     </div>
 
     <div style="text-align:center;margin-top:1.5rem;">
-      <button class="btn btn-ghost" onclick="resetForm()">← Start over</button>
+      <button class="btn btn-primary" onclick="resetForm()" style="background:var(--bg-elevated);color:var(--text);border:1px solid var(--border);">← Start over</button>
     </div>
   </div>
 
 </div>
-
-<script>
-let answers = {};
-function goStep(n) {
-  document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
-  document.getElementById('results').classList.add('hidden');
-  if (n <= 6) document.getElementById('step' + n).classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function updateRange(id, val, prefix) {
-  document.getElementById(id).textContent = prefix + parseInt(val).toLocaleString();
-}
-function selectOption(el, key, val) {
-  el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  answers[key] = val;
-}
-
-function calculate() {
-  const name = document.getElementById('q_name').value || 'there';
-  const email = document.getElementById('q_email').value || '';
-  const store = document.getElementById('q_store').value || 'your store';
-  const revenue = parseInt(document.getElementById('q_revenue').value) || 25000;
-  const category = answers.q_category || 'other';
-  const price = parseFloat(document.getElementById('q_price').value) || 45;
-  const cogs = parseFloat(document.getElementById('q_cogs').value) || 12;
-  const adSpend = parseInt(document.getElementById('q_adspend').value) || 5000;
-  const bookkeeping = answers.q_bookkeeping || 'diy';
-
-  const catData = {
-    skincare:    { returnRate: 0.04, procRate: 0.032, appFees: 350, fulfill: 4.5, ship: 5.5, pack: 1.5 },
-    supplements: { returnRate: 0.03, procRate: 0.032, appFees: 300, fulfill: 4.0, ship: 5.0, pack: 1.2 },
-    apparel:     { returnRate: 0.22, procRate: 0.032, appFees: 400, fulfill: 4.5, ship: 6.0, pack: 1.5 },
-    food:        { returnRate: 0.03, procRate: 0.035, appFees: 300, fulfill: 5.0, ship: 7.0, pack: 2.0 },
-    home:        { returnRate: 0.07, procRate: 0.032, appFees: 350, fulfill: 5.0, ship: 6.5, pack: 1.8 },
-    other:       { returnRate: 0.05, procRate: 0.032, appFees: 350, fulfill: 4.5, ship: 5.5, pack: 1.5 }
-  };
-  const c = catData[category] || catData.other;
-  const orders = Math.round(revenue / price);
-  const grossMargin = ((price - cogs) / price * 100).toFixed(1);
-  const procFees = revenue * c.procRate;
-  const appFees = c.appFees;
-  const fulfillCost = orders * c.fulfill;
-  const shipCost = orders * c.ship;
-  const packCost = orders * c.pack;
-  const returnCost = revenue * c.returnRate * 0.5;
-  const chargebackFees = orders * 0.005 * 20;
-  const fxCost = revenue * 0.15 * 0.015;
-  const totalHidden = procFees + appFees + returnCost + chargebackFees + fxCost;
-  const totalCOGS = (cogs * orders) + fulfillCost + shipCost + packCost;
-  const netProfit = revenue - totalCOGS - totalHidden - adSpend - 39;
-  const netMargin = (netProfit / revenue * 100).toFixed(1);
-  const annualLeak = totalHidden * 12;
-
-  let score = 50;
-  if (parseFloat(netMargin) > 20) score += 20;
-  else if (parseFloat(netMargin) > 10) score += 10;
-  else if (parseFloat(netMargin) < 0) score -= 20;
-  if (bookkeeping === 'accountant') score += 15;
-  else if (bookkeeping === 'software') score += 10;
-  else if (bookkeeping === 'nothing') score -= 10;
-  if (totalHidden < revenue * 0.05) score += 10;
-  else if (totalHidden > revenue * 0.08) score -= 5;
-  if (adSpend / revenue < 0.25) score += 10;
-  else if (adSpend / revenue > 0.35) score -= 5;
-  score = Math.max(0, Math.min(100, score));
-
-  document.getElementById('resName').textContent = name.split(' ')[0];
-  document.getElementById('healthScore').textContent = score;
-  document.getElementById('resGrossMargin').textContent = grossMargin + '%';
-  document.getElementById('resNetMargin').textContent = (netMargin > 0 ? netMargin : '0') + '%';
-  document.getElementById('resHiddenFees').textContent = '$' + Math.round(totalHidden).toLocaleString() + '/mo';
-  document.getElementById('resAnnualLoss').textContent = '$' + Math.round(annualLeak).toLocaleString();
-
-  const circle = document.getElementById('scoreCircle');
-  circle.className = 'score-circle ' + (score >= 70 ? 'good' : score >= 40 ? 'warn' : 'bad');
-
-  let summary = '';
-  if (score >= 70) summary = 'Your finances are in decent shape, but there are still hidden costs eating into your margins. The biggest opportunity: reducing hidden fees and tightening up your bookkeeping.';
-  else if (score >= 40) summary = 'There are significant leaks in your financials. You\'re likely losing $' + Math.round(totalHidden).toLocaleString()+'/month to fees you\'re not tracking. Your real margin is probably ' + (parseFloat(grossMargin) - parseFloat(netMargin)).toFixed(1) + ' points lower than you think.';
-  else summary = 'Your store has serious financial leaks. Between hidden fees, untracked costs, and bookkeeping gaps, you could be losing $' + Math.round(annualLeak).toLocaleString()+'/year. The good news: all of this is fixable.';
-  document.getElementById('scoreSummary').textContent = summary;
-
-  let insights = '';
-  if (parseFloat(netMargin) < parseFloat(grossMargin) - 15) {
-    insights += '<div class="insight warn"><h3>Your real margin is much lower than you think</h3><p>Gross margin is '+grossMargin+'%, but after all hidden fees, net margin is '+(netMargin > 0 ? netMargin : '0')+'%. That\'s a '+(parseFloat(grossMargin)-parseFloat(netMargin)).toFixed(1)+'-point gap. Most founders only track product cost.</p></div>';
-  }
-  if (totalHidden > revenue * 0.06) {
-    insights += '<div class="insight"><h3>You\'re losing $'+Math.round(totalHidden).toLocaleString()+'/month to hidden fees</h3><p>Processing fees, app fees, returns, chargebacks, currency conversion. These are real costs that need to be tracked.</p></div>';
-  }
-  if (bookkeeping === 'nothing' || bookkeeping === 'diy') {
-    insights += '<div class="insight"><h3>Your bookkeeping needs attention</h3><p>'+(bookkeeping === 'nothing' ? 'You\'re not tracking finances at all. You don\'t know your real margin and your tax bill might be wrong.' : 'DIY bookkeeping works at small scale, but it gets messy fast with multiple processors, apps, and returns.')+'</p></div>';
-  }
-  if (adSpend / revenue > 0.3) {
-    insights += '<div class="insight warn"><h3>Your ad spend is eating your margins</h3><p>You\'re spending '+(adSpend/revenue*100).toFixed(0)+'% of revenue on ads. Make sure you\'re tracking true ROAS including fees and returns.</p></div>';
-  }
-  document.getElementById('insights').innerHTML = insights;
-
-  // Share links
-  const shareText = encodeURIComponent('I just checked my Shopify store\'s financial health score. Found out I\'m losing money to hidden fees most founders don\'t track. Take the 2-min check: https://klarr.space/tools/');
-  const shareUrl = encodeURIComponent('https://klarr.space/tools/');
-  document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + shareText;
-  document.getElementById('shareLinkedIn').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + shareUrl;
-  document.getElementById('shareEmail').href = 'mailto:?subject=Check your Shopify store\'s real profit margin&body=' + shareText;
-
-  // Save lead
-  try {
-    const leads = JSON.parse(localStorage.getItem('klarr_leads') || '[]');
-    leads.push({ name, email, store, revenue, category, netMargin, healthScore: score, createdAt: new Date().toISOString() });
-    localStorage.setItem('klarr_leads', JSON.stringify(leads));
-  } catch(e) {}
-
-  document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
-  document.getElementById('results').classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function resetForm() {
-  answers = {};
-  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-  document.querySelectorAll('input').forEach(i => i.value = '');
-  document.getElementById('q_revenue').value = 25000;
-  document.getElementById('q_adspend').value = 5000;
-  document.getElementById('revValue').textContent = '$25,000';
-  document.getElementById('adValue').textContent = '$5,000';
-  goStep(1);
-}
-</script>
 
 <footer style="margin-top:3rem;padding:2rem 0;border-top:1px solid var(--border);">
   <div class="container" style="text-align:center;">
@@ -464,5 +229,55 @@ function resetForm() {
   </div>
 </footer>
 
+<script>
+function calculate() {
+  var name = document.getElementById('q_name').value || 'there';
+  var store = document.getElementById('q_store').value || 'your store';
+  var revenue = parseInt(document.getElementById('q_revenue').value) || 25000;
+  var adSpend = parseInt(document.getElementById('q_adspend').value) || 5000;
+
+  var cogs = Math.round(revenue * 0.30);
+  var txFees = Math.round(revenue * 0.029 + (revenue / 48) * 0.30);
+  var refunds = Math.round(revenue * 0.02);
+  var chargebacks = 30;
+  var fx = Math.round(revenue * 0.005 * 0.5);
+  var apps = 350;
+  var hidden = txFees + refunds + chargebacks + fx;
+  var totalCosts = cogs + hidden + adSpend + apps;
+  var profit = revenue - totalCosts;
+  var margin = (profit / revenue * 100).toFixed(1);
+
+  document.getElementById('resName').textContent = name.split(' ')[0];
+  document.getElementById('resStore').textContent = store;
+  document.getElementById('resRevenue').textContent = '$' + revenue.toLocaleString();
+  document.getElementById('resCOGS').textContent = '-$' + cogs.toLocaleString();
+  document.getElementById('resFees').textContent = '-$' + Math.round(revenue * 0.032).toLocaleString();
+  document.getElementById('resApps').textContent = '-$' + apps.toLocaleString();
+  document.getElementById('resAds').textContent = '-$' + adSpend.toLocaleString();
+  document.getElementById('resHidden').textContent = '-$' + hidden.toLocaleString();
+  document.getElementById('resProfit').textContent = '$' + profit.toLocaleString();
+  document.getElementById('resMargin').textContent = margin + '%';
+  document.getElementById('resTxFees').textContent = '$' + txFees.toLocaleString();
+  document.getElementById('resRefunds').textContent = '$' + refunds.toLocaleString();
+  document.getElementById('resFx').textContent = '$' + fx.toLocaleString();
+  document.getElementById('resTotalHidden').textContent = '$' + hidden.toLocaleString();
+  document.getElementById('resHiddenPct').textContent = (hidden / revenue * 100).toFixed(1) + '%';
+
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  document.getElementById('q_name').value = '';
+  document.getElementById('q_email').value = '';
+  document.getElementById('q_store').value = '';
+  document.getElementById('q_revenue').value = '25000';
+  document.getElementById('q_adspend').value = '5000';
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('step1').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
 </body>
 </html>

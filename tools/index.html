@@ -3,230 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Shopify Financial Health Check | Klarr</title>
-  <meta name="description" content="Find out how much money your Shopify store is losing to hidden fees, bad bookkeeping, and miscalculated margins. Free 2-minute assessment.">
+  <title>Free Shopify Profit Breakdown | Klarr</title>
+  <meta name="description" content="Get your free Shopify profit breakdown. See your real margin after fees, ads, and hidden costs. No signup required.">
   <meta name="google-site-verification" content="4KpN-VNCi489u4qDRZlknM6Ds37Tjg9rDn3mpWuXHsA" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/style.css?v=21">
   <style>
-    /* ---- Page-specific styles ---- */
-    .tool-hero {
-      padding: 6rem 1.25rem 3rem;
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .tool-hero h1 {
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      font-weight: 400;
-      line-height: 1.15;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-    .tool-hero p {
-      font-size: 1rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 32px;
-    }
-    .tool-hero p strong {
-      color: var(--text);
-      font-weight: 400;
-    }
-
-    /* Stats */
-    .tool-stats {
-      display: flex;
-      justify-content: center;
-      gap: 2.5rem;
-      margin: 2.5rem 0;
-      flex-wrap: wrap;
-    }
-    .tool-stat {
-      text-align: center;
-    }
-    .tool-stat-num {
-      font-size: 1.5rem;
-      font-weight: 400;
-      color: var(--accent);
-      letter-spacing: -0.02em;
-    }
-    .tool-stat-label {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    /* CTA */
-    .tool-cta {
-      display: inline-flex;
-      align-items: center;
-      background: var(--text);
-      color: var(--bg);
-      padding: 14px 32px;
-      border-radius: var(--radius-pill);
-      font-size: 16px;
-      font-weight: 400;
-      text-decoration: none;
-      transition: opacity var(--transition);
-      letter-spacing: -0.01em;
-      border: none;
-      cursor: pointer;
-    }
-    .tool-cta:hover {
-      opacity: 0.85;
-      color: var(--bg);
-    }
-
-    /* Trust */
-    .tool-trust {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .tool-trust-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-dim);
-    }
-    .tool-trust-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--text-dim);
-    }
-
-    /* Section */
-    .tool-section {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-    .tool-section-label {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    /* Preview cards */
-    .tool-preview-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 3rem 0;
-    }
-    .tool-preview-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-    .tool-preview-card .preview-icon {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      opacity: 0.7;
-    }
-    .tool-preview-card h3 {
-      font-size: 13px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .tool-preview-card p {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Steps */
-    .tool-steps {
-      margin: 3rem 0;
-    }
-    .tool-step {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 16px;
-      align-items: flex-start;
-    }
-    .tool-step-num {
-      width: 24px;
-      height: 24px;
-      background: var(--bg-elevated);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: var(--accent);
-      flex-shrink: 0;
-      font-weight: 500;
-      margin-top: 1px;
-    }
-    .tool-step-text h3 {
-      font-size: 13px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-    .tool-step-text p {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Bottom CTA */
-    .tool-bottom-cta {
-      text-align: center;
-      margin: 4rem 0 2rem;
-    }
-
-    /* Footer nav */
-    .tool-footer-nav {
-      text-align: center;
-      padding: 2rem 1.25rem 3rem;
-      border-top: 1px solid var(--border);
-      margin-top: 3rem;
-    }
-    .tool-footer-nav a {
-      font-size: 12px;
-      color: var(--text-dim);
-      text-decoration: none;
-    }
-    .tool-footer-nav a:hover {
-      color: var(--text-muted);
-    }
-
-    @media (max-width: 480px) {
-      .tool-preview-grid { grid-template-columns: 1fr; }
-      .tool-stats { gap: 1.5rem; }
-    }
+    .tool-hero { padding: 6rem 1.25rem 3rem; text-align: center; max-width: 600px; margin: 0 auto; }
+    .tool-hero h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 400; line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.02em; color: var(--text); }
+    .tool-hero p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; }
+    .tool-hero p strong { color: var(--text); font-weight: 400; }
+    .tool-stats { display: flex; justify-content: center; gap: 2.5rem; margin: 2.5rem 0; flex-wrap: wrap; }
+    .tool-stat { text-align: center; }
+    .tool-stat-num { font-size: 1.5rem; font-weight: 400; color: var(--accent); letter-spacing: -0.02em; }
+    .tool-stat-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .tool-cta { display: inline-flex; align-items: center; background: var(--text); color: var(--bg); padding: 14px 32px; border-radius: var(--radius-pill); font-size: 16px; font-weight: 400; text-decoration: none; transition: opacity var(--transition); letter-spacing: -0.01em; border: none; cursor: pointer; }
+    .tool-cta:hover { opacity: 0.85; color: var(--bg); }
+    .tool-trust { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+    .tool-trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); }
+    .tool-trust-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim); }
+    .tool-section { max-width: 600px; margin: 0 auto; padding: 0 1.25rem; }
+    .tool-section-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; text-align: center; }
+    .tool-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 3rem 0; }
+    .tool-preview-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .tool-preview-card .preview-icon { font-size: 1.2rem; margin-bottom: 10px; opacity: 0.7; }
+    .tool-preview-card h3 { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 4px; }
+    .tool-preview-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .tool-steps { margin: 3rem 0; }
+    .tool-step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+    .tool-step-num { width: 24px; height: 24px; background: var(--bg-elevated); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--accent); flex-shrink: 0; font-weight: 500; margin-top: 1px; }
+    .tool-step-text h3 { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 2px; }
+    .tool-step-text p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .tool-bottom-cta { text-align: center; margin: 4rem 0 2rem; }
+    .tool-footer-nav { text-align: center; padding: 2rem 1.25rem 3rem; border-top: 1px solid var(--border); margin-top: 3rem; }
+    .tool-footer-nav a { font-size: 12px; color: var(--text-dim); text-decoration: none; }
+    .tool-footer-nav a:hover { color: var(--text-muted); }
+    @media (max-width: 480px) { .tool-preview-grid { grid-template-columns: 1fr; } .tool-stats { gap: 1.5rem; } }
   </style>
 </head>
 <body>
 
-  <!-- Nav (matches main site) -->
   <nav>
     <div class="nav-inner">
       <a href="/" class="logo">
         <img src="/favicon.svg" alt="Klarr">
+        <span>Klarr</span>
       </a>
       <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/blog/">Blog</a>
+        <a href="/#features">Features</a>
+        <a href="/#how">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/partners/">Partners</a>
       </div>
       <div class="nav-right" id="nav-auth-area">
         <a href="/login" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
@@ -235,7 +66,6 @@
     </div>
   </nav>
 
-  <!-- Hero -->
   <div class="tool-hero">
     <h1>Most Shopify founders are off by $100K/year on their profit.</h1>
     <p>They think they know their margin. <strong>They don't.</strong> Hidden fees, untracked costs, and bad bookkeeping create a gap between what founders think they make and what they actually make.</p>
@@ -255,7 +85,7 @@
       </div>
     </div>
 
-    <a href="/tools/health-check" class="tool-cta">Check your store — free (2 min)</a>
+    <a href="/tools/health-check/" class="tool-cta">Get my free profit breakdown →</a>
     <div class="tool-trust">
       <div class="tool-trust-item">No signup</div>
       <div class="tool-trust-dot"></div>
@@ -265,7 +95,6 @@
     </div>
   </div>
 
-  <!-- What you'll see -->
   <div class="tool-section">
     <div class="tool-section-label">What you'll see</div>
     <div class="tool-preview-grid">
@@ -285,49 +114,46 @@
         <p>Exactly where money is slipping through the cracks in your financials.</p>
       </div>
       <div class="tool-preview-card">
-        <div class="preview-icon">🏥</div>
-        <h3>Health score</h3>
-        <p>A 0–100 score comparing your store to DTC benchmarks by category.</p>
+        <div class="preview-icon">📋</div>
+        <h3>Full P&L estimate</h3>
+        <p>Revenue, COGS, fees, ad spend, and net profit — all calculated for you.</p>
       </div>
     </div>
   </div>
 
-  <!-- How it works -->
   <div class="tool-section">
     <div class="tool-section-label">How it works</div>
     <div class="tool-steps">
       <div class="tool-step">
         <div class="tool-step-num">1</div>
         <div class="tool-step-text">
-          <h3>Answer 6 quick questions</h3>
-          <p>Revenue, product cost, ad spend, bookkeeping method. Takes 2 minutes.</p>
+          <h3>Enter your store details</h3>
+          <p>Store URL, monthly revenue, and ad spend. Takes 30 seconds.</p>
         </div>
       </div>
       <div class="tool-step">
         <div class="tool-step-num">2</div>
         <div class="tool-step-text">
-          <h3>Get your financial health score</h3>
-          <p>See your real margin, hidden fees, and how you compare to DTC benchmarks.</p>
+          <h3>Get your profit breakdown</h3>
+          <p>See your real margin, hidden fees, and where money is leaking.</p>
         </div>
       </div>
       <div class="tool-step">
         <div class="tool-step-num">3</div>
         <div class="tool-step-text">
-          <h3>Fix the leaks (optional)</h3>
-          <p>If you want, we'll do a full financial audit of your store. Free. No obligation.</p>
+          <h3>Get it done for you (optional)</h3>
+          <p>Want us to handle your bookkeeping every month? Start a free trial.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom CTA -->
   <div class="tool-section">
     <div class="tool-bottom-cta">
-      <a href="/tools/health-check" class="tool-cta">Check your store — free (2 min)</a>
+      <a href="/tools/health-check/" class="tool-cta">Get my free profit breakdown →</a>
     </div>
   </div>
 
-  <!-- Footer -->
   <div class="tool-footer-nav">
     <a href="/">← Back to Klarr</a>
   </div>
