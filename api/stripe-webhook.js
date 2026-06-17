@@ -30,6 +30,12 @@ module.exports = async (req, res) => {
 
         if (email && plan) {
           console.log(`Payment successful: ${email} → ${plan}`);
+          // Send push notification via ntfy.sh
+          await fetch('https://ntfy.sh/klarr-stripe-subscriptions', {
+            method: 'POST',
+            headers: { 'Title': '🎉 New Klarr Subscription!', 'Priority': 'high', 'Tags': 'money,dollar' },
+            body: `Email: ${email}\nPlan: ${plan}\nAmount: $${(session.amount_total / 100).toFixed(2)} ${session.currency.toUpperCase()}\nTime: ${new Date().toISOString()}`
+          }).catch(e => console.error('Push notification failed:', e));
           // Send email notification via Formspree
           await fetch('https://formspree.io/f/maqzzdwr', {
             method: 'POST',
