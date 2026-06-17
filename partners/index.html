@@ -232,6 +232,22 @@
       document.getElementById('ref-link').value = link;
       document.getElementById('dash-url-display').textContent = 'klarr.space/dashboard/partner';
       document.getElementById('dashboard-link').href = '/dashboard/partner';
+      // Send email notification via Formspree
+      try {
+        fetch('https://formspree.io/f/maqzzdwr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            store: 'Partner Signup',
+            revenue: role,
+            adSpend: document.getElementById('p_clients').value || 'N/A',
+            subject: '🤝 New Klarr Partner: ' + name,
+            message: 'New partner signup!\n\nName: ' + name + '\nEmail: ' + email + '\nRole: ' + role + '\nClients: ' + (document.getElementById('p_clients').value || 'N/A') + '\nReferral Link: ' + link
+          })
+        });
+      } catch(e) {}
     } catch (e) {
       alert('Error: ' + e.message);
       btn.disabled = false; btn.textContent = 'Create My Partner Account';
