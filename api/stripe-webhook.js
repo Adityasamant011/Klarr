@@ -30,21 +30,18 @@ module.exports = async (req, res) => {
 
         if (email && plan) {
           console.log(`Payment successful: ${email} → ${plan}`);
-          // Send email notification
-          await fetch('https://api.sendgrid.com/v3/mail/send', {
+          // Send email notification via Formspree
+          await fetch('https://formspree.io/f/maqzzdwr', {
             method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({
-              personalizations: [{ to: [{ email: 'klarr.space@gmail.com' }] }],
-              from: { email: 'klarr.space@gmail.com', name: 'Klarr' },
-              subject: `🎉 New Klarr Subscription: ${email}`,
-              content: [{
-                type: 'text/plain',
-                value: `New paid subscription!\n\nEmail: ${email}\nPlan: ${plan}\nAmount: ${session.amount_total / 100} ${session.currency.toUpperCase()}\nTime: ${new Date().toISOString()}`
-              }]
+              name: email,
+              email: email,
+              store: 'Stripe Subscription',
+              revenue: '$' + (session.amount_total / 100) + ' ' + session.currency.toUpperCase(),
+              adSpend: 'N/A',
+              subject: '🎉 New Klarr Subscription: ' + email,
+              message: 'NEW PAID SUBSCRIPTION!\n\nEmail: ' + email + '\nPlan: ' + plan + '\nAmount: $' + (session.amount_total / 100) + ' ' + session.currency.toUpperCase() + '\nTime: ' + new Date().toISOString()
             })
           }).catch(e => console.error('Email notification failed:', e));
           // Note: Firestore update happens via client-side redirect
