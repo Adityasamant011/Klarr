@@ -209,6 +209,23 @@ function submitForm() {
     localStorage.setItem('klarr_leads', JSON.stringify(leads));
   } catch(e) {}
 
+  // Send email notification via Formspree
+  try {
+    fetch('https://formspree.io/f/maqzzdwr', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        store: store,
+        revenue: revenue,
+        adSpend: adSpend,
+        subject: 'New Klarr Lead: ' + name,
+        message: 'Name: ' + name + '\nEmail: ' + email + '\nStore: ' + store + '\nRevenue: ' + revenue + '\nAd Spend: ' + adSpend
+      })
+    });
+  } catch(e) {}
+
   // Show success
   document.getElementById('successName').textContent = name.split(' ')[0];
   document.getElementById('successEmail').textContent = email;

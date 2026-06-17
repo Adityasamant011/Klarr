@@ -30,6 +30,23 @@ module.exports = async (req, res) => {
 
         if (email && plan) {
           console.log(`Payment successful: ${email} → ${plan}`);
+          // Send email notification
+          await fetch('https://api.sendgrid.com/v3/mail/send', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              personalizations: [{ to: [{ email: 'klarr.space@gmail.com' }] }],
+              from: { email: 'klarr.space@gmail.com', name: 'Klarr' },
+              subject: `🎉 New Klarr Subscription: ${email}`,
+              content: [{
+                type: 'text/plain',
+                value: `New paid subscription!\n\nEmail: ${email}\nPlan: ${plan}\nAmount: ${session.amount_total / 100} ${session.currency.toUpperCase()}\nTime: ${new Date().toISOString()}`
+              }]
+            })
+          }).catch(e => console.error('Email notification failed:', e));
           // Note: Firestore update happens via client-side redirect
           // This webhook is for backup/reliability
         }
