@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Report | Klarr — Shopify Bookkeeping</title>
+  <meta name="description" content="See what a Klarr bookkeeping report looks like. Sample P&L, Balance Sheet, and Cash Flow for a Shopify store.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=20">
+  <style>
+    .sample-hero { padding: 120px 24px 40px; text-align: center; max-width: 720px; margin: 0 auto; }
+    .sample-hero h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 400; line-height: 1.2; margin-bottom: 12px; color: var(--text); letter-spacing: -0.02em; }
+    .sample-hero p { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; }
+    .report-section { max-width: 800px; margin: 0 auto; padding: 0 24px 40px; }
+    .report-section h2 { font-size: 1.1rem; font-weight: 500; color: var(--text); margin-bottom: 4px; letter-spacing: -0.01em; }
+    .report-section .subtitle { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+    .report-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; font-size: 13px; }
+    .report-table th { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-dim); font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .report-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+    .report-table td:last-child { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+    .report-table tr:last-child td { border-bottom: none; }
+    .report-table .section-header td { background: var(--bg-alt); color: var(--text); font-weight: 500; font-size: 12px; }
+    .report-table .total-row td { border-top: 2px solid var(--border); color: var(--text); font-weight: 500; }
+    .report-table .total-row td:last-child { color: var(--accent); }
+    .report-table .negative { color: #b8860b; }
+    .cta-box { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; text-align: center; margin: 2rem auto; max-width: 480px; }
+    .cta-box h2 { font-size: 1.1rem; font-weight: 400; color: var(--text); margin-bottom: 8px; }
+    .cta-box p { color: var(--text-muted); margin-bottom: 1rem; font-size: 13px; line-height: 1.6; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <img src="/favicon.svg" alt="Klarr">
+        <span>Klarr</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/#how">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/partners/">Partners</a>
+      </div>
+      <div class="nav-right">
+        <a href="/login" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
+        <a href="/signup" class="nav-cta">Sign up</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sample-hero">
+    <div class="badge">Sample Report — For illustration</div>
+    <h1>Here's what you get every month</h1>
+    <p>A clean, categorized Google Sheet with your P&L, Balance Sheet, and Cash Flow — delivered within 24 hours. Here's what it looks like.</p>
+  </div>
+
+  <div class="report-section">
+    <h2>Profit & Loss Statement</h2>
+    <p class="subtitle">Month: May 2025 · Store: sample-store.myshopify.com</p>
+    <table class="report-table">
+      <thead>
+        <tr><th>Category</th><th>Details</th><th style="text-align:right">Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr class="section-header"><td colspan="3">Revenue</td></tr>
+        <tr><td>Gross Sales</td><td>1,247 orders × $48.50 AOV</td><td style="text-align:right">$60,480</td></tr>
+        <tr><td>Returns & Refunds</td><td>31 orders refunded</td><td style="text-align:right">-$2,480</td></tr>
+        <tr><td>Discounts Applied</td><td>142 orders with discount</td><td style="text-align:right">-$3,120</td></tr>
+        <tr class="total-row"><td colspan="2">Net Revenue</td><td style="text-align:right">$54,880</td></tr>
+        <tr class="section-header"><td colspan="3">Cost of Goods Sold</td></tr>
+        <tr><td>Product Costs</td><td>1,216 units × $11.20 COGS</td><td style="text-align:right">$13,619</td></tr>
+        <tr><td>Shipping & Fulfillment</td><td>1,216 orders × $5.80</td><td style="text-align:right">$7,053</td></tr>
+        <tr><td>Packaging</td><td>1,216 orders × $1.40</td><td style="text-align:right">$1,702</td></tr>
+        <tr class="total-row"><td colspan="2">Total COGS</td><td style="text-align:right">$22,374</td></tr>
+        <tr class="total-row"><td colspan="2">Gross Profit</td><td style="text-align:right">$32,506</td></tr>
+        <tr class="section-header"><td colspan="3">Operating Expenses</td></tr>
+        <tr><td>Meta Ads</td><td>Facebook & Instagram campaigns</td><td style="text-align:right">$12,400</td></tr>
+        <tr><td>Google Ads</td><td>Search & Shopping campaigns</td><td style="text-align:right">$4,200</td></tr>
+        <tr><td>Shopify Fees</td><td>Subscription + transaction fees</td><td style="text-align:right">$1,847</td></tr>
+        <tr><td>Payment Processing</td><td>Stripe fees (2.9% + 30¢)</td><td style="text-align:right">$1,754</td></tr>
+        <tr><td>App Subscriptions</td><td>Klaviyo, Judge.me, etc.</td><td style="text-align:right">$389</td></tr>
+        <tr><td>Chargebacks</td><td>2 chargebacks × $15 fee</td><td style="text-align:right">$30</td></tr>
+        <tr class="total-row"><td colspan="2">Total Operating Expenses</td><td style="text-align:right">$20,620</td></tr>
+        <tr class="total-row"><td colspan="2">Net Profit</td><td style="text-align:right">$11,886</td></tr>
+        <tr class="total-row"><td colspan="2">Net Profit Margin</td><td style="text-align:right">21.7%</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Balance Sheet</h2>
+    <p class="subtitle">As of May 31, 2025</p>
+    <table class="report-table">
+      <thead>
+        <tr><th>Category</th><th>Details</th><th style="text-align:right">Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr class="section-header"><td colspan="3">Assets</td></tr>
+        <tr><td>Business Bank Account</td><td>Chase Business Checking</td><td style="text-align:right">$24,380</td></tr>
+        <tr><td>Shopify Balance</td><td>Pending payouts (3-day hold)</td><td style="text-align:right">$8,420</td></tr>
+        <tr><td>Inventory on Hand</td><td>1,240 units × $11.20</td><td style="text-align:right">$13,888</td></tr>
+        <tr><td>Accounts Receivable</td><td>Wholesale invoices outstanding</td><td style="text-align:right">$3,200</td></tr>
+        <tr class="total-row"><td colspan="2">Total Assets</td><td style="text-align:right">$49,888</td></tr>
+        <tr class="section-header"><td colspan="3">Liabilities</td></tr>
+        <tr><td>Credit Card Balance</td><td>Chase Ink Business</td><td style="text-align:right">$4,200</td></tr>
+        <tr><td>Sales Tax Payable</td><td>Collected, not yet remitted</td><td style="text-align:right">$2,890</td></tr>
+        <tr><td>Accounts Payable</td><td>Supplier invoices due</td><td style="text-align:right">$5,600</td></tr>
+        <tr class="total-row"><td colspan="2">Total Liabilities</td><td style="text-align:right">$12,690</td></tr>
+        <tr class="total-row"><td colspan="2">Owner's Equity</td><td style="text-align:right">$37,198</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Cash Flow Statement</h2>
+    <p class="subtitle">Month: May 2025</p>
+    <table class="report-table">
+      <thead>
+        <tr><th>Category</th><th>Details</th><th style="text-align:right">Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr class="section-header"><td colspan="3">Cash Inflows</td></tr>
+        <tr><td>Shopify Payouts Received</td><td>4 payouts (Mon/Thu schedule)</td><td style="text-align:right">$56,240</td></tr>
+        <tr><td>Wholesale Payments Received</td><td>2 invoices paid</td><td style="text-align:right">$3,200</td></tr>
+        <tr class="total-row"><td colspan="2">Total Cash In</td><td style="text-align:right">$59,440</td></tr>
+        <tr class="section-header"><td colspan="3">Cash Outflows</td></tr>
+        <tr><td>Ad Spend</td><td>Meta + Google (paid monthly)</td><td style="text-align:right">$16,600</td></tr>
+        <tr><td>Inventory Purchase</td><td>Restock from supplier</td><td style="text-align:right">$8,400</td></tr>
+        <tr><td>Shipping Costs</td><td>Carrier invoices</td><td style="text-align:right">$7,053</td></tr>
+        <tr><td>Software & Apps</td><td>Shopify, Klaviyo, tools</td><td style="text-align:right">$676</td></tr>
+        <tr><td>Credit Card Payment</td><td>Monthly minimum + extra</td><td style="text-align:right">$2,000</td></tr>
+        <tr><td>Sales Tax Remittance</td><td>Remitted to state</td><td style="text-align:right">$2,640</td></tr>
+        <tr class="total-row"><td colspan="2">Total Cash Out</td><td style="text-align:right">$37,369</td></tr>
+        <tr class="total-row"><td colspan="2">Net Cash Flow</td><td style="text-align:right">$22,071</td></tr>
+        <tr class="total-row"><td colspan="2">Ending Cash Balance</td><td style="text-align:right">$24,380</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="padding: 0 24px;">
+    <div class="cta-box">
+      <h2>Want this for your store?</h2>
+      <p>Every month, we deliver your P&L, Balance Sheet, and Cash Flow in a clean Google Sheet — within 24 hours of you sending your Shopify export.</p>
+      <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn-primary" style="text-decoration:none;">Start free trial — $99/mo →</a>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:12px;">30 days free. No credit card required. Cancel anytime.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <span>© 2026 Klarr</span>
+      <span>·</span>
+      <span>klarr.space@gmail.com</span>
+      <span>·</span>
+      <span>+45 42208135</span>
+      <span>·</span>
+      <span>All rights reserved</span>
+    </div>
+  </footer>
+
+</body>
+</html>
