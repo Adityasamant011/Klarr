@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Shopify Profit Breakdown | Klarr</title>
-  <meta name="description" content="Get your free Shopify profit breakdown. Enter your store URL and email — we'll show you your real profit margin after fees, ads, and hidden costs.">
+  <meta name="description" content="Get your free Shopify profit breakdown. Enter your store URL and email — we'll analyze your numbers and email you your real profit margin.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,38 +23,35 @@
       --text-dim: #5c5850;
       --accent: #c08532;
       --accent-dim: rgba(192,133,50,0.10);
-      --accent-glow: rgba(192,133,50,0.05);
       --border: rgba(237,236,236,0.06);
       --radius: 4px;
       --radius-pill: 9999px;
-      --max-w: 1080px;
       --transition: 0.15s ease;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; font-weight: 400; min-height: 100vh; }
     a { color: var(--text); text-decoration: none; }
-    .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
+    .container { max-width: 520px; margin: 0 auto; padding: 0 1.25rem; }
     .field { margin-bottom: 1.25rem; }
     .field label { display: block; font-size: 11px; font-weight: 400; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .field input { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; font-family: inherit; transition: border-color var(--transition); }
-    .field input:focus { outline: none; border-color: var(--accent); }
+    .field label .req { color: #c08532; }
+    .field input, .field select { width: 100%; padding: 10px 14px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; font-family: inherit; transition: border-color var(--transition); }
+    .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
     .field input::placeholder { color: var(--text-dim); }
+    .field select option { background: var(--bg-alt); }
+    .field input.error { border-color: #c04040; }
+    .error-msg { font-size: 11px; color: #c04040; margin-top: 4px; display: none; }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 24px; border: none; border-radius: var(--radius-pill); font-size: 14px; font-weight: 400; font-family: inherit; cursor: pointer; transition: opacity var(--transition); letter-spacing: -0.01em; }
     .btn-primary { background: var(--text); color: var(--bg); }
     .btn-primary:hover { opacity: 0.85; }
     .btn-full { width: 100%; }
-    .result-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; }
-    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .result-row:last-child { border-bottom: none; }
-    .result-label { color: var(--text-muted); }
-    .result-value { color: var(--text); font-variant-numeric: tabular-nums; }
-    .result-value.good { color: #52c878; }
-    .result-value.bad { color: #b8860b; }
-    .result-value.accent { color: var(--accent); font-weight: 500; }
-    .cta-box { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; text-align: center; margin-top: 1.5rem; }
-    .cta-box h2 { font-size: 1.1rem; font-weight: 400; color: var(--text); margin-bottom: 8px; }
-    .cta-box p { color: var(--text-muted); margin-bottom: 1rem; font-size: 13px; line-height: 1.6; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .success-box { text-align: center; padding: 3rem 0; }
+    .success-icon { font-size: 3rem; margin-bottom: 1.5rem; }
+    .success-box h1 { font-size: 1.4rem; font-weight: 400; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+    .success-box p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.5rem; }
+    .success-box .email-sent { color: var(--accent); font-weight: 500; }
     .hidden { display: none; }
   </style>
 </head>
@@ -82,27 +79,29 @@
 
 <div class="container">
 
-  <!-- STEP 1: Input -->
-  <div id="step1" style="padding-top: 8rem;">
+  <!-- STEP 1: Input form -->
+  <div id="step1" style="padding-top: 8rem; padding-bottom: 4rem;">
     <div style="text-align: center; margin-bottom: 2.5rem;">
       <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem;">Free — No signup required</div>
       <h1 style="font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 400; line-height: 1.2; margin-bottom: 12px; color: var(--text); letter-spacing: -0.02em;">Get your free Shopify profit breakdown</h1>
-      <p style="font-size: 15px; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.6;">Enter your store URL and email. We'll analyze your numbers and show you your real profit margin — after fees, ads, and hidden costs.</p>
+      <p style="font-size: 15px; color: var(--text-muted); max-width: 440px; margin: 0 auto; line-height: 1.6;">Enter your store details and email. We'll analyze your numbers and send you your real profit margin within 24 hours.</p>
     </div>
 
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem;">
       <div class="field">
-        <label>Your name</label>
+        <label>Your name <span class="req">*</span></label>
         <input type="text" id="q_name" placeholder="First name">
+        <div class="error-msg" id="err-name">Please enter your name</div>
       </div>
       <div class="field">
-        <label>Your email</label>
+        <label>Your email <span class="req">*</span></label>
         <input type="email" id="q_email" placeholder="you@yourstore.com">
-        <p style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">We'll send your breakdown here. No spam, ever.</p>
+        <div class="error-msg" id="err-email">Please enter a valid email</div>
       </div>
       <div class="field">
-        <label>Shopify store URL</label>
+        <label>Shopify store URL <span class="req">*</span></label>
         <input type="text" id="q_store" placeholder="yourstore.com">
+        <div class="error-msg" id="err-store">Please enter your store URL</div>
       </div>
 
       <div class="field">
@@ -129,91 +128,28 @@
         </select>
       </div>
 
-      <button class="btn btn-primary btn-full" onclick="calculate()">Get my free profit breakdown →</button>
+      <button class="btn btn-primary btn-full" id="btn-submit" onclick="submitForm()">Send my free profit breakdown →</button>
+      <p style="font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 10px;">We'll email you the breakdown within 24 hours. No spam, ever.</p>
     </div>
   </div>
 
-  <!-- STEP 2: Results -->
-  <div id="results" class="hidden" style="padding-top: 6rem; padding-bottom: 4rem;">
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem;">Your free breakdown</div>
-      <h1 style="font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 400; line-height: 1.2; margin-bottom: 12px; color: var(--text); letter-spacing: -0.02em;">Here's what we found for <span id="resName" style="color:var(--accent);">your store</span></h1>
-      <p style="font-size: 13px; color: var(--text-muted);" id="resStore"></p>
-    </div>
-
-    <div class="result-card">
-      <h3 style="font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">Profit Summary</h3>
-      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 1rem;">Estimated monthly numbers based on your inputs</div>
-      <div class="result-row">
-        <span class="result-label">Monthly Revenue</span>
-        <span class="result-value" id="resRevenue">$25,000</span>
+  <!-- STEP 2: Success confirmation -->
+  <div id="success" class="hidden" style="padding-top: 8rem; padding-bottom: 4rem;">
+    <div class="success-box">
+      <div class="success-icon">✉️</div>
+      <h1>Got it, <span id="successName">there</span>!</h1>
+      <p>We're analyzing <span id="successStore" style="color:var(--text);">your store</span> now.</p>
+      <p>Your profit breakdown will be sent to<br><span class="email-sent" id="successEmail">your email</span><br>within 24 hours.</p>
+      <div style="margin-top: 2rem; padding: 1.25rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; text-align: left;">
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">While you wait — most Shopify founders we talk to are off by <strong style="color: var(--text);">15+ margin points</strong> on their profit. The #1 hidden cost? Processing fees they never reconcile.</p>
       </div>
-      <div class="result-row">
-        <span class="result-label">Est. Product Costs (COGS)</span>
-        <span class="result-value" id="resCOGS">-$7,500</span>
+      <div style="margin-top: 2rem;">
+        <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn btn-primary">Start free trial — $99/mo →</a>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 8px;">Get your books done every month. Cancel anytime.</p>
       </div>
-      <div class="result-row">
-        <span class="result-label">Shopify Fees & Payment Processing</span>
-        <span class="result-value" id="resFees">-$970</span>
+      <div style="margin-top: 2rem;">
+        <a href="/" style="font-size: 13px; color: var(--text-dim);">← Back to Klarr</a>
       </div>
-      <div class="result-row">
-        <span class="result-label">App Subscriptions</span>
-        <span class="result-value" id="resApps">-$350</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Ad Spend</span>
-        <span class="result-value" id="resAds">-$5,000</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Hidden Costs (returns, chargebacks, etc.)</span>
-        <span class="result-value bad" id="resHidden">-$1,250</span>
-      </div>
-      <div class="result-row" style="border-top: 2px solid var(--border); margin-top: 8px; padding-top: 12px;">
-        <span class="result-label" style="color: var(--text); font-weight: 500;">Estimated Net Profit</span>
-        <span class="result-value accent" id="resProfit">$9,930</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label" style="color: var(--text); font-weight: 500;">Net Profit Margin</span>
-        <span class="result-value accent" id="resMargin">39.7%</span>
-      </div>
-    </div>
-
-    <div class="result-card">
-      <h3 style="font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">What most founders miss</h3>
-      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 1rem;">These are the costs that silently eat your margins</div>
-      <div class="result-row">
-        <span class="result-label">Transaction Fees (2.9% + 30¢)</span>
-        <span class="result-value" id="resTxFees">$725</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Refunds & Returns (~2%)</span>
-        <span class="result-value" id="resRefunds">$500</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Chargeback Fees</span>
-        <span class="result-value">$30</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">Currency Conversion (~0.5%)</span>
-        <span class="result-values" id="resFx">$63</span>
-      </div>
-      <div class="result-row" style="border-top: 2px solid var(--border); margin-top: 8px; padding-top: 12px;">
-        <span class="result-label" style="color: var(--text); font-weight: 500;">Total Hidden Costs</span>
-        <span class="result-value bad" id="resTotalHidden">$1,318</span>
-      </div>
-      <p style="font-size: 12px; color: var(--text-dim); margin-top: 1rem; line-height: 1.6;">That's <span id="resHiddenPct" style="color: var(--accent);">5.3%</span> of your revenue — money most Shopify founders don't track.</p>
-    </div>
-
-    <div class="cta-box">
-      <h2>Want us to do this for real?</h2>
-      <p>This is an estimate. We can analyze your actual Shopify data and deliver a precise P&L, Balance Sheet, and Cash Flow — every month, within 24 hours.</p>
-      <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn btn-primary" style="text-decoration:none;max-width:280px;margin:0 auto;display:block;">Start free trial — $99/mo →</a>
-      <p style="font-size:11px;color:var(--text-dim);margin-top:12px;">30 days free. No credit card required. Cancel anytime.</p>
-      <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">Questions? <a href="mailto:klarr.space@gmail.com" style="color:var(--accent);text-decoration:underline;">klarr.space@gmail.com</a> · +45 42208135</p>
-    </div>
-
-    <div style="text-align:center;margin-top:1.5rem;">
-      <button class="btn btn-primary" onclick="resetForm()" style="background:var(--bg-elevated);color:var(--text);border:1px solid var(--border);">← Start over</button>
     </div>
   </div>
 
@@ -230,54 +166,64 @@
 </footer>
 
 <script>
-function calculate() {
-  var name = document.getElementById('q_name').value || 'there';
-  var store = document.getElementById('q_store').value || 'your store';
-  var revenue = parseInt(document.getElementById('q_revenue').value) || 25000;
-  var adSpend = parseInt(document.getElementById('q_adspend').value) || 5000;
+function submitForm() {
+  var name = document.getElementById('q_name').value.trim();
+  var email = document.getElementById('q_email').value.trim();
+  var store = document.getElementById('q_store').value.trim();
+  var revenue = document.getElementById('q_revenue').value;
+  var adSpend = document.getElementById('q_adspend').value;
 
-  var cogs = Math.round(revenue * 0.30);
-  var txFees = Math.round(revenue * 0.029 + (revenue / 48) * 0.30);
-  var refunds = Math.round(revenue * 0.02);
-  var chargebacks = 30;
-  var fx = Math.round(revenue * 0.005 * 0.5);
-  var apps = 350;
-  var hidden = txFees + refunds + chargebacks + fx;
-  var totalCosts = cogs + hidden + adSpend + apps;
-  var profit = revenue - totalCosts;
-  var margin = (profit / revenue * 100).toFixed(1);
+  // Reset errors
+  document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
+  document.querySelectorAll('input').forEach(function(el){ el.classList.remove('error'); });
 
-  document.getElementById('resName').textContent = name.split(' ')[0];
-  document.getElementById('resStore').textContent = store;
-  document.getElementById('resRevenue').textContent = '$' + revenue.toLocaleString();
-  document.getElementById('resCOGS').textContent = '-$' + cogs.toLocaleString();
-  document.getElementById('resFees').textContent = '-$' + Math.round(revenue * 0.032).toLocaleString();
-  document.getElementById('resApps').textContent = '-$' + apps.toLocaleString();
-  document.getElementById('resAds').textContent = '-$' + adSpend.toLocaleString();
-  document.getElementById('resHidden').textContent = '-$' + hidden.toLocaleString();
-  document.getElementById('resProfit').textContent = '$' + profit.toLocaleString();
-  document.getElementById('resMargin').textContent = margin + '%';
-  document.getElementById('resTxFees').textContent = '$' + txFees.toLocaleString();
-  document.getElementById('resRefunds').textContent = '$' + refunds.toLocaleString();
-  document.getElementById('resFx').textContent = '$' + fx.toLocaleString();
-  document.getElementById('resTotalHidden').textContent = '$' + hidden.toLocaleString();
-  document.getElementById('resHiddenPct').textContent = (hidden / revenue * 100).toFixed(1) + '%';
+  var valid = true;
+  if (!name) { document.getElementById('err-name').style.display='block'; document.getElementById('q_name').classList.add('error'); valid = false; }
+  if (!email || !email.includes('@') || !email.includes('.')) { document.getElementById('err-email').style.display='block'; document.getElementById('q_email').classList.add('error'); valid = false; }
+  if (!store) { document.getElementById('err-store').style.display='block'; document.getElementById('q_store').classList.add('error'); valid = false; }
+  if (!valid) return;
 
+  // Save to Firestore
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  /* Firestore save — replace with your actual code */
+  try {
+    if (window.firebase && firebase.firestore) {
+      firebase.firestore().collection('leads').add({
+        name: name,
+        email: email,
+        store: store,
+        revenue: revenue,
+        adSpend: adSpend,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  } catch(e) {}
+
+  // Also save to localStorage as backup
+  try {
+    var leads = JSON.parse(localStorage.getItem('klarr_leads') || '[]');
+    leads.push({ name: name, email: email, store: store, revenue: revenue, adSpend: adSpend, createdAt: new Date().toISOString() });
+    localStorage.setItem('klarr_leads', JSON.stringify(leads));
+  } catch(e) {}
+
+  // Show success
+  document.getElementById('successName').textContent = name.split(' ')[0];
+  document.getElementById('successEmail').textContent = email;
+  document.getElementById('successStore').textContent = store;
   document.getElementById('step1').classList.add('hidden');
-  document.getElementById('results').classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function resetForm() {
-  document.getElementById('q_name').value = '';
-  document.getElementById('q_email').value = '';
-  document.getElementById('q_store').value = '';
-  document.getElementById('q_revenue').value = '25000';
-  document.getElementById('q_adspend').value = '5000';
-  document.getElementById('results').classList.add('hidden');
-  document.getElementById('step1').classList.remove('hidden');
+  document.getElementById('success').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
+
+<script src="/auth.js"></script>
+<script type="module">
+  import { updateNav } from '/auth.js';
+  updateNav();
+</script>
+
 </body>
 </html>
