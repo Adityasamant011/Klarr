@@ -27,6 +27,7 @@
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
         <a href="/partners/">Partners</a>
+        <a href="/founding-members" style="color:#c08532;font-weight:500;">Free program</a>
       </div>
       <div class="nav-right" id="nav-auth-area">
         <a href="/login" style="font-size:13px;color:var(--text-muted);text-decoration:none;margin-right:16px;">Log in</a>
@@ -166,6 +167,40 @@
           <strong>Your data is safe.</strong> We never store your data on our servers. Everything is processed through your own Google Sheet. You own it 100%.
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Social proof stats -->
+  <section style="padding: 4rem 0; background: #0a0907; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a;">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;text-align:center;">
+        <div>
+          <div style="font-size:2.5rem;font-weight:700;color:#c08532;">$8,300</div>
+          <div style="color:#666;font-size:0.9rem;margin-top:4px;">Avg. hidden costs found in first month</div>
+        </div>
+        <div>
+          <div style="font-size:2.5rem;font-weight:700;color:#c08532;">24h</div>
+          <div style="color:#666;font-size:0.9rem;margin-top:4px;">From Shopify export to clean books</div>
+        </div>
+        <div>
+          <div style="font-size:2.5rem;font-weight:700;color:#c08532;">15-20%</div>
+          <div style="color:#666;font-size:0.9rem;margin-top:4px;">Typical margin correction after audit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Founding Member CTA -->
+  <section style="padding: 5rem 0; background: linear-gradient(180deg, #0a0907 0%, #14120b 100%);">
+    <div class="container" style="text-align:center;max-width:640px;">
+      <div style="display:inline-block;background:rgba(192,133,50,0.12);border:1px solid rgba(192,133,50,0.25);color:#c08532;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;padding:6px 14px;border-radius:4px;margin-bottom:20px;">Limited — 10 spots</div>
+      <h2 style="font-size:2rem;font-weight:700;color:#fff;margin-bottom:16px;">Get 3 months of bookkeeping. Free.</h2>
+      <p style="color:#888;font-size:1.05rem;line-height:1.6;margin-bottom:32px;">We're selecting 10 Shopify stores for our Founding Member Program. Free bookkeeping for 3 months in exchange for honest feedback and a testimonial. Lock in $79/mo forever after.</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <a href="/founding-members" class="btn-primary">Apply for free program →</a>
+        <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn-ghost">Or start free trial</a>
+      </div>
+      <p style="color:#555;font-size:0.85rem;margin-top:16px;">No credit card required · Cancel anytime · 24-hour delivery</p>
     </div>
   </section>
 
@@ -319,6 +354,31 @@
   </footer>
 
   <script src="main.js"></script>
+  <!-- Analytics & Conversion Tracking -->
+  <script defer data-domain="klarr.space" src="https://plausible.io/js/script.js"></script>
+  <script>
+    // Track key conversion events
+    window.klarrTrack = function(event, props) {
+      if (window.plausible) plausible(event, {props: props});
+      // Also log to console for debugging
+      console.log('[Klarr Track]', event, props);
+    };
+    // Auto-track CTA clicks
+    document.querySelectorAll('.btn-primary, .nav-cta, .cta-btn, .fm-cta-btn, a[href*="stripe"], a[href*="signup"], a[href*="/tools/"]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var label = this.textContent.trim() || this.href;
+        window.klarrTrack('cta_click', {label: label, location: window.location.pathname});
+      });
+    });
+    // Track outbound link clicks
+    document.querySelectorAll('a[href^="http"]').forEach(function(link) {
+      if (!link.href.includes('klarr.space')) {
+        link.addEventListener('click', function() {
+          window.klarrTrack('outbound_click', {url: this.href});
+        });
+      }
+    });
+  </script>
   <script type="module">
     import { trackReferralClick, getReferrerId } from '/partners/firebase-init.js';
     import { updateNav } from '/auth.js';

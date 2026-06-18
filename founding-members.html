@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klarr Founding Member Program — Free Bookkeeping for Shopify Stores</title>
+  <meta name="description" content="Join the Klarr Founding Member Program. Get free bookkeeping for 3 months in exchange for feedback and a testimonial. Limited to 10 stores.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=21">
+  <style>
+    .founding-member { max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
+    .founding-member h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.15; margin-bottom: 16px; color: #fff; }
+    .founding-member .sub { font-size: 1.15rem; color: #888; line-height: 1.6; margin-bottom: 40px; }
+    .fm-badge { display: inline-block; background: rgba(192,133,50,0.15); border: 1px solid rgba(192,133,50,0.3); color: #c08532; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 14px; border-radius: 4px; margin-bottom: 24px; }
+    .fm-section { margin-bottom: 48px; }
+    .fm-section h2 { font-size: 1.3rem; font-weight: 600; color: #fff; margin-bottom: 16px; }
+    .fm-section p { color: #999; line-height: 1.7; margin-bottom: 16px; font-size: 1.02rem; }
+    .fm-list { list-style: none; padding: 0; margin: 0 0 24px; }
+    .fm-list li { padding: 12px 0; border-bottom: 1px solid #1a1a1a; color: #aaa; font-size: 1rem; display: flex; gap: 12px; }
+    .fm-list li:last-child { border-bottom: none; }
+    .fm-list .check { color: #c08532; font-weight: 600; flex-shrink: 0; }
+    .fm-cta-box { background: #0a0907; border: 1px solid rgba(192,133,50,0.3); border-radius: 12px; padding: 40px; text-align: center; margin: 48px 0; }
+    .fm-cta-box h3 { color: #c08532; font-size: 1.4rem; margin-bottom: 12px; }
+    .fm-cta-box p { color: #888; margin-bottom: 24px; font-size: 0.95rem; }
+    .fm-cta-btn { display: inline-block; background: #c08532; color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.05rem; }
+    .fm-cta-btn:hover { background: #d49a3c; }
+    .fm-trust { display: flex; gap: 24px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+    .fm-trust-item { color: #555; font-size: 0.85rem; }
+    .fm-trust-item strong { color: #888; }
+    .fm-faq { margin-top: 60px; }
+    .fm-faq-item { border: 1px solid #1a1a1a; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+    .fm-faq-q { padding: 16px 20px; color: #ccc; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .fm-faq-q:hover { color: #fff; }
+    .fm-faq-a { padding: 0 20px 16px; color: #888; line-height: 1.6; display: none; }
+    .fm-faq-item.open .fm-faq-a { display: block; }
+    .fm-faq-item.open .fm-faq-icon { transform: rotate(45deg); }
+    .fm-faq-icon { transition: transform 0.2s; color: #555; }
+    .fm-counter { text-align: center; margin: 32px 0; }
+    .fm-counter-num { font-size: 2.5rem; font-weight: 700; color: #c08532; }
+    .fm-counter-label { color: #666; font-size: 0.85rem; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <img src="/favicon.svg" alt="Klarr">
+        <span>Klarr</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#how">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/blog/">Blog</a>
+        <a href="/signup" class="nav-cta">Sign up</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="founding-member">
+    <div class="fm-badge">Limited — 10 spots</div>
+    <h1>Get 3 months of bookkeeping. Free.</h1>
+    <p class="sub">We're selecting 10 Shopify stores for our Founding Member Program. You get free bookkeeping for 3 months. In exchange, you give us honest feedback and — if you love it — a testimonial we can share publicly.</p>
+
+    <div class="fm-counter">
+      <div class="fm-counter-num">7</div>
+      <div class="fm-counter-label">spots remaining</div>
+    </div>
+
+    <!-- Success message -->
+    <div id="fm-success" style="display:none;background:rgba(192,133,50,0.1);border:1px solid rgba(192,133,50,0.3);border-radius:12px;padding:32px;text-align:center;margin-bottom:32px;">
+      <div style="font-size:2rem;margin-bottom:12px;">🎉</div>
+      <h3 style="color:#c08532;font-size:1.3rem;margin-bottom:8px;">Application received!</h3>
+      <p style="color:#888;">We'll review your application and get back to you within 24 hours. Check your email.</p>
+    </div>
+
+    <div class="fm-section">
+      <h2>What you get</h2>
+      <ul class="fm-list">
+        <li><span class="check">✓</span> 3 months of full bookkeeping — P&L, Balance Sheet, Cash Flow — completely free ($297 value)</li>
+        <li><span class="check">✓</span> 24-hour delivery, every month</li>
+        <li><span class="check">✓</span> Direct access to our team — message us anytime</li>
+        <li><span class="check">✓</span> Tax-ready books your CPA can use immediately</li>
+        <li><span class="check">✓</span> Early access to new features before anyone else</li>
+        <li><span class="check">✓</span> Locked-in founding member pricing ($79/mo after the 3 free months, forever)</li>
+      </ul>
+    </div>
+
+    <div class="fm-section">
+      <h2>What we ask</h2>
+      <ul class="fm-list">
+        <li><span class="check">1.</span> Use the service for all 3 months (send us your Shopify export monthly)</li>
+        <li><span class="check">2.</span> Give us honest feedback — what's working, what's not, what's missing</li>
+        <li><span class="check">3.</span> If you love Klarr, record a 60-second testimonial (we'll make it easy — just answer 3 questions on a call)</li>
+      </ul>
+    </div>
+
+    <div class="fm-section">
+      <h2>Who this is for</h2>
+      <p>Shopify stores doing <strong>$20K–$200K/month</strong> in revenue who:</p>
+      <ul class="fm-list">
+        <li><span class="check">→</span> Are doing their own bookkeeping (or behind on it)</li>
+        <li><span class="check">→</span> Don't have a clear picture of their real profit margin</li>
+        <li><span class="check">→</span> Are spending $200+/month on a bookkeeper or accounting software</li>
+        <li><span class="check">→</span> Want clean, tax-ready books without the hassle</li>
+      </ul>
+    </div>
+
+    <div class="fm-cta-box">
+      <h3>Apply for a founding member spot</h3>
+      <p>Takes 60 seconds. We'll review and get back to you within 24 hours.</p>
+      <form action="https://formsubmit.co/klarr.space@gmail.com" method="POST" style="display:flex;flex-direction:column;gap:16px;max-width:480px;margin:24px auto 0;text-align:left;">
+        <input type="hidden" name="_subject" value="Klarr Founding Member Application">
+        <input type="hidden" name="_next" value="https://klarr.space/founding-members?status=success">
+        <input type="hidden" name="_captcha" value="false">
+        <div>
+          <label style="color:#888;font-size:0.85rem;display:block;margin-bottom:6px;">Your name *</label>
+          <input type="text" name="name" required placeholder="Jane Doe" style="width:100%;padding:12px 16px;background:#0a0907;border:1px solid #333;border-radius:8px;color:#ddd;font-size:1rem;font-family:var(--font);outline:none;">
+        </div>
+        <div>
+          <label style="color:#888;font-size:0.85rem;display:block;margin-bottom:6px;">Email *</label>
+          <input type="email" name="email" required placeholder="jane@yourstore.com" style="width:100%;padding:12px 16px;background:#0a0907;border:1px solid #333;border-radius:8px;color:#ddd;font-size:1rem;font-family:var(--font);outline:none;">
+        </div>
+        <div>
+          <label style="color:#888;font-size:0.85rem;display:block;margin-bottom:6px;">Store URL *</label>
+          <input type="url" name="store_url" required placeholder="https://yourstore.myshopify.com" style="width:100%;padding:12px 16px;background:#0a0907;border:1px solid #333;border-radius:8px;color:#ddd;font-size:1rem;font-family:var(--font);outline:none;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="color:#888;font-size:0.85rem;display:block;margin-bottom:6px;">Monthly revenue *</label>
+            <select name="revenue" required style="width:100%;padding:12px 16px;background:#0a0907;border:1px solid #333;border-radius:8px;color:#ddd;font-size:1rem;font-family:var(--font);outline:none;">
+              <option value="">Select...</option>
+              <option value="5k-20k">$5K - $20K</option>
+              <option value="20k-50k">$20K - $50K</option>
+              <option value="50k-100k">$50K - $100K</option>
+              <option value="100k-200k">$100K - $200K</option>
+              <option value="200k+">$200K+</option>
+            </select>
+          </div>
+          <div>
+            <label style="color:#888;font-size:0.85rem;display:block;margin-bottom:6px;">Bookkeeping now *</label>
+            <select name="bookkeeping" required style="width:100%;padding:12px 16px;background:#0a0907;border:1px solid #333;border-radius:8px;color:#ddd;font-size:1rem;font-family:var(--font);outline:none;">
+              <option value="">Select...</option>
+              <option value="myself">I do it myself</option>
+              <option value="software">Software (QuickBooks, etc.)</option>
+              <option value="bookkeeper">Hire a bookkeeper</option>
+              <option value="nothing">Nothing / Behind on books</option>
+              <option value="accountant">My CPA handles it</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="color:#888;font-size:0.85rem;display:block;margin-bottom:6px;">Biggest bookkeeping pain point?</label>
+          <textarea name="pain_point" rows="3" placeholder="e.g. I'm always 3 months behind on categorizing transactions..." style="width:100%;padding:12px 16px;background:#0a0907;border:1px solid #333;border-radius:8px;color:#ddd;font-size:1rem;font-family:var(--font);outline:none;resize:vertical;"></textarea>
+        </div>
+        <button type="submit" class="fm-cta-btn" style="cursor:pointer;border:none;font-family:var(--font);">Apply now →</button>
+      </form>
+      <div class="fm-trust">
+        <span class="fm-trust-item"><strong>No credit card</strong> required</span>
+        <span class="fm-trust-item"><strong>No obligation</strong> to continue after 3 months</span>
+        <span class="fm-trust-item"><strong>Cancel anytime</strong></span>
+      </div>
+    </div>
+      <div class="fm-trust">
+        <span class="fm-trust-item"><strong>No credit card</strong> required</span>
+        <span class="fm-trust-item"><strong>No obligation</strong> to continue after 3 months</span>
+        <span class="fm-trust-item"><strong>Cancel anytime</strong></span>
+      </div>
+    </div>
+
+    <div class="fm-section">
+      <h2>Why we're doing this</h2>
+      <p>We're building the bookkeeping service we wish existed when we were running our own stores. But we don't want to build it in a vacuum. We need real store owners using it, breaking it, and telling us what to fix.</p>
+      <p>That's you. In exchange for your time and honesty, we give you 3 months of free bookkeeping and a permanent discount. Fair trade.</p>
+    </div>
+
+    <div class="fm-faq">
+      <h2>FAQ</h2>
+      <div class="fm-faq-item">
+        <div class="fm-faq-q" onclick="this.parentElement.classList.toggle('open')">What happens after 3 months? <span class="fm-faq-icon">+</span></div>
+        <div class="fm-faq-a">You can continue at $79/month (founding member price, locked in forever) or cancel. No hard feelings either way.</div>
+      </div>
+      <div class="fm-faq-item">
+        <div class="fm-faq-q" onclick="this.parentElement.classList.toggle('open')">What if I don't like it? <span class="fm-faq-icon">+</span></div>
+        <div class="fm-faq-a">Tell us why. Your feedback is the most valuable thing you can give us. And you still got 3 months of free bookkeeping out of it.</div>
+      </div>
+      <div class="fm-faq-item">
+        <div class="fm-faq-q" onclick="this.parentElement.classList.toggle('open')">What do I need to do each month? <span class="fm-faq-icon">+</span></div>
+        <div class="fm-faq-a">Export your Shopify orders, payouts, and fees. Send us the CSV. Takes about 2 minutes. We handle everything else.</div>
+      </div>
+      <div class="fm-faq-item">
+        <div class="fm-faq-q" onclick="this.parentElement.classList.toggle('open')">Is my data safe? <span class="fm-faq-icon">+</span></div>
+        <div class="fm-faq-a">Yes. We never store your data on our servers. Everything is processed through your own Google Sheet. You own it 100%.</div>
+      </div>
+      <div class="fm-faq-item">
+        <div class="fm-faq-q" onclick="this.parentElement.classList.toggle('open')">How do I apply? <span class="fm-faq-icon">+</span></div>
+        <div class="fm-faq-a">Click the button above, fill out the 60-second form (store URL, monthly revenue, current bookkeeping situation), and we'll get back to you within 24 hours.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <span>© 2026 Klarr</span>
+      <span>·</span>
+      <span>klarr.space@gmail.com</span>
+      <span>·</span>
+      <span>+45 42208135</span>
+      <span>·</span>
+      <span>All rights reserved</span>
+    </div>
+  </footer>
+
+  <script>
+    // Show success message after form submission
+    if (window.location.search.includes('status=success')) {
+      var el = document.getElementById('fm-success');
+      if (el) el.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

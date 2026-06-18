@@ -10,18 +10,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=18">
+  <link rel="stylesheet" href="/style.css?v=22">
   <style>
     .blog-index { max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
     .blog-index h1 { font-size: 2rem; font-weight: 600; margin-bottom: 8px; color: #fff; }
     .blog-index .subtitle { color: #666; margin-bottom: 48px; }
     .blog-card { display: block; border: 1px solid #222; border-radius: 12px; padding: 28px; margin-bottom: 20px; text-decoration: none; transition: border-color 0.2s; }
-    .blog-card:hover { border-color: #4CAF50; }
+    .blog-card:hover { border-color: #c08532; }
     .blog-card h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
     .blog-card .card-meta { color: #666; font-size: 0.85rem; margin-bottom: 12px; }
     .blog-card p { color: #999; line-height: 1.6; margin-bottom: 0; }
     .blog-back { display: inline-block; color: #666; text-decoration: none; margin-bottom: 32px; font-size: 0.9rem; }
-    .blog-back:hover { color: #4CAF50; }
+    .blog-back:hover { color: #c08532; }
+    .blog-card-new { position: relative; }
+    .blog-card-new::before { content: "NEW"; position: absolute; top: -10px; right: 16px; background: #c08532; color: #000; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em; }
   </style>
 </head>
 <body>
@@ -39,6 +41,7 @@
         <a href="/blog/">Blog</a>
       </div>
       <div class="nav-right">
+        <a href="/founding-members" style="font-size:13px;color:#c08532;text-decoration:none;margin-right:16px;font-weight:500;">Free program</a>
         <a href="/#signup" class="nav-cta">Get free audit</a>
       </div>
     </div>
@@ -48,6 +51,20 @@
     <a href="/" class="blog-back">← Back to Klarr</a>
     <h1>Klarr Blog</h1>
     <p class="subtitle">Bookkeeping tips, guides, and insights for Shopify merchants.</p>
+
+    <!-- NEW: Bookkeeping Checklist -->
+    <a href="/blog/shopify-bookkeeping-checklist.html" class="blog-card blog-card-new">
+      <h2>The Only Shopify Bookkeeping Checklist You Need</h2>
+      <div class="card-meta">June 18, 2026 · 8 min read · Bookkeeping</div>
+      <p>A step-by-step bookkeeping checklist for Shopify store owners. Monthly, quarterly, and annual tasks — plus 5 mistakes that cost you money and how to automate all of it.</p>
+    </a>
+
+    <!-- NEW: Founding Members -->
+    <a href="/founding-members" class="blog-card" style="border-color:rgba(192,133,50,0.3);">
+      <h2>🎉 Get 3 Months of Bookkeeping — Free (Founding Member Program)</h2>
+      <div class="card-meta">June 18, 2026 · Program</div>
+      <p>We're selecting 10 Shopify stores for our Founding Member Program. Free bookkeeping for 3 months in exchange for feedback. Lock in $79/mo forever after.</p>
+    </a>
 
     <a href="/blog/shopify-profit-margin-calculator.html" class="blog-card">
       <h2>Shopify Profit Margin Calculator: How to Find Your Real Margin</h2>
@@ -84,8 +101,61 @@
       <div class="card-meta">May 31, 2026 · 8 min read</div>
       <p>Most Shopify stores overpay $200-500/month in hidden transaction fees. Here's exactly where the money leaks and how to stop it.</p>
     </a>
+
+    <a href="/blog/shopify-transaction-fees-guide.html" class="blog-card">
+      <h2>Shopify Transaction Fees Explained: What You're Actually Paying</h2>
+      <div class="card-meta">May 31, 2026 · 7 min read</div>
+      <p>A breakdown of every transaction fee Shopify charges — and how to minimize them.</p>
+    </a>
+
+    <a href="/blog/shopify-vs-quickbooks.html" class="blog-card">
+      <h2>Shopify vs QuickBooks: Which Is Right for Your Store?</h2>
+      <div class="card-meta">May 31, 2026 · 9 min read</div>
+      <p>QuickBooks is DIY software. Klarr is full service. Here's the real difference — and which one makes sense for your store.</p>
+    </a>
+
+    <a href="/blog/when-to-hire-bookkeeper.html" class="blog-card">
+      <h2>When Should a Shopify Store Hire a Bookkeeper?</h2>
+      <div class="card-meta">May 31, 2026 · 6 min read</div>
+      <p>The signs you've outgrown DIY bookkeeping — and what to look for in a bookkeeping service.</p>
+    </a>
+
+    <a href="/blog/saas-pricing-guide.html" class="blog-card">
+      <h2>SaaS Pricing Strategy: How We Priced Klarr at $99/mo</h2>
+      <div class="card-meta">May 31, 2026 · 8 min read</div>
+      <p>How we analyzed competitors, calculated our value, and landed on $99/month for Klarr.</p>
+    </a>
+
+    <a href="/blog/shopify-bookkeeping-guide.html" class="blog-card">
+      <h2>The Complete Shopify Bookkeeping Guide for 2026</h2>
+      <div class="card-meta">May 31, 2026 · 14 min read</div>
+      <p>Everything you need to know about Shopify bookkeeping — from day-one setup to tax season.</p>
+    </a>
   </div>
 
+  <footer>
+    <div class="container">
+      <span>&copy; 2026 Klarr</span>
+      <span>&middot;</span>
+      <span>klarr.space@gmail.com</span>
+      <span>&middot;</span>
+      <span>All rights reserved</span>
+    </div>
+  </footer>
+
   <script src="/main.js"></script>
+  <!-- Analytics -->
+  <script defer data-domain="klarr.space" src="https://plausible.io/js/script.js"></script>
+  <script>
+    window.klarrTrack = function(event, props) {
+      if (window.plausible) plausible(event, {props: props});
+      console.log('[Klarr Track]', event, props);
+    };
+    document.querySelectorAll('.cta-btn, .nav-cta, a[href*="/founding-members"], a[href*="stripe"]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        window.klarrTrack('cta_click', {label: this.textContent.trim(), location: '/blog/'});
+      });
+    });
+  </script>
 </body>
 </html>
