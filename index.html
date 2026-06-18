@@ -43,7 +43,7 @@
       <h1>Shopify shows you revenue.<br>We show you profit.</h1>
       <p class="hero-sub">Most founders think they're making 60% margin. The real number is closer to 11%. Get your P&L, Balance Sheet and Cash Flow — delivered in 24 hours, so you finally know where your money goes.</p>
       <div class="hero-actions">
-        <a href="/tools/" class="btn-primary">Get your free profit breakdown →</a>
+        <a href="/founding-members" class="btn-primary">Apply for free program →</a>
         <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn-ghost">Start free trial — 30 days free</a>
       </div>
       <div class="hero-demo">
@@ -300,6 +300,10 @@
       <h2 class="fade-in">Common questions</h2>
       <div class="faq-list">
         <div class="faq-item fade-in">
+          <div class="faq-q">What is the Founding Member Program? <span class="faq-q-icon">+</span></div>
+          <div class="faq-a">We're selecting 10 Shopify stores to get 3 months of free bookkeeping (P&L, Balance Sheet, Cash Flow — a $297 value). In exchange, you give us honest feedback and a short testimonial if you love it. After 3 months, you lock in $79/mo forever (normally $99). No credit card required.</div>
+        </div>
+        <div class="faq-item fade-in">
           <div class="faq-q">What exactly do I get? <span class="faq-q-icon">+</span></div>
           <div class="faq-a">Every month you get three financial statements: Profit & Loss, Balance Sheet, and Cash Flow. All transactions are categorized. Delivered as a clean Google Sheet within 24 hours of you sending us your Shopify export.</div>
         </div>
@@ -332,9 +336,9 @@
     <div class="container">
       <p class="section-label">Get started</p>
       <h2 class="fade-in">Your books. Done.<br>24 hours.</h2>
-      <p class="fade-in">Take the free health check first. See your real profit margin. Then decide if you want us to handle everything.</p>
+      <p class="fade-in">Apply for the Founding Member Program — 3 months free, no credit card. Or start with a free trial today.</p>
       <div class="final-cta-actions fade-in">
-        <a href="/tools/" class="btn-primary btn-large">Get your free profit breakdown →</a>
+        <a href="/founding-members" class="btn-primary btn-large">Apply for free program →</a>
         <a href="https://buy.stripe.com/7sYaEX0hPdWy8g49YkfAc01" class="btn-ghost btn-large">Start free trial</a>
       </div>
     </div>
@@ -364,7 +368,7 @@
       console.log('[Klarr Track]', event, props);
     };
     // Auto-track CTA clicks
-    document.querySelectorAll('.btn-primary, .nav-cta, .cta-btn, .fm-cta-btn, a[href*="stripe"], a[href*="signup"], a[href*="/tools/"]').forEach(function(btn) {
+    document.querySelectorAll('.btn-primary, .nav-cta, .cta-btn, .fm-cta-btn, a[href*="stripe"], a[href*="signup"], a[href*="/founding-members"]').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var label = this.textContent.trim() || this.href;
         window.klarrTrack('cta_click', {label: label, location: window.location.pathname});
